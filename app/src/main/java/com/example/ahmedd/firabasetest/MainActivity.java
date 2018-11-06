@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
+import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
+import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
 
+        pageAdapter.AddFragmentPage(new ChatFragment(),getString(R.string.chats));
+        pageAdapter.AddFragmentPage(new UsersFragment(),getString(R.string.users));
 
+        viewPager.setAdapter(pageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
     }
 
