@@ -2,6 +2,8 @@ package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private CircleImageView profile_img;
     private TextView userName;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
 
     @Override
@@ -37,12 +42,17 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setToolBar();
 
+        PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
+
+
 
     }
 
     private void initViews() {
         profile_img = findViewById(R.id.profile_Image);
         userName = findViewById(R.id.userName);
+        tabLayout = findViewById(R.id.tabLayot);
+        viewPager = findViewById(R.id.viewPager);
     }
 
     private void setToolBar() {
