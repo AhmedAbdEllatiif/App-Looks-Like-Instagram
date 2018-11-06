@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    
+    <style name="MenuStyle" parent="Theme.AppCompat.Light">
+        <item name="android:background">@color/white</item>
+        
+    </style>
+    
 </resources>

@@ -3,8 +3,10 @@ package com.example.ahmedd.firabasetest;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private TextInputEditText editTextUserName, editTextEmail, editTextPassword;
     private Button btn_register;
+    private Toolbar toolbar;
 
     private static DatabaseReference userReference;
 
@@ -33,14 +36,20 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        editTextUserName = findViewById(R.id.ediText_userName);
-        editTextEmail = findViewById(R.id.ediText_Email);
-        editTextPassword = findViewById(R.id.ediText_password);
-        btn_register = findViewById(R.id.btn_register);
+        initViews();
+        setToolBar();
+        registerButtonListener();
+
+    }
+
+    private void setToolBar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Register");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
 
-
-
+    private void registerButtonListener() {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
 
     public void register(final String userName, String email, String password) {
 
@@ -107,16 +117,13 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-
-
-
- /*   private void initViews() {
-        userName = findViewById(R.id.ediText_userName);
-        email = findViewById(R.id.ediText_Email);
-        password = findViewById(R.id.ediText_password);
-        btn_register =findViewById(R.id.btn_register);
+    private void initViews() {
+        editTextUserName = findViewById(R.id.ediText_userName);
+        editTextEmail = findViewById(R.id.ediText_Email);
+        editTextPassword = findViewById(R.id.ediText_password);
+        btn_register = findViewById(R.id.btn_register);
+        toolbar = findViewById(R.id.myToolBar);
 
     }
-*/
 
 }

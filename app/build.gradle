@@ -44,7 +44,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.5'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //Circle imageView
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

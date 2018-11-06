@@ -1,47 +1,107 @@
 package com.example.ahmedd.firabasetest;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.example.ahmedd.firabasetest.Model.User;
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
+import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
+
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private CircleImageView profile_img;
+    private TextView userName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-/*
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        initViews();
 
-        DatabaseReference databaseReference = database.getReference("message");
+        setToolBar();
 
-        databaseReference.setValue("Hello world");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+    }
+
+    private void initViews() {
+        profile_img = findViewById(R.id.profile_Image);
+        userName = findViewById(R.id.userName);
+    }
+
+    private void setToolBar() {
+        Toolbar toolbar = findViewById(R.id.myUserToolBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        //set user data in the toolBar
+        MyFireBaseAuth.referenceOnUserChild().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                  String value = dataSnapshot.getValue(String.class);
 
-                Log.e("Value", value);
+                //getValue hatrg3 object jason
+                //ha3ml class 2st2bl feh l object
+                User user = dataSnapshot.getValue(User.class);
 
+                if (user.getUserName() != null) {
+                    userName.setText(user.getUserName());
+                }
+
+                if (user.getImageURL().equals("default")) {
+                    profile_img.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Picasso.get().load(user.getImageURL()).into(profile_img);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                Log.e("DataBase", "Cancelled");
-                Log.e("DataBaseError", databaseError.getMessage());
-
             }
-        });*/
+        });
 
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(MainActivity.this, StartActivity.class));
+                finish();
+                return true;
+        }
+
+        return false;
     }
 }

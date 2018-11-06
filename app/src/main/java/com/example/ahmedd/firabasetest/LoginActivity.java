@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,23 +20,37 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity {
 
 
-    TextInputEditText email, password;
-    Button btn_login;
-
+    private TextInputEditText email, password;
+    private Button btn_login;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        initViews();
 
+        setToolBar();
+        clickLoginButton();
+
+
+    }
+
+    private void initViews() {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         btn_login = findViewById(R.id.btn_login);
+        toolbar = findViewById(R.id.myToolBar);
+    }
 
+    private void setToolBar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Login");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
-
-
+    private void clickLoginButton() {
         //to login with the email & password
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
+
+
+
 }
