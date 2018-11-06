@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -17,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    FirebaseAuth auth;
+
     TextInputEditText email, password;
     Button btn_login;
 
@@ -32,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         btn_login = findViewById(R.id.btn_login);
 
-        auth = FirebaseAuth.getInstance();
+
 
 
         //to login with the email & password
@@ -45,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (txt_email.isEmpty() || txt_password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "All fields required ", Toast.LENGTH_SHORT).show();
                 } else {
-                    auth.signInWithEmailAndPassword(txt_email, txt_password)
+                    MyFireBaseAuth.getAuth().signInWithEmailAndPassword(txt_email, txt_password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private TextInputEditText editTextUserName, editTextEmail, editTextPassword;
     private Button btn_register;
-    private static FirebaseAuth auth;
+
     private static DatabaseReference userReference;
 
     @Override
@@ -37,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.ediText_password);
         btn_register = findViewById(R.id.btn_register);
 
-        auth = FirebaseAuth.getInstance();
+
 
 
         btn_register.setOnClickListener(new View.OnClickListener() {
@@ -63,14 +64,14 @@ public class RegisterActivity extends AppCompatActivity {
     public void register(final String userName, String email, String password) {
 
         //to create a new user with the email and password
-        auth.createUserWithEmailAndPassword(email, password)
+        MyFireBaseAuth.getAuth().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
                             //to get the userID
-                            FirebaseUser user = auth.getCurrentUser();
+                            FirebaseUser user = MyFireBaseAuth.getAuth().getCurrentUser();
                             String userID = user.getUid();
 
                             //make a branch users with childs each one named by its userID;
