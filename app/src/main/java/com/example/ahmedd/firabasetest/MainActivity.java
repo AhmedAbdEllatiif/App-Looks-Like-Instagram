@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
-
         setToolBar();
 
 
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 
     }
 
