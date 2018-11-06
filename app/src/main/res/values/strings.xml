@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FiraBaseTest</string>
+    <string name="create_a_new_account">Create a new Account</string>
 </resources>

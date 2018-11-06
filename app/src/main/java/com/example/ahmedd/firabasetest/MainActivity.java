@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+/*
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference databaseReference = database.getReference("message");
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("DataBaseError", databaseError.getMessage());
 
             }
-        });
+        });*/
 
     }
 }
