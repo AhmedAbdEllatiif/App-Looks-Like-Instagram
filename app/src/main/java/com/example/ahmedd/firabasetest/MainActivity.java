@@ -43,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setToolBar();
+        setupViewPageAdapter();
 
+    }
+
+    private void setupViewPageAdapter() {
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
 
         pageAdapter.AddFragmentPage(new ChatFragment(),getString(R.string.chats));
@@ -51,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     private void initViews() {

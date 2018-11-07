@@ -35,4 +35,12 @@ public class MyFireBaseAuth {
         }
         return reference;
     }
+
+    public static DatabaseReference referenceOnAllUsers(){
+        if (reference == null){
+            reference = FirebaseDatabase.getInstance().getReference("Users");
+
+        }
+        return reference;
+    }
 }
