@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import android.view.ViewGroup;
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
 import com.example.ahmedd.firabasetest.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.User;
-import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -76,9 +75,9 @@ public class UsersFragment extends Fragment {
                     User user = snapshot.getValue(User.class);
 
                     assert user != null;
-                    assert MyFireBaseAuth.getUser() != null;
+                    assert MyFireBase.getCurrentUser() != null;
 
-                    
+
                     if (!user.getId().equals(firebaseUser.getUid())) {
                         userList.add(user);
                     }

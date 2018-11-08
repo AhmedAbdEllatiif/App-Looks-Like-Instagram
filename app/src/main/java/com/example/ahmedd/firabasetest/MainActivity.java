@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -16,7 +15,7 @@ import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
-import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //set user data in the toolBar
-        MyFireBaseAuth.referenceOnUserChild().addValueEventListener(new ValueEventListener() {
+        MyFireBase.referenceOnUserChild().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 

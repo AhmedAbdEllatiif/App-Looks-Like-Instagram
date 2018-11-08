@@ -5,11 +5,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MyFireBaseAuth {
+public class MyFireBase {
 
     private static FirebaseAuth auth;
     private static FirebaseUser firebaseUser;
     private static  DatabaseReference reference;
+    private static  DatabaseReference referenceOnDataBase;
+    private static  FirebaseUser getCurrentUser;
+
 
 
     public static FirebaseAuth getAuth(){
@@ -21,7 +24,7 @@ public class MyFireBaseAuth {
         return auth;
     }
 
-    public static FirebaseUser getUser(){
+    public static FirebaseUser getCurrentUser(){
 
         if (firebaseUser == null){
             firebaseUser = auth.getInstance().getCurrentUser();
@@ -31,7 +34,7 @@ public class MyFireBaseAuth {
 
     public static DatabaseReference referenceOnUserChild(){
         if (reference == null){
-            reference = FirebaseDatabase.getInstance().getReference("Users").child(getUser().getUid());
+            reference = FirebaseDatabase.getInstance().getReference("Users").child(getCurrentUser().getUid());
         }
         return reference;
     }
@@ -42,5 +45,12 @@ public class MyFireBaseAuth {
 
         }
         return reference;
+    }
+    public static DatabaseReference getReferenceOnDataBase(){
+        if (referenceOnDataBase == null){
+            referenceOnDataBase = FirebaseDatabase.getInstance().getReference();
+
+        }
+        return referenceOnDataBase;
     }
 }

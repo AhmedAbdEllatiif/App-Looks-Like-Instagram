@@ -1,23 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.LinearLayoutCompat
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray_messagesBG"
     tools:context=".MessageActivity">
 
     <include
         android:id="@+id/toolBar"
         layout="@layout/toolbar_message_activity" />
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolBar"
+        android:layout_above="@id/layoutSendMessage">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layoutSendMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        >
+
+        <EditText
+            android:id="@+id/editText_messageToSend"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:hint="Type a message..."
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_btn_send"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <ImageButton
+            android:id="@+id/img_btn_send"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/send"
+            />
 
 
-    </android.support.v7.widget.LinearLayoutCompat>
 
 
-</android.support.v7.widget.LinearLayoutCompat>
+    </android.support.constraint.ConstraintLayout>
+
+
+
+
+</RelativeLayout>
