@@ -6,25 +6,25 @@ public class User {
     //lazm ykon nfs el 2sami bzbt
     //3shan my3mlsh null pointer exception
 
+    private String ImageURL;
     private String id;
     private String userName;
-    private String ImageURL;
 
     public User() {}
 
-    public User(String userID, String userName, String imageURL) {
-        this.id = userID;
+    public User(String id, String userName, String ImageURL) {
+        this.id = id;
         this.userName = userName;
-        this.ImageURL = imageURL;
+        this.ImageURL = ImageURL;
     }
 
 
-    public String getUserID() {
+    public String getId() {
         return id;
     }
 
-    public void setUserID(String userID) {
-        this.id = userID;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserName() {

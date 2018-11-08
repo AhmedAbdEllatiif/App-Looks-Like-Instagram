@@ -37,6 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -46,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         setupViewPageAdapter();
 
     }
+
+
+
+
 
     private void setupViewPageAdapter() {
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());

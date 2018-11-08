@@ -1,6 +1,7 @@
 package com.example.ahmedd.firabasetest.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
+import com.example.ahmedd.firabasetest.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBaseAuth;
 import com.example.ahmedd.firabasetest.R;
@@ -49,7 +51,7 @@ public class UsersFragment extends Fragment {
 
         setupRecyclerView();
         readAllUsers();
-
+        myClickListeners();
         return view;
     }
 
@@ -76,17 +78,22 @@ public class UsersFragment extends Fragment {
                     assert user != null;
                     assert MyFireBaseAuth.getUser() != null;
 
-                    userList.add(user);
-                    Log.e("id", firebaseUser.getUid());
-
-                    //hatsht8l lma ykon feh users tani
-                    /*if (!user.getUserID().equals(firebaseUser.getUid())){
+                    
+                    if (!user.getId().equals(firebaseUser.getUid())) {
                         userList.add(user);
-                    }*/
+                    }
                 }
 
                 adapter = new UsersAdapter(getContext(), userList);
                 recyclerView.setAdapter(adapter);
+                adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
+                    @Override
+                    public void onClick(int position, User userItem) {
+                        Intent intent = new Intent(getActivity(), MessageActivity.class);
+                        intent.putExtra("userID", userItem.getId());
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -94,6 +101,11 @@ public class UsersFragment extends Fragment {
 
             }
         });
+    }
+
+    private void myClickListeners() {
+
+
     }
 
 }

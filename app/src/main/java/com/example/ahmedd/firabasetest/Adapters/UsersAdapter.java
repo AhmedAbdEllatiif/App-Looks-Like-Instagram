@@ -2,6 +2,7 @@ package com.example.ahmedd.firabasetest.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     private Context context;
     private List<User> userList;
+    private MyOnclickListener onCardClickListener;
 
     public UsersAdapter(Context context, List<User> userList) {
         this.context = context;
         this.userList = userList;
+    }
+
+    public void setOnCardClickListener(MyOnclickListener onCardClickListener) {
+        this.onCardClickListener = onCardClickListener;
     }
 
     @NonNull
@@ -36,9 +42,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        User userItem = userList.get(position);
+        final User userItem = userList.get(position);
 
         holder.userName.setText(userItem.getUserName());
         if (userItem.getImageURL().equals("default")) {
@@ -46,6 +52,17 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         } else {
             Picasso.get().load(userItem.getImageURL()).into(holder.profile_pic);
         }
+
+        if(onCardClickListener != null){
+            holder.userCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onCardClickListener.onClick(position,userItem);
+                }
+            });
+        }
+
+
     }
 
     @Override
@@ -57,13 +74,20 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         TextView userName;
         ImageView profile_pic;
+        CardView userCardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             userName = itemView.findViewById(R.id.userName_AtCardView);
             profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView);
+            userCardView = itemView.findViewById(R.id.cardView_user);
 
         }
     }
+
+    public interface MyOnclickListener{
+        void onClick(int position, User userItem);
+    }
+
 }
