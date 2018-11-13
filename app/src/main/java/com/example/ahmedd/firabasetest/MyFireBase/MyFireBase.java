@@ -29,7 +29,7 @@ public class MyFireBase {
 
     public static FirebaseUser getCurrentUser() {
 
-        return getCurrentUser = auth.getInstance().getCurrentUser();
+        return getCurrentUser = getAuth().getInstance().getCurrentUser();
     }
 
     private static FirebaseDatabase getGetFirebaseDatabase() {

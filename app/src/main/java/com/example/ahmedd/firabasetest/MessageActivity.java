@@ -18,8 +18,6 @@ import com.example.ahmedd.firabasetest.Adapters.MessagesAdapter;
 import com.example.ahmedd.firabasetest.Model.Chats;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessageActivity extends AppCompatActivity {
 
     private DatabaseReference reference;
-    private String clickedUserID;
+    private String userToChatWith;
     private Intent intent;
 
     private CircleImageView profile_pic;
@@ -72,8 +70,8 @@ public class MessageActivity extends AppCompatActivity {
 
         intent = getIntent();
         Log.e("userId",intent.getStringExtra("userID"));
-        clickedUserID = intent.getStringExtra("userID");
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(clickedUserID);
+        userToChatWith = intent.getStringExtra("userID");
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(userToChatWith);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -87,7 +85,7 @@ public class MessageActivity extends AppCompatActivity {
                     Picasso.get().load(user.getImageURL()).into(profile_pic);
                 }
                 String myID = MyFireBase.getCurrentUser().getUid();
-                readMessages(myID,clickedUserID,user.getImageURL());
+                readMessages(myID, userToChatWith,user.getImageURL());
             }
 
             @Override
@@ -109,7 +107,7 @@ public class MessageActivity extends AppCompatActivity {
                 String message = editText_messageToSend.getText().toString();
 
                 if (!message.equals("")){
-                    sendMessage(MyFireBase.getCurrentUser().getUid(),clickedUserID,message);
+                    sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith,message);
                 }else {
                     Toast.makeText(MessageActivity.this, R.string.enter_message, Toast.LENGTH_SHORT).show();
                 }
@@ -154,14 +152,14 @@ public class MessageActivity extends AppCompatActivity {
 
         final DatabaseReference referenceChatList = FirebaseDatabase.getInstance().getReference("ChatList")
                 .child(MyFireBase.getCurrentUser().getUid())
-                .child(clickedUserID);
+                .child(userToChatWith);
 
 
         referenceChatList.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()){
-                    referenceChatList.child("id").setValue(clickedUserID);
+                    referenceChatList.child("id").setValue(userToChatWith);
                 }
             }
 
