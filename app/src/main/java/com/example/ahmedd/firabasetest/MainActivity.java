@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        setToolBar();
 
     }
 
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //set user data in the toolBar
-        MyFireBase.referenceOnUserChild().addValueEventListener(new ValueEventListener() {
+        MyFireBase.getReferenceOnCurrentUser().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -108,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 
 
     @Override

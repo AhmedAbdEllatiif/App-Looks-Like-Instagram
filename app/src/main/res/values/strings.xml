@@ -7,4 +7,7 @@
     <string name="chats">Chats</string>
     <string name="users">Users</string>
     <string name="enter_message">please enter a message to send</string>
+    <string name="hello">Hello</string>
+    <string name="type_a_message">Type a message...</string>
+    <string name="branch_chatList">ChatList</string>
 </resources>

@@ -8,49 +8,63 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MyFireBase {
 
     private static FirebaseAuth auth;
-    private static FirebaseUser firebaseUser;
-    private static  DatabaseReference reference;
-    private static  DatabaseReference referenceOnDataBase;
-    private static  FirebaseUser getCurrentUser;
+    private static DatabaseReference referenceOnAllUsers;
+    private static DatabaseReference referenceOnCurrentUser;
+    private static DatabaseReference referenceOnDataBase;
+    private static DatabaseReference referenceOnChats;
+    private static DatabaseReference referenceOnChatList;
+    private static FirebaseUser getCurrentUser;
+    private static FirebaseDatabase FirebaseDatabase;
 
 
 
-    public static FirebaseAuth getAuth(){
+    public static FirebaseAuth getAuth() {
 
-        if(auth == null) {
+        if (auth == null) {
             auth = FirebaseAuth.getInstance();
         }
 
         return auth;
     }
 
-    public static FirebaseUser getCurrentUser(){
+    public static FirebaseUser getCurrentUser() {
 
-        if (firebaseUser == null){
-            firebaseUser = auth.getInstance().getCurrentUser();
-        }
-        return firebaseUser;
+        return getCurrentUser = auth.getInstance().getCurrentUser();
     }
 
-    public static DatabaseReference referenceOnUserChild(){
-        if (reference == null){
-            reference = FirebaseDatabase.getInstance().getReference("Users").child(getCurrentUser().getUid());
+    private static FirebaseDatabase getGetFirebaseDatabase() {
+
+        if (FirebaseDatabase == null){
+
+            FirebaseDatabase = FirebaseDatabase.getInstance();
         }
-        return reference;
+
+        return FirebaseDatabase;
     }
 
-    public static DatabaseReference referenceOnAllUsers(){
-        if (reference == null){
-            reference = FirebaseDatabase.getInstance().getReference("Users");
+    public static DatabaseReference referenceOnAllUsers() {
 
-        }
-        return reference;
+            return referenceOnAllUsers = getGetFirebaseDatabase().getReference("Users");
     }
-    public static DatabaseReference getReferenceOnDataBase(){
-        if (referenceOnDataBase == null){
-            referenceOnDataBase = FirebaseDatabase.getInstance().getReference();
 
-        }
-        return referenceOnDataBase;
+    public static DatabaseReference getReferenceOnCurrentUser() {
+
+        return referenceOnCurrentUser = getGetFirebaseDatabase().getReference("Users").child(getCurrentUser().getUid());
+    }
+
+    public static DatabaseReference referenceOnChats() {
+
+        return referenceOnChats = getGetFirebaseDatabase().getReference("Chats");
+    }
+
+    public static DatabaseReference getReferenceOnChatList() {
+
+        return referenceOnChatList = getGetFirebaseDatabase().getReference("ChatList");
+    }
+
+    public static DatabaseReference getReferenceOnDataBase() {
+
+        return referenceOnDataBase= getGetFirebaseDatabase().getReference();
+
     }
 }

@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String txt_email = email.getText().toString();
                 String txt_password = password.getText().toString();
-
+                Log.e("login","clicked");
                 if (txt_email.isEmpty() || txt_password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "All fields required ", Toast.LENGTH_SHORT).show();
                 } else {
@@ -69,10 +69,12 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
+                                        Log.e("login","clicked");
                                         finish();
                                     }
                                     else {
                                         Toast.makeText(LoginActivity.this, "Auth failed...!", Toast.LENGTH_SHORT).show();
+                                        Log.e("login","clicked But failed");
                                     }
 
                                 }
