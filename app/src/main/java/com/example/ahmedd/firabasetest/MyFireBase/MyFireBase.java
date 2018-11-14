@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class MyFireBase {
 
@@ -14,6 +16,8 @@ public class MyFireBase {
     private static DatabaseReference referenceOnChats;
     private static DatabaseReference referenceOnChatList;
     private static FirebaseUser getCurrentUser;
+    private static StorageReference storageReferenceOnUploads;
+    private static FirebaseStorage firebaseStorage;
     private static FirebaseDatabase FirebaseDatabase;
 
 
@@ -26,7 +30,22 @@ public class MyFireBase {
 
         return auth;
     }
+    public static FirebaseStorage getFirebaseStorage() {
 
+        if (firebaseStorage == null) {
+            firebaseStorage = FirebaseStorage.getInstance();
+        }
+
+        return firebaseStorage;
+    }
+    public static StorageReference getStorageReferenceOnUploads() {
+
+        if (storageReferenceOnUploads == null) {
+            storageReferenceOnUploads = getFirebaseStorage().getReference("Uploads");
+        }
+
+        return storageReferenceOnUploads;
+    }
     public static FirebaseUser getCurrentUser() {
 
         return getCurrentUser = getAuth().getInstance().getCurrentUser();

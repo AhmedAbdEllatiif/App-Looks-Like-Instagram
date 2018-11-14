@@ -38,12 +38,12 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends BaseFragment {
 
+    public static final int IMAGE_REQUEST = 1;
+
     private View view;
     private TextView userName;
     private ImageView img_profile;
 
-    private StorageReference firebaseStorage;
-    public static final int IMAGE_REQUEST = 1;
     private StorageTask uploadTask;
     private Uri image_uri;
 
@@ -58,9 +58,6 @@ public class ProfileFragment extends BaseFragment {
 
         userName = view.findViewById(R.id.txt_userName_fragmentProfile);
         img_profile = view.findViewById(R.id.img_profile_frahmentProfile);
-
-        firebaseStorage = FirebaseStorage.getInstance().getReference("Uploads");
-
 
         setProfileData();
 
@@ -117,10 +114,10 @@ public class ProfileFragment extends BaseFragment {
         Log.e("UploadImage","begin the method");
 
         if (image_uri!=null){
-            final StorageReference fileReference = firebaseStorage.child(System.currentTimeMillis() +
+            MyFireBase.getStorageReferenceOnUploads().child(System.currentTimeMillis() +
                     "." + getFileExtension(image_uri));
 
-            uploadTask = fileReference.putFile(image_uri);
+            uploadTask =  MyFireBase.getStorageReferenceOnUploads().putFile(image_uri);
                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
                        @Override
                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -130,7 +127,7 @@ public class ProfileFragment extends BaseFragment {
                                throw task.getException();
 
                            }
-                           return fileReference.getDownloadUrl();
+                           return  MyFireBase.getStorageReferenceOnUploads().getDownloadUrl();
                        }
                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                        @Override
