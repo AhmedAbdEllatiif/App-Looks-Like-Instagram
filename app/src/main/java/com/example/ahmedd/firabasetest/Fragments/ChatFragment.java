@@ -1,6 +1,7 @@
 package com.example.ahmedd.firabasetest.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
+import com.example.ahmedd.firabasetest.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.ChatList;
 import com.example.ahmedd.firabasetest.Model.Chats;
 import com.example.ahmedd.firabasetest.Model.User;
@@ -98,6 +100,14 @@ public class ChatFragment extends Fragment {
 
                 adapter =  new UsersAdapter(getContext(),usersList);
                 recyclerView.setAdapter(adapter);
+                adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
+                    @Override
+                    public void onClick(int position, User userItem) {
+                        Intent intent = new Intent(getActivity(), MessageActivity.class);
+                        intent.putExtra("userID", userItem.getId());
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
