@@ -12,4 +12,5 @@
     <string name="branch_chatList">ChatList</string>
     <string name="profile">Profile</string>
     <string name="user_name">User Name</string>
+    <string name="login">Login</string>
 </resources>

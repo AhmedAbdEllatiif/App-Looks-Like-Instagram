@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
+import com.example.ahmedd.firabasetest.BaseActivities.BaseActivity;
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
@@ -28,7 +29,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private CircleImageView profile_img;
     private TextView userName;

@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@color/colorPrimaryDark"
-            android:text="Lgoin"
+            android:text="@string/login"
             android:textColor="@color/white" />
 
     </android.support.v7.widget.LinearLayoutCompat>
