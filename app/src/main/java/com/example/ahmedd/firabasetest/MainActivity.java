@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
+import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         pageAdapter.AddFragmentPage(new ChatFragment(),getString(R.string.chats));
         pageAdapter.AddFragmentPage(new UsersFragment(),getString(R.string.users));
+        pageAdapter.AddFragmentPage(new ProfileFragment(),getString(R.string.profile));
 
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
