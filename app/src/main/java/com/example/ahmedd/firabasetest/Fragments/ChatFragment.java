@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +14,12 @@ import android.view.ViewGroup;
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
 import com.example.ahmedd.firabasetest.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.ChatList;
-import com.example.ahmedd.firabasetest.Model.Chats;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -85,7 +81,7 @@ public class ChatFragment extends Fragment {
 
     private void fillTheChatList() {
         usersList = new ArrayList<>();
-        MyFireBase.referenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
@@ -98,7 +94,7 @@ public class ChatFragment extends Fragment {
                     }
                 }
 
-                adapter =  new UsersAdapter(getContext(),usersList);
+                adapter =  new UsersAdapter(getContext(),usersList,true);
                 recyclerView.setAdapter(adapter);
                 adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
                     @Override

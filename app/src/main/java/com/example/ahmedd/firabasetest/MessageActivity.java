@@ -128,7 +128,8 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               startActivity(new Intent(MessageActivity.this,MainActivity.class)
+                       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
@@ -206,4 +207,23 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    private void getUserStatus(String status){
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUserStatus(getString(R.string.online));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getUserStatus(getString(R.string.offline));
+    }
 }

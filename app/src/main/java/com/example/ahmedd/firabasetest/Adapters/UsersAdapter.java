@@ -21,10 +21,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     private Context context;
     private List<User> userList;
     private MyOnclickListener onCardClickListener;
+    private Boolean isOnline;
 
-    public UsersAdapter(Context context, List<User> userList) {
+    public UsersAdapter(Context context, List<User> userList,Boolean isOnline) {
         this.context = context;
         this.userList = userList;
+        this.isOnline = isOnline;
     }
 
     public void setOnCardClickListener(MyOnclickListener onCardClickListener) {
@@ -53,6 +55,20 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             Picasso.get().load(userItem.getImageURL()).into(holder.profile_pic);
         }
 
+        if (isOnline){
+            if (userItem.getStatus().equals("Online")){
+            holder.status_online.setVisibility(View.VISIBLE);
+            holder.status_offline.setVisibility(View.GONE);
+            }else if(userItem.getStatus().equals("Offline")){
+                holder.status_online.setVisibility(View.GONE);
+                holder.status_offline.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.status_online.setVisibility(View.GONE);
+                holder.status_offline.setVisibility(View.GONE);
+            }
+        }
+
         if(onCardClickListener != null){
             holder.userCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -73,15 +89,19 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView userName;
-        ImageView profile_pic;
         CardView userCardView;
+        ImageView profile_pic;
+        ImageView status_online;
+        ImageView status_offline;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             userName = itemView.findViewById(R.id.userName_AtCardView);
-            profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView);
             userCardView = itemView.findViewById(R.id.cardView_user);
+            profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView);
+            status_online = itemView.findViewById(R.id.img_statusOnline);
+            status_offline = itemView.findViewById(R.id.img_statusOffline);
 
         }
     }

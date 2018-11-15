@@ -83,7 +83,7 @@ public class UsersFragment extends Fragment {
                     }
                 }
 
-                adapter = new UsersAdapter(getContext(), userList);
+                adapter = new UsersAdapter(getContext(), userList,false);
                 recyclerView.setAdapter(adapter);
                 adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
                     @Override

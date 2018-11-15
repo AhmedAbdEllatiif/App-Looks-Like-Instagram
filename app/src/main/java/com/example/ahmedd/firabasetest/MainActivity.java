@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity {
@@ -113,7 +115,13 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private void getUserStatus(String status){
 
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
+    }
 
 
     @Override
@@ -130,11 +138,24 @@ public class MainActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class));
-                finish();
+                startActivity(new Intent(MainActivity.this, StartActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
         }
 
         return false;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUserStatus(getString(R.string.online));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getUserStatus(getString(R.string.offline));
     }
 }

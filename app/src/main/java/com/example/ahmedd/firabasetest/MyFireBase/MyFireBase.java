@@ -61,7 +61,7 @@ public class MyFireBase {
         return FirebaseDatabase;
     }
 
-    public static DatabaseReference referenceOnAllUsers() {
+    public static DatabaseReference getReferenceOnAllUsers() {
 
             return referenceOnAllUsers = getGetFirebaseDatabase().getReference("Users");
     }

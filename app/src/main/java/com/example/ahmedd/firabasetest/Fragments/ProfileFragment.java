@@ -26,15 +26,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
-
-import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends BaseFragment {
 
@@ -66,7 +62,7 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void setProfileData() {
-        MyFireBase.referenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -139,7 +135,7 @@ public class ProfileFragment extends BaseFragment {
 
                                 HashMap<String,Object> hashMap = new HashMap<>();
                                 hashMap.put("ImageURL",myUri);
-                                MyFireBase.referenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .updateChildren(hashMap);
                                 hideProgressBar();
                             }else {

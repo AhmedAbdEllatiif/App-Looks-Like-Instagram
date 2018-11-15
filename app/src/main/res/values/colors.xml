@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffff</color>
     <color name="gray_messagesBG">#e6e6e6</color>
+    <color name="status_color">#05df29</color>
+    <color name="status_offline">#9ad6d0d0</color>
 </resources>
