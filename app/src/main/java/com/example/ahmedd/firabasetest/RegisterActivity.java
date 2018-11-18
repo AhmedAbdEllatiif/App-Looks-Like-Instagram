@@ -1,11 +1,13 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +40,10 @@ public class RegisterActivity extends AppCompatActivity {
         setToolBar();
         registerButtonListener();
 
+
+        //!userName.isEmpty()
+
+
     }
 
     private void setToolBar() {
@@ -46,19 +52,50 @@ public class RegisterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void checkIfUserNameStartsWithCapitalLetter() {
+        editTextUserName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e("edit Text", "afterChanged");
+                if (editTextUserName.getText().toString().length() > 0) {
+
+                    boolean isUpperCase = Character.isUpperCase(editTextUserName.getText().toString().charAt(0));
+                    if (!isUpperCase) {
+                        editTextUserName.setError("First letter must be uppercase");
+                    }
+                } else if (editTextUserName.getText().toString().length() == 0) {
+                    editTextUserName.requestFocus();
+                }
+
+            }
+        });
+    }
 
     private void registerButtonListener() {
+
+        checkIfUserNameStartsWithCapitalLetter();
+
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userName = editTextUserName.getText().toString();
-                String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
+                String userName = editTextUserName.getText().toString().trim();
+                String email = editTextEmail.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
 
-                if (userName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "All fields required ", Toast.LENGTH_SHORT).show();
-                } else if (password.length() < 6) {
-                    Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+                if (userName.isEmpty()) {
+                    editTextUserName.setError("Enter user name");
+                } else if (email.isEmpty()) {
+                    editTextEmail.setError(getString(R.string.enter_mail));
+                } else if (password.isEmpty() || password.length() < 6) {
+                    editTextPassword.setError("Enter password at least 6 characters");
                 } else {
                     Log.e("Button", "Clicked");
                     register(userName, email, password);

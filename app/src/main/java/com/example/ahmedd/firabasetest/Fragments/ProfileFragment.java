@@ -57,8 +57,19 @@ public class ProfileFragment extends BaseFragment {
 
         setProfileData();
 
-
+        changeUserName();
         return view;
+    }
+
+    private void changeUserName(){
+        userName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(activity, "Hey", Toast.LENGTH_SHORT).show();
+                EditUserNameDialogFragment dialogFragment = new EditUserNameDialogFragment();
+                dialogFragment.show(getChildFragmentManager(),"Dialog Fragment");
+            }
+        });
     }
 
     private void setProfileData() {

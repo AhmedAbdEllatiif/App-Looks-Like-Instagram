@@ -73,7 +73,6 @@ public class UsersFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable st) {
-               String string = st.toString();
                if (editText_searchUsers.getText().toString().length()>0 && !editText_searchUsers.getText().toString().isEmpty()){
 
                 boolean isUpperCase = Character.isUpperCase(editText_searchUsers.getText().toString().charAt(0));

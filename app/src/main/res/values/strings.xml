@@ -16,4 +16,5 @@
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="search">Search...</string>
+    <string name="enter_mail">Enter your email</string>
 </resources>
