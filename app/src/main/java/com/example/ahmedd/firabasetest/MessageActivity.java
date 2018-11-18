@@ -2,6 +2,7 @@ package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,11 +41,13 @@ public class MessageActivity extends AppCompatActivity {
     private CircleImageView profile_pic;
     private TextView userName;
     private ImageButton imageButton_send;
-    private EditText editText_messageToSend;
+    private TextInputEditText editText_messageToSend;
 
     private RecyclerView recyclerView;
     private List<Chats> chatsList;
     private MessagesAdapter adapter;
+
+    private ValueEventListener seenListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,7 @@ public class MessageActivity extends AppCompatActivity {
         });
 
         Button_send_listener();
+        seenMessage(userToChatWith);
 
 
     }
@@ -104,12 +108,13 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String message = editText_messageToSend.getText().toString();
+                String message = editText_messageToSend.getText().toString().trim();
 
-                if (!message.equals("")){
+                if (!message.isEmpty()){
                     sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith,message);
                 }else {
-                    Toast.makeText(MessageActivity.this, R.string.enter_message, Toast.LENGTH_SHORT).show();
+                    editText_messageToSend.setError(getString(R.string.enter_message));
+                    editText_messageToSend.requestFocus();
                 }
                 editText_messageToSend.setText("");
                 editText_messageToSend.requestFocus();
@@ -155,7 +160,6 @@ public class MessageActivity extends AppCompatActivity {
                 .child(MyFireBase.getCurrentUser().getUid())
                 .child(userToChatWith);
 
-
         referenceChatList.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -178,7 +182,7 @@ public class MessageActivity extends AppCompatActivity {
     private void readMessages(final String myID, final String userID, final String imageURl){
 
         chatsList = new ArrayList<>();
-        DatabaseReference reference = MyFireBase.referenceOnChats();
+        DatabaseReference reference = MyFireBase.getReferenceOnChats();
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -208,11 +212,40 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void getUserStatus(String status){
-
+        /*To get user status we update the child status on tha activity lifecycle
+         *when activity onResume() make status online
+         * when activity onPause() make status offline
+         */
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
 
         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
+    }
+
+
+    private void seenMessage(final String userToChatWithID){
+
+        seenListener = MyFireBase.getReferenceOnChats().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Chats chatItem = snapshot.getValue(Chats.class);
+                    if (chatItem.getReceiver().equals(MyFireBase.getCurrentUser().getUid()) && chatItem.getSender().equals(userToChatWithID)){
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("isSeen",true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override
@@ -224,6 +257,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        MyFireBase.getReferenceOnChats().removeEventListener(seenListener);
         getUserStatus(getString(R.string.offline));
     }
 }

@@ -71,7 +71,7 @@ public class MyFireBase {
         return referenceOnCurrentUser = getGetFirebaseDatabase().getReference("Users").child(getCurrentUser().getUid());
     }
 
-    public static DatabaseReference referenceOnChats() {
+    public static DatabaseReference getReferenceOnChats() {
 
         return referenceOnChats = getGetFirebaseDatabase().getReference("Chats");
     }

@@ -117,6 +117,10 @@ public class MainActivity extends BaseActivity {
 
     private void getUserStatus(String status){
 
+        /*To get user status we update the child status on tha activity lifecycle
+        *when activity onResume() make status online
+        * when activity onPause() make status offline
+        */
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
 

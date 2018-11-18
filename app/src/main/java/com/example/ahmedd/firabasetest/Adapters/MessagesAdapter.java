@@ -1,5 +1,6 @@
 package com.example.ahmedd.firabasetest.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,17 +61,35 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     }
 
+        @SuppressLint("ResourceAsColor")
         @Override
         public void onBindViewHolder (@NonNull ViewHolder holder,final int position){
 
         Chats chatsItem = chatsList.get(position);
 
-        holder.message.setText(chatsItem.getMessage());
+
+
+        holder.message.setText(chatsItem.getMessage().toString().trim());
+
+
+
 
         if (ImgURl.equals("default")){
             holder.profile_pic.setImageResource(R.mipmap.ic_launcher);
         }else {
             Picasso.get().load(ImgURl).into(holder.profile_pic);
+        }
+
+        if (position == (chatsList.size()-1)){
+           if (chatsItem.getIsSeen()){
+               holder.txt_seen.setText("Seen");
+               holder.txt_seen.setTextColor(R.color.seen_color);
+           }else {
+               holder.txt_seen.setText("Deliverd");
+           }
+
+        }else {
+            holder.txt_seen.setVisibility(View.GONE);
         }
 
     }
@@ -83,12 +103,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         public class ViewHolder extends RecyclerView.ViewHolder {
 
             TextView message;
+            TextView txt_seen;
             ImageView profile_pic;
+
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 message = itemView.findViewById(R.id.txt_chat);
+                txt_seen = itemView.findViewById(R.id.txt_seen);
                 profile_pic = itemView.findViewById(R.id.img_chat);
 
             }
