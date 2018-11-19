@@ -57,8 +57,16 @@ public class UsersFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_users, container, false);
 
         editText_searchUsers = view.findViewById(R.id.editText_searchUsers);
-       // editText_searchUsers.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        //editText_searchUsers.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        searchByCapitalLetter();
+
+        setupRecyclerView();
+        readAllUsers();
+        myClickListeners();
+        return view;
+    }
+
+    private void searchByCapitalLetter() {
+        /*FireBase is case sensitive so all users names must start with capital letter */
         editText_searchUsers.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -86,11 +94,6 @@ public class UsersFragment extends Fragment {
 
             }
         });
-
-        setupRecyclerView();
-        readAllUsers();
-        myClickListeners();
-        return view;
     }
 
     private void searchUsers(String s) {
@@ -133,10 +136,7 @@ public class UsersFragment extends Fragment {
 
 
     private void readAllUsers() {
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-
-        reference.addValueEventListener(new ValueEventListener() {
+        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (editText_searchUsers.getText().toString().isEmpty()){
@@ -150,7 +150,7 @@ public class UsersFragment extends Fragment {
                     assert MyFireBase.getCurrentUser() != null;
 
 
-                    if (!user.getId().equals(firebaseUser.getUid())) {
+                    if (!user.getId().equals(MyFireBase.getCurrentUser().getUid())) {
                         userList.add(user);
                     }
                 }
@@ -180,4 +180,13 @@ public class UsersFragment extends Fragment {
 
     }
 
+    /*                  ---***How it works***----
+
+     * retrieving all users in a recyclerView
+     * all users have the current user too
+     * so check for the current user and make a list of other users
+     * if (!user.getId().equals(MyFireBase.getCurrentUser().getUid()))
+     * If you want to search for a user type the username in the search bar
+     * when you search we make a Query to search in the branch users
+     * */
 }

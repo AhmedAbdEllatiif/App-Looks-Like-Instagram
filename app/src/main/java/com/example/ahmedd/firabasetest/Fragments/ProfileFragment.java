@@ -55,6 +55,7 @@ public class ProfileFragment extends BaseFragment {
         userName = view.findViewById(R.id.txt_userName_fragmentProfile);
         img_profile = view.findViewById(R.id.img_profile_frahmentProfile);
 
+
         setProfileData();
 
         changeUserName();
@@ -65,7 +66,6 @@ public class ProfileFragment extends BaseFragment {
         userName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, "Hey", Toast.LENGTH_SHORT).show();
                 EditUserNameDialogFragment dialogFragment = new EditUserNameDialogFragment();
                 dialogFragment.show(getChildFragmentManager(),"Dialog Fragment");
             }

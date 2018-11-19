@@ -1,12 +1,12 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -18,12 +18,12 @@ import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-
-
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity {
     private TextView userName;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private String currentUserID;
 
 
     @Override
@@ -54,8 +55,10 @@ public class MainActivity extends BaseActivity {
 
         initViews();
         setToolBar();
+        setCurrentUserInfo();
         setupViewPageAdapter();
 
+        currentUserID = MyFireBase.getCurrentUser().getUid();
     }
 
 
@@ -121,10 +124,11 @@ public class MainActivity extends BaseActivity {
         *when activity onResume() make status online
         * when activity onPause() make status offline
         */
-        HashMap<String,Object> hashMap = new HashMap<>();
+        final HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
 
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
+        MyFireBase.getReferenceOnAllUsers().child(currentUserID).updateChildren(hashMap);
+
     }
 
 
@@ -162,4 +166,48 @@ public class MainActivity extends BaseActivity {
         super.onPause();
         getUserStatus(getString(R.string.offline));
     }
+
+    private void setCurrentUserInfo(){
+        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User user = snapshot.getValue(User.class);
+                    if (user.getId().equals(MyFireBase.getCurrentUser().getUid())){
+
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(user.getUserName())
+                                .build();
+
+                        MyFireBase.getCurrentUser().updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.e("CurrentUserInfoUpdate", "done");
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+
+    /*                  ---***How it works***----
+
+     * MainActivity consists of ToolBar & PageAdapter on fragments(Chat,users,profile)
+     * ToolBar have userName , profile img & a menu with one item Logout to signout of the Firebase.
+     * we get the user status online/offline in this activity in its lifecycle
+     * setup the viewpager with the fragments
+     * setCurrentUserInfo() this method get the info of the user for database and put it into FireBaseAuth.getInstance().getCurrentUser;
+     *  */
+
 }
