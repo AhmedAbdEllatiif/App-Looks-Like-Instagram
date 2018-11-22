@@ -260,4 +260,10 @@ public class MessageActivity extends AppCompatActivity {
         MyFireBase.getReferenceOnChats().removeEventListener(seenListener);
         getUserStatus(getString(R.string.offline));
     }
+
+
+    /*                  ---***How it works***----
+
+     * */
+
 }

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText email, password;
     private Button btn_login;
     private Toolbar toolbar;
+    private TextView txt_forgetPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private void initViews() {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
+        txt_forgetPassword = findViewById(R.id.txt_forgetPassword);
         btn_login = findViewById(R.id.btn_login);
         toolbar = findViewById(R.id.myToolBar);
     }
@@ -82,6 +85,15 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        txt_forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,ResetPasswordActivity.class));
+            }
+        });
+
     }
 
 

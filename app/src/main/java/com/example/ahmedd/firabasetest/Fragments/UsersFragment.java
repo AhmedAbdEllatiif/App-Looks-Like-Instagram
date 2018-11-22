@@ -32,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 /**
@@ -44,6 +45,8 @@ public class UsersFragment extends Fragment {
     private UsersAdapter adapter;
     private List<User> userList;
     private EditText editText_searchUsers;
+    private String currentUserID;
+    private ValueEventListener readAllUsersListener;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -58,6 +61,8 @@ public class UsersFragment extends Fragment {
 
         editText_searchUsers = view.findViewById(R.id.editText_searchUsers);
         searchByCapitalLetter();
+
+        currentUserID =  MyFireBase.getCurrentUser().getUid();
 
         setupRecyclerView();
         readAllUsers();
@@ -136,7 +141,7 @@ public class UsersFragment extends Fragment {
 
 
     private void readAllUsers() {
-        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+        readAllUsersListener = MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (editText_searchUsers.getText().toString().isEmpty()){
@@ -175,7 +180,14 @@ public class UsersFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        MyFireBase.getReferenceOnAllUsers().removeEventListener(readAllUsersListener);
+    }
+
     private void myClickListeners() {
+
 
 
     }
@@ -188,5 +200,6 @@ public class UsersFragment extends Fragment {
      * if (!user.getId().equals(MyFireBase.getCurrentUser().getUid()))
      * If you want to search for a user type the username in the search bar
      * when you search we make a Query to search in the branch users
+     * must remove the listener on the users when the avtivity onPause() to avoid null pointer when you logout from the account
      * */
 }

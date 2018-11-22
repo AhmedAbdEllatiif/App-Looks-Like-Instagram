@@ -15,7 +15,7 @@ public class MyFireBase {
     private static DatabaseReference referenceOnDataBase;
     private static DatabaseReference referenceOnChats;
     private static DatabaseReference referenceOnChatList;
-    private static FirebaseUser getCurrentUser;
+    private static FirebaseUser currentUser;
     private static StorageReference storageReferenceOnUploads;
     private static FirebaseStorage firebaseStorage;
     private static FirebaseDatabase FirebaseDatabase;
@@ -48,7 +48,10 @@ public class MyFireBase {
     }
     public static FirebaseUser getCurrentUser() {
 
-        return getCurrentUser = getAuth().getInstance().getCurrentUser();
+        if (currentUser == null){
+            currentUser = getAuth().getInstance().getCurrentUser();
+        }
+        return currentUser;
     }
 
     private static FirebaseDatabase getGetFirebaseDatabase() {
@@ -85,5 +88,9 @@ public class MyFireBase {
 
         return referenceOnDataBase= getGetFirebaseDatabase().getReference();
 
+    }
+
+    public static String getCurrentUserID(){
+       return getCurrentUser().getUid();
     }
 }

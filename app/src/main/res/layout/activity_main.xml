@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/main_acrivity_ToolBar"
-        layout="@layout/user_toolbar" />
+        layout="@layout/toolbar_main_activity" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"

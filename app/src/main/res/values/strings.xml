@@ -17,4 +17,6 @@
     <string name="offline">Offline</string>
     <string name="search">Search...</string>
     <string name="enter_mail">Enter your email</string>
+    <string name="disc_reset_password">If you press reset you will receive an email to reset your password</string>
+    <string name="title_reset_password">Reset Password</string>
 </resources>

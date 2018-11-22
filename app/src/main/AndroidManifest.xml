@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ahmedd.firabasetest">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,16 +29,20 @@
             android:name=".LoginActivity"
             android:parentActivityName=".StartActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".MessageActivity"></activity>
+        <activity android:name=".MessageActivity" />
 
-
-        <receiver android:name=".Receivers.WIFIBroadCastReceiver" android:enabled="true">
+        <receiver
+            android:name=".Receivers.WIFIBroadCastReceiver"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
+        <activity android:name=".ResetPasswordActivity"
+            android:parentActivityName=".LoginActivity"
+            ></activity>
     </application>
 
 </manifest>

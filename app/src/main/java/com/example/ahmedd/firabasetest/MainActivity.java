@@ -1,6 +1,7 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -18,9 +19,11 @@ import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,14 +41,13 @@ public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private String currentUserID;
+    private FirebaseUser firebaseCurrentUser;
 
 
     @Override
     protected void onStart() {
         super.onStart();
-
         setToolBar();
-
     }
 
     @Override
@@ -55,10 +57,11 @@ public class MainActivity extends BaseActivity {
 
         initViews();
         setToolBar();
-        setCurrentUserInfo();
+        //setCurrentUserInfo();
         setupViewPageAdapter();
 
-        currentUserID = MyFireBase.getCurrentUser().getUid();
+        currentUserID = MyFireBase.getCurrentUserID();
+        firebaseCurrentUser = MyFireBase.getCurrentUser();
     }
 
 
@@ -91,7 +94,7 @@ public class MainActivity extends BaseActivity {
 
 
         //set user data in the toolBar
-        MyFireBase.getReferenceOnCurrentUser().addValueEventListener(new ValueEventListener() {
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUserID()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -145,9 +148,20 @@ public class MainActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
+               MyFireBase.getAuth().signOut();
                 startActivity(new Intent(MainActivity.this, StartActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+              /*  AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+
+                                startActivity(new Intent(MainActivity.this, StartActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            }
+                        });*/
+               
                 return true;
         }
 
@@ -173,10 +187,11 @@ public class MainActivity extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-                    if (user.getId().equals(MyFireBase.getCurrentUser().getUid())){
+                    if (user.getId().equals(currentUserID)){
 
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(user.getUserName())
+                                .setPhotoUri(Uri.parse(user.getImageURL()))
                                 .build();
 
                         MyFireBase.getCurrentUser().updateProfile(profileUpdates)

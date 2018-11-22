@@ -10,8 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ahmedd.firabasetest.Model.Chats;
 import com.example.ahmedd.firabasetest.Model.User;
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,6 +27,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     private List<User> userList;
     private MyOnclickListener onCardClickListener;
     private Boolean isOnline;
+    private String theLastMessage;
 
     public UsersAdapter(Context context, List<User> userList,Boolean isOnline) {
         this.context = context;
@@ -54,6 +60,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         } else {
             Picasso.get().load(userItem.getImageURL()).into(holder.profile_pic);
         }
+
+
+        getLastMessage(userItem.getId(),holder.lastMessage);
+
 
         if (isOnline){
             if (userItem.getStatus().equals("Online")){
@@ -89,15 +99,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView userName;
+        TextView lastMessage;
         CardView userCardView;
         ImageView profile_pic;
         ImageView status_online;
         ImageView status_offline;
 
+
         public ViewHolder(View itemView) {
             super(itemView);
 
             userName = itemView.findViewById(R.id.userName_AtCardView);
+            lastMessage = itemView.findViewById(R.id.txt_lastMessage_userItem);
             userCardView = itemView.findViewById(R.id.cardView_user);
             profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView);
             status_online = itemView.findViewById(R.id.img_statusOnline);
@@ -105,6 +118,44 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         }
     }
+
+    private void getLastMessage(final String userID, final TextView lastMessage){
+
+        final String currentUserID = MyFireBase.getCurrentUser().getUid();
+        theLastMessage = "default";
+        MyFireBase.getReferenceOnChats().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chats chats = snapshot.getValue(Chats.class);
+
+                    if (chats.getSender().equals(currentUserID) && chats.getReceiver().equals(userID) ||
+                            chats.getSender().equals(userID) && chats.getReceiver().equals(currentUserID)){
+
+                        theLastMessage = chats.getMessage();
+                    }
+                }
+
+                switch (theLastMessage){
+                    case "default" :
+                        lastMessage.setText(""); break;
+                    default:
+                        lastMessage.setText(theLastMessage);
+                        break;
+
+                }
+                theLastMessage = "default";
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     public interface MyOnclickListener{
         void onClick(int position, User userItem);

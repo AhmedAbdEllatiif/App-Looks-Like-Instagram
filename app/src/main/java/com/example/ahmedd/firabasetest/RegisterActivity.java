@@ -107,17 +107,20 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     public void register(final String userName, String email, String password) {
-
+        Log.e("Register Method","Is here");
         //to create a new user with the email and password
         MyFireBase.getAuth().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Log.e("Task","Successful");
+                            Log.e("userName","userName");
+                            Log.e("id","userID");
 
                             //to get the userID
                             FirebaseUser user = MyFireBase.getAuth().getCurrentUser();
-                            String userID = user.getUid();
+                            String userID = MyFireBase.getCurrentUser().getUid();
 
                             //make a branch users with childs each one named by its userID;
                             //get a reference on each child and make some info
@@ -131,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("status",R.string.offline);
 
 
-                            userReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            MyFireBase.getReferenceOnAllUsers().child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
@@ -145,6 +148,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+                        }else if(!task.isSuccessful()){
+                            Log.e("Task","not Successful");
                         }
 
                     }
