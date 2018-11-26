@@ -44,7 +44,7 @@
         android:id="@+id/txt_seen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="seen"
+        android:text=""
         android:textColor="@color/deliverd_color"
         app:layout_constraintTop_toBottomOf="@+id/txt_chat"
         app:layout_constraintEnd_toEndOf="parent"

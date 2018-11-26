@@ -1,6 +1,7 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -33,6 +34,8 @@ import com.squareup.picasso.Picasso;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +57,11 @@ public class MessageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Chats> chatsList;
     private MessagesAdapter adapter;
+    private  String time;
 
     private ValueEventListener seenListener;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +83,7 @@ public class MessageActivity extends AppCompatActivity {
                     Picasso.get().load(user.getImageURL()).into(profile_pic);
                 }
                 String myID = MyFireBase.getCurrentUser().getUid();
-                readMessages(myID, userToChatWith,user.getImageURL());
+                readMessages(myID, userToChatWith,user.getImageURL(),time);
             }
 
             @Override
@@ -112,6 +118,14 @@ public class MessageActivity extends AppCompatActivity {
         seenMessage(userToChatWith);
         setUserStatusOnlineOrOffline(getTheUserIdYouChatWIth());
 
+    }
+
+    public String getTime() {
+        DateFormat dateFormat =  new SimpleDateFormat("h:mm a");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            time = dateFormat.format(Calendar.getInstance().getTime());
+        }
+        return time;
     }
 
     private String getTheUserIdYouChatWIth() {
@@ -165,12 +179,10 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 String message = editText_messageToSend.getText().toString().trim();
 
-
                 if (!message.isEmpty()){
-                    sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith,message);
+                    sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith, message, getTime());
                     sendNotification(message);
                 }else {
                     editText_messageToSend.setError(getString(R.string.enter_message));
@@ -201,7 +213,7 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessage(String sender,String receiver,String message){
+    private void sendMessage(String sender,String receiver,String message,String myTime){
 
         //To make a new branch jason called Chats
         HashMap<String,Object> hashMap = new HashMap<>();
@@ -209,6 +221,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
         hashMap.put("isSeen",false);
+        hashMap.put("time",myTime);
 
         //this method getReferenceOnDataBase() returns a reference on the dataBase
         MyFireBase.getReferenceOnDataBase().child("Chats").push().setValue(hashMap);
@@ -233,10 +246,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
 
-    //the message will be called when we setup the toolbar
-    //When we setup the toolbar we retrieve the userID
-    //so we call this method in the reference on the user that we chat with
-    private void readMessages(final String myID, final String userID, final String imageURl){
+    private void readMessages(final String myID, final String userID, final String imageURl,final String mytime){
 
         chatsList = new ArrayList<>();
         DatabaseReference reference = MyFireBase.getReferenceOnChats();

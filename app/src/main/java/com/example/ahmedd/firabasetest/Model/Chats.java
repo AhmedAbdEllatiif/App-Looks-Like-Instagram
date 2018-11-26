@@ -6,15 +6,25 @@ public class Chats {
     private String sender;
     private String receiver;
     private String message;
+    private String time;
     private Boolean isSeen;
 
     public Chats() {}
 
-    public Chats(String sender, String receiver, String message,Boolean isSeen) {
+    public Chats(String sender, String receiver, String message, String time, Boolean isSeen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.time = time;
         this.isSeen = isSeen;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getSender() {

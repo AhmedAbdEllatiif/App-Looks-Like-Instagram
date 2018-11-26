@@ -2,6 +2,7 @@ package com.example.ahmedd.firabasetest.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.icu.util.Calendar;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,8 @@ import com.example.ahmedd.firabasetest.R;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder>{
@@ -29,7 +32,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         private Context context;
         private List<Chats> chatsList;
         private String ImgURl;
-
+        private String time;
         private FirebaseUser currentUser;
 
 
@@ -73,19 +76,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
 
 
-
-        if (ImgURl.equals("default")){
+            if (ImgURl.equals("default")){
             holder.profile_pic.setImageResource(R.mipmap.ic_launcher);
         }else {
             Picasso.get().load(ImgURl).into(holder.profile_pic);
         }
 
+        //To get last message siza - 1
         if (position == (chatsList.size()-1)){
            if (chatsItem.getIsSeen()){
-               holder.txt_seen.setText("Seen");
-               holder.txt_seen.setTextColor(R.color.seen_color);
+               holder.txt_seen.setText(chatsItem.getTime()+" ");
+               holder.txt_seen.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.seen_eye, 0);
            }else {
-               holder.txt_seen.setText("Deliverd");
+               holder.txt_seen.setText(chatsItem.getTime() + " Delivered");
            }
 
         }else {
