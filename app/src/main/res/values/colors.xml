@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#22c49d</color>
     <color name="colorPrimaryDark">#1d7c66</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#fff540</color>
     <color name="white">#ffffff</color>
     <color name="gray_messagesBG">#e6e6e6</color>
     <color name="gray">#d0989898</color>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/gray_messagesBG"
+    android:background="@drawable/chat_2"
     tools:context=".MessageActivity">
 
     <include
@@ -18,7 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolBar"
-        android:layout_above="@id/layoutSendMessage">
+        android:layout_above="@id/layoutSendMessage"
+        tools:listitem="@layout/cardview_rightchat"
+        >
 
     </android.support.v7.widget.RecyclerView>
 

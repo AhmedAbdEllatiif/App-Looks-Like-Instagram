@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <android.support.v7.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,24 +8,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.UsersFragment">
+    tools:context=".Fragments.UsersFragment"
+    android:background="@color/colorPrimaryDark"
+    android:padding="5dp"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <EditText
-        android:id="@+id/editText_searchUsers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search"
-        android:paddingStart="5dp"
-        android:inputType="text"
-        tools:ignore="RtlCompat" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_users"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        tools:listitem="@layout/cardview_user"
-        />
+        android:layout_margin="5dp"
+        android:background="@drawable/page_holder_shape"
+        android:padding="5dp">
+
+        <EditText
+            android:id="@+id/editText_searchUsers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:paddingStart="5dp"
+            android:background="@color/white"
+            android:inputType="text"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlCompat" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_users"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/hello_blank_fragment"
+            tools:listitem="@layout/cardview_user"
+            app:layout_constraintTop_toBottomOf="@id/editText_searchUsers"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+    </android.support.constraint.ConstraintLayout>
+    <!-- TODO: Update blank fragment layout -->
+
 
 </android.support.v7.widget.LinearLayoutCompat>

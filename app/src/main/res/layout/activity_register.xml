@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/btnshape"
             android:text="REGISTER"
             android:textColor="@color/white" />
 
