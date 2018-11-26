@@ -1,6 +1,8 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -26,20 +30,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageActivity extends AppCompatActivity {
 
-    private DatabaseReference reference;
     private String userToChatWith;
     private Intent intent;
 
     private CircleImageView profile_pic;
     private TextView userName;
+    private TextView status;
     private ImageButton imageButton_send;
     private TextInputEditText editText_messageToSend;
 
@@ -54,29 +62,10 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        profile_pic = findViewById(R.id.messageActivity_profile_Image);
-        userName = findViewById(R.id.messageActivity_userName);
-        imageButton_send = findViewById(R.id.img_btn_send);
-        editText_messageToSend = findViewById(R.id.editText_messageToSend);
-
-        recyclerView = findViewById(R.id.recyclerView_messages);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setHasFixedSize(true);
-        //setStackFromEnd() default==false
-        //setStackFromEnd() when false fill the recyclerView from top
-        //setStackFromEnd() when true fill the recyclerView from bottom
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-
+        initViews();
         setupToolbar();
 
-        intent = getIntent();
-        Log.e("userId",intent.getStringExtra("userID"));
-        userToChatWith = intent.getStringExtra("userID");
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(userToChatWith);
-
-        reference.addValueEventListener(new ValueEventListener() {
+        MyFireBase.getReferenceOnAllUsers().child(getTheUserIdYouChatWIth()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -97,10 +86,78 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        editText_messageToSend.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(editText_messageToSend.getText().toString().trim().length() > 0){
+                    imageButton_send.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(editText_messageToSend.getText().toString().trim().length() > 0){
+                    imageButton_send.setVisibility(View.VISIBLE);
+                }else if (editText_messageToSend.getText().toString().trim().isEmpty()){
+                    imageButton_send.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
         Button_send_listener();
         seenMessage(userToChatWith);
+        setUserStatusOnlineOrOffline(getTheUserIdYouChatWIth());
 
+    }
 
+    private String getTheUserIdYouChatWIth() {
+        intent = getIntent();
+        Log.e("userId",intent.getStringExtra("userID"));
+        userToChatWith = intent.getStringExtra("userID");
+        return userToChatWith;
+    }
+
+    private void setUserStatusOnlineOrOffline(String userYouChatWith) {
+        MyFireBase.getReferenceOnAllUsers().child(userYouChatWith)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user =  dataSnapshot.getValue(User.class);
+                        if(user.getStatus().equals("Online")){
+                            status.setVisibility(View.VISIBLE);
+                            status.setText("online");
+                        }else {
+                            status.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void initViews() {
+        profile_pic = findViewById(R.id.messageActivity_profile_Image);
+        userName = findViewById(R.id.messageActivity_userName);
+        status = findViewById(R.id.online_offline_message_activity);
+        imageButton_send = findViewById(R.id.img_btn_send);
+        editText_messageToSend = findViewById(R.id.editText_messageToSend);
+        editText_messageToSend.requestFocus();
+
+        recyclerView = findViewById(R.id.recyclerView_messages);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+        //setStackFromEnd() default==false
+        //setStackFromEnd() when false fill the recyclerView from top
+        //setStackFromEnd() when true fill the recyclerView from bottom
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void Button_send_listener() {
@@ -108,10 +165,13 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 String message = editText_messageToSend.getText().toString().trim();
+
 
                 if (!message.isEmpty()){
                     sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith,message);
+                    sendNotification(message);
                 }else {
                     editText_messageToSend.setError(getString(R.string.enter_message));
                     editText_messageToSend.requestFocus();
@@ -137,9 +197,6 @@ public class MessageActivity extends AppCompatActivity {
                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
-
-
-
 
 
     }
@@ -259,6 +316,76 @@ public class MessageActivity extends AppCompatActivity {
         super.onPause();
         MyFireBase.getReferenceOnChats().removeEventListener(seenListener);
         getUserStatus(getString(R.string.offline));
+    }
+
+
+    private void sendNotification(final String notificationMessage)
+    {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                if (SDK_INT > 8) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                            .permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    String userToSendNotification =  userToChatWith;
+
+                    //This is a Simple Logic to Send Notification different Device Programmatically....
+
+
+                    try {
+                        String jsonResponse;
+
+                        URL url = new URL("https://onesignal.com/api/v1/notifications");
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        con.setUseCaches(false);
+                        con.setDoOutput(true);
+                        con.setDoInput(true);
+
+                        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                        con.setRequestProperty("Authorization", "Basic ODI3ZmFjMDYtYzU1Yy00MDg5LTg1MTMtNzc4Y2JjNTY4ODU4");
+                        con.setRequestMethod("POST");
+
+                        String strJsonBody = "{"
+                                + "\"app_id\": \"24df44f2-5ccb-40ae-a724-dfa50bb4acfc\","
+
+                                + "\"filters\": [{\"field\": \"tag\", \"key\": \"User ID\", \"relation\": \"=\", \"value\": \"" + userToSendNotification + "\"}],"
+
+                                + "\"data\": {\"foo\": \"bar\"},"
+                                + "\"contents\": {\"en\": \""+ notificationMessage+ "\"}"
+                                + "}";
+
+
+                        System.out.println("strJsonBody:\n" + strJsonBody);
+
+                        byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+                        con.setFixedLengthStreamingMode(sendBytes.length);
+
+                        OutputStream outputStream = con.getOutputStream();
+                        outputStream.write(sendBytes);
+
+                        int httpResponse = con.getResponseCode();
+                        System.out.println("httpResponse: " + httpResponse);
+
+                        if (httpResponse >= HttpURLConnection.HTTP_OK
+                                && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+                            Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                            scanner.close();
+                        } else {
+                            Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                            scanner.close();
+                        }
+                        System.out.println("jsonResponse:\n" + jsonResponse);
+
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
 

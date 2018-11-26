@@ -28,6 +28,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -62,6 +63,8 @@ public class MainActivity extends BaseActivity {
 
         currentUserID = MyFireBase.getCurrentUserID();
         firebaseCurrentUser = MyFireBase.getCurrentUser();
+
+        OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
     }
 
 
@@ -161,7 +164,7 @@ public class MainActivity extends BaseActivity {
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             }
                         });*/
-               
+
                 return true;
         }
 

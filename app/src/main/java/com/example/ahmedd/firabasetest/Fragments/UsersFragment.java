@@ -154,7 +154,6 @@ public class UsersFragment extends Fragment {
                     assert user != null;
                     assert MyFireBase.getCurrentUser() != null;
 
-
                     if (!user.getId().equals(MyFireBase.getCurrentUser().getUid())) {
                         userList.add(user);
                     }
