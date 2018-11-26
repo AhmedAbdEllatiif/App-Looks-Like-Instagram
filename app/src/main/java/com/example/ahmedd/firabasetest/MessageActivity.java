@@ -15,10 +15,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.MessagesAdapter;
 import com.example.ahmedd.firabasetest.Model.Chats;
@@ -45,20 +43,24 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageActivity extends AppCompatActivity {
 
-    private String userToChatWith;
-    private Intent intent;
 
+    //views
     private CircleImageView profile_pic;
     private TextView userName;
     private TextView status;
     private ImageButton imageButton_send;
     private TextInputEditText editText_messageToSend;
 
+    //recyclerView
     private RecyclerView recyclerView;
     private List<Chats> chatsList;
     private MessagesAdapter adapter;
-    private  String time;
+    private  String currentTime;
 
+    private String userToChatWith;
+    private Intent intent;
+
+    //this listener to remove the event listener when we check seen message
     private ValueEventListener seenListener;
 
 
@@ -83,7 +85,7 @@ public class MessageActivity extends AppCompatActivity {
                     Picasso.get().load(user.getImageURL()).into(profile_pic);
                 }
                 String myID = MyFireBase.getCurrentUser().getUid();
-                readMessages(myID, userToChatWith,user.getImageURL(),time);
+                readMessages(myID, userToChatWith,user.getImageURL());
             }
 
             @Override
@@ -92,6 +94,14 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        showTheButtonSendWhenUserStartTyping();
+        Button_send_listener();
+        SetMessageSeenWhenTheCurrentUserOpenMessageActivity(userToChatWith);
+        setUserStatusOnlineOrOffline(getTheUserIdYouChatWIth());
+
+    }
+
+    private void showTheButtonSendWhenUserStartTyping() {
         editText_messageToSend.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -113,19 +123,14 @@ public class MessageActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Button_send_listener();
-        seenMessage(userToChatWith);
-        setUserStatusOnlineOrOffline(getTheUserIdYouChatWIth());
-
     }
 
-    public String getTime() {
+    public String getCurrentTime() {
         DateFormat dateFormat =  new SimpleDateFormat("h:mm a");
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            time = dateFormat.format(Calendar.getInstance().getTime());
+            currentTime = dateFormat.format(Calendar.getInstance().getTime());
         }
-        return time;
+        return currentTime;
     }
 
     private String getTheUserIdYouChatWIth() {
@@ -182,7 +187,7 @@ public class MessageActivity extends AppCompatActivity {
                 String message = editText_messageToSend.getText().toString().trim();
 
                 if (!message.isEmpty()){
-                    sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith, message, getTime());
+                    sendMessage(MyFireBase.getCurrentUser().getUid(), userToChatWith, message, getCurrentTime());
                     sendNotification(message);
                 }else {
                     editText_messageToSend.setError(getString(R.string.enter_message));
@@ -213,7 +218,7 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessage(String sender,String receiver,String message,String myTime){
+    private void sendMessage(String sender,String receiver,String message,String time){
 
         //To make a new branch jason called Chats
         HashMap<String,Object> hashMap = new HashMap<>();
@@ -221,7 +226,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
         hashMap.put("isSeen",false);
-        hashMap.put("time",myTime);
+        hashMap.put("time",time);
 
         //this method getReferenceOnDataBase() returns a reference on the dataBase
         MyFireBase.getReferenceOnDataBase().child("Chats").push().setValue(hashMap);
@@ -245,8 +250,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-
-    private void readMessages(final String myID, final String userID, final String imageURl,final String mytime){
+    private void readMessages(final String myID, final String userID, final String imageURl){
 
         chatsList = new ArrayList<>();
         DatabaseReference reference = MyFireBase.getReferenceOnChats();
@@ -289,8 +293,7 @@ public class MessageActivity extends AppCompatActivity {
         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
     }
 
-
-    private void seenMessage(final String userToChatWithID){
+    private void SetMessageSeenWhenTheCurrentUserOpenMessageActivity(final String userToChatWithID){
 
         seenListener = MyFireBase.getReferenceOnChats().addValueEventListener(new ValueEventListener() {
             @Override
@@ -329,8 +332,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
 
-    private void sendNotification(final String notificationMessage)
-    {
+    private void sendNotification(final String notificationMessage) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
