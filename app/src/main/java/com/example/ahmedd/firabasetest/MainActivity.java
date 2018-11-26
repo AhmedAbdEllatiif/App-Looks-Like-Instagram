@@ -1,7 +1,12 @@
 package com.example.ahmedd.firabasetest;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -19,6 +24,7 @@ import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
+import com.example.ahmedd.firabasetest.Receivers.WIFIBroadCastReceiver;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -65,10 +71,35 @@ public class MainActivity extends BaseActivity {
         firebaseCurrentUser = MyFireBase.getCurrentUser();
 
         OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
+        checkWifiConnection();
+
+
+    }
+    //will try it later
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
 
-
+    private void checkWifiConnection() {
+        WIFIBroadCastReceiver myrecevier = new WIFIBroadCastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        registerReceiver(myrecevier, intentFilter);
+    }
 
 
     private void setupViewPageAdapter() {
