@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark"
+    android:padding="5dp"
+    tools:context="Fragments.UploadPhotosFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/page_holder_shape"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/btn_chooseFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pick a photo"
+            android:textColor="@color/white"
+            android:padding="5dp"
+            android:gravity="center"
+            android:background="@drawable/btnshape"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edit_txt_file_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter photo name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_chooseFile"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_upload"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintBottom_toTopOf="@id/progressBar"
+            app:layout_constraintTop_toBottomOf="@id/edit_txt_file_name" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+
+            app:layout_constraintBottom_toTopOf="@id/btn_upload"
+            />
+
+        <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Upload"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_showUploads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Show my photos"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_upload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_upload"
+            app:layout_constraintTop_toTopOf="@id/btn_upload" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.LinearLayoutCompat>

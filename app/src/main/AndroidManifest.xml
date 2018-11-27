@@ -2,23 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ahmedd.firabasetest">
 
-    <!--permissions-->
+    <!-- permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".Application.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/duck"
         android:label="@string/chat_duck"
         android:roundIcon="@drawable/duck"
         android:supportsRtl="true"
-        android:name=".Application.MyApplication"
         android:theme="@style/AppTheme">
-
         <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,13 +26,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".StartActivity"
             android:theme="@style/AppTheme" />
-
-
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".StartActivity"
@@ -49,9 +45,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ResetPasswordActivity"
-            android:parentActivityName=".LoginActivity"
-            ></activity>
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:parentActivityName=".LoginActivity" />
+        <activity android:name=".photosActivity"></activity>
+        <activity android:name=".PhotoActivity"></activity>
     </application>
 
 </manifest>

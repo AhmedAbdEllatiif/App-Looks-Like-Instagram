@@ -20,4 +20,5 @@
     <string name="disc_reset_password">If you press reset you will receive an email to reset your password</string>
     <string name="title_reset_password">Reset Password</string>
     <string name="chat_duck">Duck Chat</string>
+    <string name="photos">Photos</string>
 </resources>

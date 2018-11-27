@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class ProfileFragment extends BaseFragment {
     private View view;
     private TextView userName;
     private ImageView img_profile;
+    private ImageButton img_btn_edit;
 
     private StorageTask uploadTask;
     private Uri image_uri;
@@ -54,6 +56,16 @@ public class ProfileFragment extends BaseFragment {
 
         userName = view.findViewById(R.id.txt_userName_fragmentProfile);
         img_profile = view.findViewById(R.id.img_profile_frahmentProfile);
+        img_btn_edit = view.findViewById(R.id.img_btn_edit);
+
+
+        img_btn_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditUserNameDialogFragment dialogFragment = new EditUserNameDialogFragment();
+                dialogFragment.show(getChildFragmentManager(),"Dialog Fragment");
+            }
+        });
 
 
         setProfileData();

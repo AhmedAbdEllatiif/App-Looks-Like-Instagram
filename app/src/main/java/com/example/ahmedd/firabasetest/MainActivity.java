@@ -21,6 +21,7 @@ import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
 import com.example.ahmedd.firabasetest.BaseActivities.BaseActivity;
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
+import com.example.ahmedd.firabasetest.Fragments.UploadPhotosFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
@@ -108,6 +109,7 @@ public class MainActivity extends BaseActivity {
         pageAdapter.AddFragmentPage(new ChatFragment(),getString(R.string.chats));
         pageAdapter.AddFragmentPage(new UsersFragment(),getString(R.string.users));
         pageAdapter.AddFragmentPage(new ProfileFragment(),getString(R.string.profile));
+        pageAdapter.AddFragmentPage(new UploadPhotosFragment(),getString(R.string.photos));
 
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
