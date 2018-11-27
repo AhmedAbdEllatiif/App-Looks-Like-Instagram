@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity {
 
         initViews();
         setToolBar();
-        //setCurrentUserInfo();
+       // setCurrentUserInfo();
         setupViewPageAdapter();
 
         currentUserID = MyFireBase.getCurrentUserID();

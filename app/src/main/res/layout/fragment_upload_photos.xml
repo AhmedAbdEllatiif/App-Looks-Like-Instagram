@@ -45,19 +45,23 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:src="@mipmap/ic_launcher"
-            app:layout_constraintBottom_toTopOf="@id/progressBar"
+            app:layout_constraintBottom_toTopOf="@id/txt_uploading"
             app:layout_constraintTop_toBottomOf="@id/edit_txt_photo_name" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginStart="15dp"
 
+
+        <TextView
+            android:id="@+id/txt_uploading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Uploading..."
+            android:textSize="18dp"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_upload"
             app:layout_constraintBottom_toTopOf="@id/btn_upload"
+            android:visibility="gone"
             />
 
         <Button
@@ -68,7 +72,9 @@
             android:text="Upload"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+
+            />
 
         <TextView
             android:id="@+id/txt_showUploads"

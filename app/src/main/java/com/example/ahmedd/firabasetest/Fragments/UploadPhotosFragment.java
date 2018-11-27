@@ -54,6 +54,7 @@ public class UploadPhotosFragment extends Fragment {
     private ImageView img_upload;
     private Button btn_upload;
     private TextView txt_showUploads;
+    private TextView txt_uploading;
 
 
     private static final int PICK_IMAGE_REQUSET = 2;
@@ -76,6 +77,7 @@ public class UploadPhotosFragment extends Fragment {
         img_upload = view.findViewById(R.id.img_upload);
         btn_upload = view.findViewById(R.id.btn_upload);
         txt_showUploads = view.findViewById(R.id.txt_showUploads);
+        txt_uploading = view.findViewById(R.id.txt_uploading);
 
 
         MyClickListeners();
@@ -107,6 +109,7 @@ public class UploadPhotosFragment extends Fragment {
         btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                txt_uploading.setVisibility(View.VISIBLE);
                 upload();
             }
         });
@@ -141,6 +144,7 @@ public class UploadPhotosFragment extends Fragment {
 
     private void upload() {
 
+
         Log.e("URI", img_uri.toString());
         if (img_uri!=null){
             final StorageReference fileReference = MyFireBase.getStorageReferenceOnPhotos().child(System.currentTimeMillis() +
@@ -166,6 +170,8 @@ public class UploadPhotosFragment extends Fragment {
                     if (task.isSuccessful()){
                         Log.e("onComplete","Successful");
 
+
+
                         String name = edit_txt_photo_name.getText().toString().trim();
                         Uri downloadUri = task.getResult();
                         String imgURL = "default";
@@ -179,20 +185,38 @@ public class UploadPhotosFragment extends Fragment {
                         hashMap.put("url",imgURL);
                         MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
 
+                        txt_uploading.setText("Upload Complete");
+                        Handler handlerToShowUploadComplete = new Handler();
+                        handlerToShowUploadComplete.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt_uploading.setVisibility(View.INVISIBLE);
+                            }
+                        },2000);
                     }else {
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
-
+                        txt_uploading.setText("Failed..");
+                        Handler handlerToShowUploadComplete = new Handler();
+                        handlerToShowUploadComplete.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt_uploading.setVisibility(View.GONE);
+                            }
+                        },2000);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    txt_uploading.setVisibility(View.GONE);
                 }
             });
         }else {
             Toast.makeText(getActivity(), "No Image Selected", Toast.LENGTH_SHORT).show();
+            txt_uploading.setVisibility(View.GONE);
         }
+
 
     }
 

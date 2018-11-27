@@ -12,10 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,9 +36,9 @@ import java.util.List;
 public class PhotoActivity extends AppCompatActivity {
 
 
-    RecyclerView recyclerView;
-    PhotosAdapter adapter;
-    List<Photos> photosList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private PhotosAdapter adapter;
+    private List<Photos> photosList;
 
 
 
@@ -44,12 +46,18 @@ public class PhotoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
-        MyFireBase.getStorageReferenceOnPhotos();
-        setToolBar();
 
+        setToolBar();
+        fillRecyclerViewWithPhotos();
+
+
+    }
+
+    private void fillRecyclerViewWithPhotos() {
         recyclerView = findViewById(R.id.recyclerView_photos);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.hasFixedSize();
+        photosList = new ArrayList<>();
 
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -69,13 +77,13 @@ public class PhotoActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-
     }
 
     private void setToolBar() {
         Toolbar toolbar = findViewById(R.id.photoActivity_ToolBar);
+        final ImageView photoActivity_profile_Image = findViewById(R.id.photoActivity_profile_Image);
+        final TextView photoActivity_userName = findViewById(R.id.photoActivity_userName);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,6 +94,34 @@ public class PhotoActivity extends AppCompatActivity {
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
+
+
+
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUserID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //getValue hatrg3 object jason
+                //ha3ml class 2st2bl feh l object
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user.getUserName() != null) {
+                    photoActivity_userName.setText(user.getUserName());
+                }
+
+                if (user.getImageURL().equals("default")) {
+                    photoActivity_profile_Image.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Picasso.get().load(user.getImageURL()).into(photoActivity_profile_Image);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
