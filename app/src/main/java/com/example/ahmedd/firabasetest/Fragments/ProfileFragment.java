@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -129,28 +131,33 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void uploadProfileImage(){
-        showProgressBar("please wait","uploading your profile Image");
+        //showProgressBar("please wait","uploading your profile Image");
         Log.e("UploadImage","begin the method");
 
-        if (image_uri!=null){
-            MyFireBase.getStorageReferenceOnUploads().child(System.currentTimeMillis() +
-                    "." + getFileExtension(image_uri));
+        Handler handler = new Handler();
+        Runnable runnable=  new Runnable() {
+            @Override
+            public void run() {
+                if (image_uri!=null){
+                    final StorageReference storageReference= MyFireBase.getStorageReferenceOnUploads().child(System.currentTimeMillis() +
+                            "." + getFileExtension(image_uri));
+                    uploadTask = storageReference.putFile(image_uri);
 
-            uploadTask =  MyFireBase.getStorageReferenceOnUploads().putFile(image_uri);
-                   uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
-                       @Override
-                       public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
 
-                           if(!task.isSuccessful()){
-                               Log.e("onComplete","not Successful");
-                               throw task.getException();
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
 
-                           }
-                           return  MyFireBase.getStorageReferenceOnUploads().getDownloadUrl();
-                       }
-                   }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                       @Override
-                       public void onComplete(@NonNull Task<Uri> task) {
+                            if(!task.isSuccessful()){
+                                Log.e("onComplete","not Successful");
+                                throw task.getException();
+
+                            }
+                            return  storageReference.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()){
                                 Log.e("onComplete","Successful");
                                 Uri downloadUri = task.getResult();
@@ -160,21 +167,25 @@ public class ProfileFragment extends BaseFragment {
                                 hashMap.put("ImageURL",myUri);
                                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .updateChildren(hashMap);
-                                hideProgressBar();
+                                //hideProgressBar();
                             }else {
                                 Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
-                                hideProgressBar();
+                                //hideProgressBar();
                             }
-                       }
-                   }).addOnFailureListener(new OnFailureListener() {
-                       @Override
-                       public void onFailure(@NonNull Exception e) {
-                           Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                       }
-                   });
-        }else {
-            Toast.makeText(getContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
-        }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    Toast.makeText(getContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        handler.post(runnable);
+
     }
 
 

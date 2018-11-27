@@ -14,11 +14,13 @@ public class MyFireBase {
     private static DatabaseReference referenceOnCurrentUser;
     private static DatabaseReference referenceOnDataBase;
     private static DatabaseReference referenceOnChats;
+    private static DatabaseReference referenceOnPhotos;
     private static DatabaseReference referenceOnChatList;
     private static FirebaseUser currentUser;
     private static StorageReference storageReferenceOnUploads;
-    private static FirebaseStorage firebaseStorage;
     private static FirebaseDatabase FirebaseDatabase;
+    private static FirebaseStorage firebaseStorage;
+    private static StorageReference storageReferenceOnPhotos;
 
 
 
@@ -45,6 +47,14 @@ public class MyFireBase {
         }
 
         return storageReferenceOnUploads;
+    }
+    public static StorageReference getStorageReferenceOnPhotos() {
+
+        if (storageReferenceOnPhotos == null) {
+            storageReferenceOnPhotos = getFirebaseStorage().getReference("photos");
+        }
+
+        return storageReferenceOnPhotos;
     }
     public static FirebaseUser getCurrentUser() {
 
@@ -82,6 +92,11 @@ public class MyFireBase {
     public static DatabaseReference getReferenceOnChatList() {
 
         return referenceOnChatList = getGetFirebaseDatabase().getReference("ChatList");
+    }
+
+    public static DatabaseReference getReferenceOnPhotos() {
+
+        return referenceOnChatList = getGetFirebaseDatabase().getReference("Photos");
     }
 
     public static DatabaseReference getReferenceOnDataBase() {
