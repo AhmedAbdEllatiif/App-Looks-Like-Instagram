@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".PhotoActivity">
 
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_photo_activity" />
+
 </android.support.constraint.ConstraintLayout>
