@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity {
         firebaseCurrentUser = MyFireBase.getCurrentUser();
 
         OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
-        checkWifiConnection();
+//        checkWifiConnection();
 
 
     }

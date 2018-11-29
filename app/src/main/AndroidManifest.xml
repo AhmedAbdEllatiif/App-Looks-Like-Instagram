@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+
     <application
         android:name=".Application.MyApplication"
         android:allowBackup="true"
@@ -73,6 +77,12 @@
         <activity android:name=".PhotoActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <!--////////////////////////////////////////////////////////////////////////////////-->
+
+        <!--////////////////////////////////////////////////////////////////////////////////-->
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"
+            android:parentActivityName=".MainActivity"/>
         <!--////////////////////////////////////////////////////////////////////////////////-->
 
         <receiver

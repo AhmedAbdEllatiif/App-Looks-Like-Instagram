@@ -3,7 +3,6 @@ package com.example.ahmedd.firabasetest.Fragments;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,14 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ahmedd.firabasetest.MainActivity;
-
-import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.PhotoActivity;
 import com.example.ahmedd.firabasetest.R;
@@ -31,13 +26,11 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.HashMap;
 
@@ -110,6 +103,7 @@ public class UploadPhotosFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 txt_uploading.setVisibility(View.VISIBLE);
+                txt_uploading.setText("Uploading...");
                 upload();
             }
         });
@@ -117,24 +111,41 @@ public class UploadPhotosFragment extends Fragment {
 
 
     private void openFileChooser(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,PICK_IMAGE_REQUSET);
+//using Android-Image-Cropper library
+       /* // start picker to get image for cropping and then use the image in cropping activity
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(getActivity());
+
+// start cropping activity for pre-acquired image saved on the device
+        CropImage.activity(img_uri)
+                .start(getActivity());*/
+
+
+// for fragment (DO NOT use `getActivity()`)
+        CropImage.activity()
+                .start(getContext(), this);
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUSET && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
 
-            img_uri = data.getData();
-            Picasso.get().load(img_uri).into(img_upload);
-        }//ifCondition
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                img_uri = result.getUri();
 
+                Picasso.get().load(img_uri).into(img_upload);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Toast.makeText(getActivity(), "something went wrong ", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
+
+
 
     private String getFileExtension(Uri uri){
         ContentResolver resolver = getActivity().getContentResolver();
@@ -190,7 +201,7 @@ public class UploadPhotosFragment extends Fragment {
                         handlerToShowUploadComplete.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                txt_uploading.setVisibility(View.INVISIBLE);
+                                txt_uploading.setVisibility(View.GONE);
                             }
                         },2000);
                     }else {
@@ -219,5 +230,6 @@ public class UploadPhotosFragment extends Fragment {
 
 
     }
+
 
 }

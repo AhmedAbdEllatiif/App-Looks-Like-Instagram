@@ -25,9 +25,10 @@
         <ImageView
             android:id="@+id/img_cardView_photoActivity"
             android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            />
 
     </android.support.v7.widget.LinearLayoutCompat>
 

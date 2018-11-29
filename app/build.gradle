@@ -80,6 +80,10 @@ dependencies {
 
     //onesignal
     implementation 'com.onesignal:OneSignal:[3.9.1, 3.99.99]'
+
+    //cropImage
+    //implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

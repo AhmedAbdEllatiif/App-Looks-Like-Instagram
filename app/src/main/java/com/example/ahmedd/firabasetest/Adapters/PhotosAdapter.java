@@ -1,6 +1,7 @@
 package com.example.ahmedd.firabasetest.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -66,4 +67,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity);
         }
     }
+
+
 }
