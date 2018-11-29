@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardViewImage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="3dp"
     app:contentPadding="15dp">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -20,7 +21,15 @@
             android:gravity="center"
             android:hint="Name"
             android:padding="5dp"
-            android:textSize="25dp" />
+            android:textSize="25dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+
+
+
 
         <ImageView
             android:id="@+id/img_cardView_photoActivity"
@@ -28,8 +37,34 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:src="@mipmap/ic_launcher"
+            app:layout_constraintTop_toBottomOf="@id/txt_name_cardView_photoActivity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             />
 
-    </android.support.v7.widget.LinearLayoutCompat>
+        <TextView
+            android:id="@+id/img_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="25/10/2018"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_cardView_photoActivity"
+            tools:ignore="RtlCompat" />
+
+
+
+        <TextView
+            android:id="@+id/img_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description..."
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_date"
+            android:layout_marginStart="5dp"
+            tools:ignore="RtlCompat" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

@@ -14,5 +14,17 @@
         <item name="android:background">@color/white</item>
         
     </style>
+
+
+
+    <style name="TextLimitStyle" parent="TextAppearance.AppCompat.Small">
+    <item name="android:textColor">@color/colorAccent</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextLimitError" parent="TextAppearance.AppCompat.Small">
+    <item name="android:textColor">@color/red</item>
+    </style>
     
 </resources>

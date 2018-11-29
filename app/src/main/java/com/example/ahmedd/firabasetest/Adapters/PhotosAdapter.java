@@ -41,6 +41,17 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         Photos photosItem = photosList.get(position);
 
         holder.txt_name.setText(photosItem.getName());
+
+
+        if(photosItem.getDescription().equals("default")){
+            holder.img_description.setText("Description...");
+        }else {
+        holder.img_description.setText(photosItem.getDescription());
+        }
+
+
+        holder.img_date.setText(photosItem.getDate());
+
         if (photosItem.getUrl().equals("default")){
             holder.img_.setImageResource(R.mipmap.ic_launcher);
         }else {
@@ -58,12 +69,16 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView txt_name;
+        TextView img_description;
+        TextView img_date;
         ImageView img_;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity);
+            img_description = itemView.findViewById(R.id.img_description);
+            img_date = itemView.findViewById(R.id.img_date);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity);
         }
     }

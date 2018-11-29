@@ -17,26 +17,12 @@
         android:background="@drawable/page_holder_shape"
         android:padding="5dp">
 
-        <Button
-            android:id="@+id/btn_pick_photo"
-            android:layout_width="wrap_content"
+        <android.support.constraint.Guideline
+            android:id="@+id/guidline"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="pick a photo"
-            android:textColor="@color/white"
-            android:padding="5dp"
-            android:gravity="center"
-            android:background="@drawable/btnshape"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/edit_txt_photo_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter photo name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_pick_photo"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".4" />
 
         <ImageView
             android:id="@+id/img_upload"
@@ -45,10 +31,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:src="@mipmap/ic_launcher"
-            app:layout_constraintBottom_toTopOf="@id/txt_uploading"
-            app:layout_constraintTop_toBottomOf="@id/edit_txt_photo_name" />
-
-
+            app:layout_constraintBottom_toTopOf="@id/guidline"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txt_uploading"
@@ -57,37 +41,100 @@
             android:text="Uploading..."
             android:textSize="18dp"
             android:textColor="@color/gray"
+            android:layout_marginTop="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_upload"
-            app:layout_constraintBottom_toTopOf="@id/btn_upload"
             android:visibility="gone"
-            />
+            app:layout_constraintTop_toBottomOf="@id/guidline" />
+
+        <Button
+            android:id="@+id/btn_pick_photo"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/btnshape"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="pick a photo"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_uploading" />
+
+        <Button
+            android:id="@+id/txt_showUploads"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="Show my photos"
+            android:background="@drawable/btnshape"
+            android:textSize="15sp"
+            android:padding="7dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_pick_photo" />
 
         <Button
             android:id="@+id/btn_upload"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/btn_shape_upload"
             android:text="Upload"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/inputLayout_description" />
 
-            />
-
-        <TextView
-            android:id="@+id/txt_showUploads"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayout_imgName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="5dp"
-            android:text="Show my photos"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_upload"
+            app:counterEnabled="true"
+            app:counterMaxLength="15"
+            app:counterOverflowTextAppearance="@style/TextLimitError"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_upload"
-            app:layout_constraintTop_toTopOf="@id/btn_upload" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_showUploads"
+            android:visibility="gone"
+            >
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_txt_photo_name"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Enter photo name" />
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayout_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="100"
+            app:counterOverflowTextAppearance="@style/TextLimitError"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/inputLayout_imgName"
+            android:visibility="gone">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_txt_photo_decription"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:hint="Enter photo name" />
+
+        </android.support.design.widget.TextInputLayout>
 
 
     </android.support.constraint.ConstraintLayout>

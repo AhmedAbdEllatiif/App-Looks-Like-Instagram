@@ -2,12 +2,15 @@ package com.example.ahmedd.firabasetest.Fragments;
 
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +35,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
@@ -44,10 +49,13 @@ public class UploadPhotosFragment extends Fragment {
     private View view;
     private Button btn_pick_photo;
     private TextInputEditText edit_txt_photo_name;
+    private TextInputLayout inputLayout_imgName;
+    private TextInputLayout inputLayout_description;
     private ImageView img_upload;
     private Button btn_upload;
-    private TextView txt_showUploads;
+    private Button txt_showUploads;
     private TextView txt_uploading;
+    String currentTime;
 
 
     private static final int PICK_IMAGE_REQUSET = 2;
@@ -71,16 +79,22 @@ public class UploadPhotosFragment extends Fragment {
         btn_upload = view.findViewById(R.id.btn_upload);
         txt_showUploads = view.findViewById(R.id.txt_showUploads);
         txt_uploading = view.findViewById(R.id.txt_uploading);
+        inputLayout_imgName = view.findViewById(R.id.inputLayout_imgName);
+        inputLayout_description = view.findViewById(R.id.inputLayout_description);
 
 
         MyClickListeners();
-
-
-
-
+        Log.e("current time",getCurrentTime());
         return view;
     }
 
+    public String getCurrentTime() {
+        DateFormat dateFormat =  new SimpleDateFormat("EEE,d MMM yyyy HH:mm");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            currentTime = dateFormat.format(Calendar.getInstance().getTime());
+        }
+        return currentTime;
+    }
 
     private void MyClickListeners(){
         txt_showUploads.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +119,13 @@ public class UploadPhotosFragment extends Fragment {
                 txt_uploading.setVisibility(View.VISIBLE);
                 txt_uploading.setText("Uploading...");
                 upload();
+                /*Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                       btn_upload.setVisibility(View.GONE);
+                    }
+                },2000);*/
             }
         });
     }
@@ -137,8 +158,11 @@ public class UploadPhotosFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 img_uri = result.getUri();
-
                 Picasso.get().load(img_uri).into(img_upload);
+                btn_upload.setVisibility(View.VISIBLE);
+                inputLayout_description.setVisibility(View.VISIBLE);
+                inputLayout_imgName.setVisibility(View.VISIBLE);
+                txt_showUploads.setVisibility(View.GONE);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(getActivity(), "something went wrong ", Toast.LENGTH_SHORT).show();
             }
@@ -182,8 +206,10 @@ public class UploadPhotosFragment extends Fragment {
                         Log.e("onComplete","Successful");
 
 
-
                         String name = edit_txt_photo_name.getText().toString().trim();
+                        String description = null;
+                        String date = null;
+
                         Uri downloadUri = task.getResult();
                         String imgURL = "default";
                         if(downloadUri!=null){
@@ -194,14 +220,22 @@ public class UploadPhotosFragment extends Fragment {
                         HashMap<String,Object> hashMap = new HashMap<>();
                         hashMap.put("name",name);
                         hashMap.put("url",imgURL);
+                        hashMap.put("description",description);
+                        hashMap.put("date",date);
+
                         MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
 
                         txt_uploading.setText("Upload Complete");
+                        txt_uploading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_, 0);
+                        txt_uploading.setCompoundDrawablePadding(3);
                         Handler handlerToShowUploadComplete = new Handler();
                         handlerToShowUploadComplete.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 txt_uploading.setVisibility(View.GONE);
+                                btn_upload.setVisibility(View.GONE);
+                                inputLayout_description.setVisibility(View.GONE);
+                                inputLayout_imgName.setVisibility(View.GONE);
                             }
                         },2000);
                     }else {
@@ -212,6 +246,7 @@ public class UploadPhotosFragment extends Fragment {
                             @Override
                             public void run() {
                                 txt_uploading.setVisibility(View.GONE);
+
                             }
                         },2000);
                     }

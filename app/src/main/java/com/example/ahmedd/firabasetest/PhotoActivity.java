@@ -54,9 +54,9 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     private void fillRecyclerViewWithPhotos() {
+        LinearLayoutManager layoutManager =  new LinearLayoutManager(this);
         recyclerView = findViewById(R.id.recyclerView_photos);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.hasFixedSize();
+        recyclerView.setLayoutManager(layoutManager);
         photosList = new ArrayList<>();
 
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
