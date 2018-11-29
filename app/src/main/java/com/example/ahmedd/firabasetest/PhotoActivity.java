@@ -1,36 +1,27 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PhotoActivity extends AppCompatActivity {
@@ -70,6 +61,21 @@ public class PhotoActivity extends AppCompatActivity {
                         }
                         adapter = new PhotosAdapter(getApplicationContext(),photosList);
                         recyclerView.setAdapter(adapter);
+
+                        onClickListenerInRecyclerView(adapter);
+                      /*  adapter.setOnAsProfileImgClickListener(new PhotosAdapter.MyOnClickListener() {
+                            @Override
+                            public void myOnClickListener(int position, Photos photosItem) {
+                                HashMap<String,Object> hashMap = new HashMap<>();
+                                hashMap.put("ImageURL",photosItem.getUrl());
+                              MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                      .updateChildren(hashMap);
+
+                            }
+                        });
+*/
+
+
                     }
 
                     @Override
@@ -124,6 +130,25 @@ public class PhotoActivity extends AppCompatActivity {
 
     }
 
+    private void onClickListenerInRecyclerView(PhotosAdapter photosAdapter) {
+        photosAdapter.setOnAsProfileImgClickListener(new PhotosAdapter.MyOnClickListener() {
+            @Override
+            public void myOnClickListener(int position, Photos photosItem) {
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("ImageURL", photosItem.getUrl());
+                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                        .updateChildren(hashMap);
+
+            }
+        });
+
+       /* photosAdapter.setOnDescriptionClickListener(new PhotosAdapter.MyOnClickListener() {
+            @Override
+            public void myOnClickListener(int position, Photos photosItem) {
+
+            }
+        });*/
+    }
 
 
 }

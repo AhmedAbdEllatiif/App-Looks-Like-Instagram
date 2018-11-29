@@ -2,6 +2,7 @@ package com.example.ahmedd.firabasetest.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -12,7 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.User;
+import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,10 +27,21 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
     private Context context;
     private List<Photos> photosList;
+    private MyOnClickListener onAsProfileImgClickListener;
+    private MyOnClickListener onDescriptionClickListener;
+
 
     public PhotosAdapter(Context context, List<Photos> photosList ) {
         this.photosList = photosList;
         this.context = context;
+    }
+
+    public void setOnAsProfileImgClickListener(MyOnClickListener onSetAsProfileImgClickListener) {
+        this.onAsProfileImgClickListener = onSetAsProfileImgClickListener;
+    }
+
+    public void setOnDescriptionClickListener(MyOnClickListener onDescriptionClickListener) {
+        this.onDescriptionClickListener = onDescriptionClickListener;
     }
 
     @NonNull
@@ -36,16 +53,17 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
-        Photos photosItem = photosList.get(position);
+        final Photos photosItem = photosList.get(position);
 
         holder.txt_name.setText(photosItem.getName());
 
 
-        if(photosItem.getDescription().equals("default")){
-            holder.img_description.setText("Description...");
+        if(photosItem.getDescription().equals("")){
+            holder.img_description.setText("");
         }else {
+
         holder.img_description.setText(photosItem.getDescription());
         }
 
@@ -58,6 +76,55 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                 Picasso.get().load(photosItem.getUrl()).into(holder.img_);
         }
 
+        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User userItem = snapshot.getValue(User.class);
+                    if(userItem.getId().equals(MyFireBase.getCurrentUser().getUid())){
+                        holder.user_name_cardView_img.setText(userItem.getUserName());
+                        if (userItem.getImageURL().equals("default")){
+                            holder.img_.setImageResource(R.mipmap.ic_launcher);
+                        }else {
+                            Picasso.get().load(userItem.getImageURL()).into(holder.user_profileImg_cardView_img);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        if (onAsProfileImgClickListener!=null){
+            holder.txt_setAsProfileImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onAsProfileImgClickListener.myOnClickListener(position,photosItem);
+                    holder.profileImage_updated.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            holder.profileImage_updated.setVisibility(View.GONE);
+                        }
+                    },2000);
+                }
+            });
+        }
+
+
+        if (onDescriptionClickListener!=null){
+            holder.img_description.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDescriptionClickListener.myOnClickListener(position,photosItem);
+                }
+            });
+        }
+
 
     }
 
@@ -68,20 +135,31 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
+        TextView user_name_cardView_img;
         TextView txt_name;
+        TextView txt_setAsProfileImg;
         TextView img_description;
         TextView img_date;
         ImageView img_;
+        ImageView user_profileImg_cardView_img;
+        ImageView profileImage_updated;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            user_name_cardView_img = itemView.findViewById(R.id.user_name_cardView_img);
+            txt_setAsProfileImg = itemView.findViewById(R.id.txt_setAsProfileImg);
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity);
             img_description = itemView.findViewById(R.id.img_description);
             img_date = itemView.findViewById(R.id.img_date);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity);
+            user_profileImg_cardView_img = itemView.findViewById(R.id.user_profileImg_cardView_img);
+            profileImage_updated = itemView.findViewById(R.id.profileImage_updated);
         }
     }
 
+    public interface MyOnClickListener{
+        void myOnClickListener(int position,Photos photosItem);
+    }
 
 }

@@ -58,16 +58,14 @@ public class UploadPhotosFragment extends Fragment {
     private Button btn_upload;
     private Button txt_showUploads;
     private TextView txt_uploading;
-    String currentTime;
+    private String currentTime;
 
 
     private static final int PICK_IMAGE_REQUSET = 2;
     private Uri img_uri;
     private StorageTask mUploadTask;
 
-    public UploadPhotosFragment() {
-        // Required empty public constructor
-    }
+    public UploadPhotosFragment() {}
 
 
     @Override
@@ -226,6 +224,7 @@ public class UploadPhotosFragment extends Fragment {
 
 
                         String name = edit_txt_photo_name.getText().toString().trim();
+
                         String description = edit_txt_photo_decription.getText().toString().trim();
                         String date = getCurrentTime();
 
