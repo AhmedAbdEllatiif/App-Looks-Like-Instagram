@@ -98,6 +98,7 @@
             android:layout_height="wrap_content"
             app:counterEnabled="true"
             app:counterMaxLength="15"
+            android:layout_marginTop="10dp"
             app:counterOverflowTextAppearance="@style/TextLimitError"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -132,10 +133,20 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="Enter photo name" />
+                android:hint="Description..." />
 
         </android.support.design.widget.TextInputLayout>
 
+        <ImageButton
+            android:id="@+id/img_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/ic_cancel_"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guidline"
+            tools:ignore="RtlCompat" />
 
     </android.support.constraint.ConstraintLayout>
 

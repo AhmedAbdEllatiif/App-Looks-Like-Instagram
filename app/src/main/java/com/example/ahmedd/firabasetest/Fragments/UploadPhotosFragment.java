@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,9 +50,11 @@ public class UploadPhotosFragment extends Fragment {
     private View view;
     private Button btn_pick_photo;
     private TextInputEditText edit_txt_photo_name;
+    private TextInputEditText edit_txt_photo_decription;
     private TextInputLayout inputLayout_imgName;
     private TextInputLayout inputLayout_description;
     private ImageView img_upload;
+    private ImageButton img_cancel;
     private Button btn_upload;
     private Button txt_showUploads;
     private TextView txt_uploading;
@@ -75,12 +78,14 @@ public class UploadPhotosFragment extends Fragment {
 
         btn_pick_photo = view.findViewById(R.id.btn_pick_photo);
         edit_txt_photo_name = view.findViewById(R.id.edit_txt_photo_name);
+        edit_txt_photo_decription = view.findViewById(R.id.edit_txt_photo_decription);
         img_upload = view.findViewById(R.id.img_upload);
         btn_upload = view.findViewById(R.id.btn_upload);
         txt_showUploads = view.findViewById(R.id.txt_showUploads);
         txt_uploading = view.findViewById(R.id.txt_uploading);
         inputLayout_imgName = view.findViewById(R.id.inputLayout_imgName);
         inputLayout_description = view.findViewById(R.id.inputLayout_description);
+        img_cancel = view.findViewById(R.id.img_cancel);
 
 
         MyClickListeners();
@@ -128,6 +133,18 @@ public class UploadPhotosFragment extends Fragment {
                 },2000);*/
             }
         });
+
+        img_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_pick_photo.setVisibility(View.VISIBLE);
+                txt_showUploads.setVisibility(View.VISIBLE);
+                btn_upload.setVisibility(View.GONE);
+                img_cancel.setVisibility(View.GONE);
+                inputLayout_description.setVisibility(View.GONE);
+                inputLayout_imgName.setVisibility(View.GONE);
+            }
+        });
     }
 
 
@@ -159,9 +176,11 @@ public class UploadPhotosFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 img_uri = result.getUri();
                 Picasso.get().load(img_uri).into(img_upload);
+                btn_pick_photo.setVisibility(View.GONE);
                 btn_upload.setVisibility(View.VISIBLE);
                 inputLayout_description.setVisibility(View.VISIBLE);
                 inputLayout_imgName.setVisibility(View.VISIBLE);
+                img_cancel.setVisibility(View.VISIBLE);
                 txt_showUploads.setVisibility(View.GONE);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(getActivity(), "something went wrong ", Toast.LENGTH_SHORT).show();
@@ -207,8 +226,8 @@ public class UploadPhotosFragment extends Fragment {
 
 
                         String name = edit_txt_photo_name.getText().toString().trim();
-                        String description = null;
-                        String date = null;
+                        String description = edit_txt_photo_decription.getText().toString().trim();
+                        String date = getCurrentTime();
 
                         Uri downloadUri = task.getResult();
                         String imgURL = "default";
@@ -233,9 +252,6 @@ public class UploadPhotosFragment extends Fragment {
                             @Override
                             public void run() {
                                 txt_uploading.setVisibility(View.GONE);
-                                btn_upload.setVisibility(View.GONE);
-                                inputLayout_description.setVisibility(View.GONE);
-                                inputLayout_imgName.setVisibility(View.GONE);
                             }
                         },2000);
                     }else {
