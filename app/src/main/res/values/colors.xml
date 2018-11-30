@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#22c49d</color>
-    <color name="colorPrimaryDark">#1d7c66</color>
-    <color name="colorAccent">#fff540</color>
+    <color name="colorPrimary">#35aecf</color>
+    <color name="colorPrimaryDark">#1b0a4c</color>
+    <color name="colorAccent">#d1cdc2</color>
     <color name="white">#ffffff</color>
     <color name="gray_messagesBG">#e6e6e6</color>
-    <color name="gray">#d0989898</color>
+    <color name="gray">#fde3dddd</color>
     <color name="status_color">#05df29</color>
     <color name="status_offline">#9ad6d0d0</color>
     <color name="deliverd_color">#bc979494</color>

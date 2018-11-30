@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent"
+    tools:context=".Main2Activity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimaryDark"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/myUserToolBar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            app:popupTheme="@style/MenuStyle"
-            app:titleTextColor="@color/white">
+            android:layout_height="150dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="true"
+            app:title="Collapse"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Small"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
+            app:expandedTitleMarginStart="15dp"
+            app:collapsedTitleGravity="center_horizontal"
+            >
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_Image"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/myUserToolBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:titleTextColor="@color/white"
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_collapseMode="pin"
+                >
 
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginStart="25dp"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_Image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
 
-        </android.support.v7.widget.Toolbar>
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginStart="25dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </android.support.v7.widget.Toolbar>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabLayot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            app:tabIndicatorColor="@color/colorPrimaryDark"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/colorPrimary" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+
 
     </android.support.design.widget.AppBarLayout>
-</android.support.v7.widget.LinearLayoutCompat>
+
+    <include layout="@layout/content_main2" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+
+</android.support.design.widget.CoordinatorLayout>

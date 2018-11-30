@@ -102,6 +102,7 @@ public class ChatFragment extends Fragment {
                         Intent intent = new Intent(getActivity(), MessageActivity.class);
                         intent.putExtra("userID", userItem.getId());
                         startActivity(intent);
+
                     }
                 });
             }

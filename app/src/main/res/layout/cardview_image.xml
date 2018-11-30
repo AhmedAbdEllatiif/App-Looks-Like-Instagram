@@ -5,7 +5,7 @@
     android:id="@+id/cardViewImage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
+    android:layout_marginTop="6dp"
     app:contentPadding="15dp">
 
     <android.support.constraint.ConstraintLayout

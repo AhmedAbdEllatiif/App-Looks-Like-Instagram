@@ -9,27 +9,32 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ahmedd.firabasetest.Adapters.PageAdapter;
-import com.example.ahmedd.firabasetest.BaseActivities.BaseActivity;
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
-import com.example.ahmedd.firabasetest.Fragments.ProfileFragment;
-import com.example.ahmedd.firabasetest.Fragments.UploadPhotosFragment;
+import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.Receivers.WIFIBroadCastReceiver;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -40,33 +45,87 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+public class Main2Activity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-public class MainActivity extends BaseActivity {
-
-    private CircleImageView profile_img;
+    private ImageView profile_img;
     private TextView userName;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+
+
     private String currentUserID;
     private FirebaseUser firebaseCurrentUser;
+    private Fragment fragment;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        setToolBar();
-    }
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.home:
+                    fragment = new HomeFragment();
+                    collapsingToolbarLayout.setTitle("Home");
+                    break;
+                case R.id.chats:
+                    fragment = new ChatFragment();
+                    collapsingToolbarLayout.setTitle("Chats");
+                    break;
+                case R.id.users:
+                    fragment = new UsersFragment();
+                    collapsingToolbarLayout.setTitle("Users");
+                    break;
+            }
+
+            Log.e("Fragment", "Replacing Fragment");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.viewPager,fragment)
+                    .commit();
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         initViews();
         setToolBar();
-       // setCurrentUserInfo();
-        setupViewPageAdapter();
+        // setCurrentUserInfo();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.home);
+
+
+
+
+
 
         currentUserID = MyFireBase.getCurrentUserID();
         firebaseCurrentUser = MyFireBase.getCurrentUser();
@@ -76,6 +135,8 @@ public class MainActivity extends BaseActivity {
 
 
     }
+
+
     //will try it later
     private boolean haveNetworkConnection() {
         boolean haveConnectedWifi = false;
@@ -103,7 +164,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void setupViewPageAdapter() {
+ /*   private void setupViewPageAdapter() {
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
 
         pageAdapter.AddFragmentPage(new ChatFragment(),getString(R.string.chats));
@@ -113,14 +174,56 @@ public class MainActivity extends BaseActivity {
 
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
-    }
+    }*/
 
     private void initViews() {
         profile_img = findViewById(R.id.profile_Image);
         userName = findViewById(R.id.userName);
-        tabLayout = findViewById(R.id.tabLayot);
-        viewPager = findViewById(R.id.viewPager);
+        collapsingToolbarLayout = findViewById(R.id.collapsing);
+        collapsingToolbarLayout.setTitle("Home");
     }
+
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+
 
     private void setToolBar() {
         Toolbar toolbar = findViewById(R.id.myUserToolBar);
@@ -160,9 +263,9 @@ public class MainActivity extends BaseActivity {
     private void getUserStatus(String status){
 
         /*To get user status we update the child status on tha activity lifecycle
-        *when activity onResume() make status online
-        * when activity onPause() make status offline
-        */
+         *when activity onResume() make status online
+         * when activity onPause() make status offline
+         */
         final HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
 
@@ -184,8 +287,8 @@ public class MainActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.logout:
-               MyFireBase.getAuth().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class)
+                MyFireBase.getAuth().signOut();
+                startActivity(new Intent(Main2Activity.this, StartActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
               /*  AuthUI.getInstance()
                         .signOut(this)
@@ -250,15 +353,5 @@ public class MainActivity extends BaseActivity {
         });
 
     }
-
-
-    /*                  ---***How it works***----
-
-     * MainActivity consists of ToolBar & PageAdapter on fragments(Chat,users,profile)
-     * ToolBar have userName , profile img & a menu with one item Logout to signout of the Firebase.
-     * we get the user status online/offline in this activity in its lifecycle
-     * setup the viewpager with the fragments
-     * setCurrentUserInfo() this method get the info of the user for database and put it into FireBaseAuth.getInstance().getCurrentUser;
-     *  */
 
 }

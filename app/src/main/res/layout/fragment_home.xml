@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
-    tools:context=".PhotoActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.HomeFragment">
 
-
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar_photo_activity" />
-
-
-   <!-- <android.support.v7.widget.RecyclerView
+    <!-- TODO: Update blank fragment layout -->
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_photos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/cardview_image"
-        />-->
+        />
 
 </android.support.constraint.ConstraintLayout>

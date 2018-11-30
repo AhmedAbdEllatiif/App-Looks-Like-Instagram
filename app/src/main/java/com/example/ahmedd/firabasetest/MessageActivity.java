@@ -207,10 +207,11 @@ public class MessageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               startActivity(new Intent(MessageActivity.this,MainActivity.class)
+               startActivity(new Intent(MessageActivity.this,Main2Activity.class)
                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
