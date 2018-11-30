@@ -51,6 +51,8 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutManager =  new LinearLayoutManager(getActivity());
         recyclerView = view.findViewById(R.id.recyclerView_photos);
         recyclerView.setLayoutManager(layoutManager);
+        layoutManager.setStackFromEnd(false);
+
         photosList = new ArrayList<>();
 
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
@@ -62,7 +64,16 @@ public class HomeFragment extends Fragment {
                             Photos photosItem = snapshot.getValue(Photos.class);
                             photosList.add(photosItem);
                         }
-                        adapter = new PhotosAdapter(getActivity(),photosList);
+
+
+                        List<Photos> updatePhotoList = new ArrayList<>();
+                        for(int i = (photosList.size())-1; i>=0 ;i--){
+                            Photos updatePhotoItem = photosList.get(i);
+                            updatePhotoList.add(updatePhotoItem);
+                        }
+
+                        adapter = new PhotosAdapter(getActivity(),updatePhotoList);
+
                         recyclerView.setAdapter(adapter);
 
                         onClickListenerInRecyclerView(adapter);

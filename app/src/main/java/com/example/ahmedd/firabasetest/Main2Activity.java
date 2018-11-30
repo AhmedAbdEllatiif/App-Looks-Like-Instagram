@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
@@ -42,7 +43,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.net.URI;
 import java.util.HashMap;
 
 public class Main2Activity extends AppCompatActivity
@@ -55,6 +59,8 @@ public class Main2Activity extends AppCompatActivity
     private String currentUserID;
     private FirebaseUser firebaseCurrentUser;
     private Fragment fragment;
+    private Uri img_uri;
+
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
 
@@ -87,6 +93,8 @@ public class Main2Activity extends AppCompatActivity
         }
     };
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,12 +106,15 @@ public class Main2Activity extends AppCompatActivity
         setToolBar();
         // setCurrentUserInfo();
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+            Intent intent =  new Intent(Main2Activity.this,PhotoActivity.class);
+            startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
 
@@ -352,6 +363,22 @@ public class Main2Activity extends AppCompatActivity
             }
         });
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Photo uploaded", Toast.LENGTH_SHORT).show();
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Toast.makeText(this, "something went wrong ", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }
