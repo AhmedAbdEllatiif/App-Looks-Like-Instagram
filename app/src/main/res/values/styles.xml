@@ -16,6 +16,11 @@
 
     </style>
 
+    <style name="MyToolbarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+    </style>
+
+
 
     <style name="TextLimitStyle" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/colorAccent</item>

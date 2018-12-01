@@ -10,20 +10,15 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
-import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.android.gms.tasks.Continuation;
@@ -42,9 +37,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PhotoActivity extends AppCompatActivity {
 
@@ -74,7 +67,7 @@ public class PhotoActivity extends AppCompatActivity {
         edit_txt_photo_name = findViewById(R.id.edit_txt_photo_name);
         edit_txt_photo_decription = findViewById(R.id.edit_txt_photo_decription);
         img_upload = findViewById(R.id.img_upload);
-        btn_upload = findViewById(R.id.btn_upload);
+        btn_upload = findViewById(R.id.btn_share);
         txt_uploading = findViewById(R.id.txt_uploading);
         inputLayout_imgName = findViewById(R.id.inputLayout_imgName);
         inputLayout_description = findViewById(R.id.inputLayout_description);
@@ -258,8 +251,8 @@ public class PhotoActivity extends AppCompatActivity {
                 }
             });
         }else {
-            Toast.makeText(PhotoActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
             txt_uploading.setVisibility(View.GONE);
+            Toast.makeText(PhotoActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
         }
 finish();
 
@@ -267,16 +260,18 @@ finish();
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
+        if(data.equals(null)){
+            finish();
+        }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
             if (resultCode == RESULT_OK) {
+                if(!result.getUri().equals(null)){
                 img_uri = result.getUri();
                 Picasso.get().load(img_uri).into(img_upload);
+                }
 
-                inputLayout_description.setVisibility(View.VISIBLE);
-                inputLayout_imgName.setVisibility(View.VISIBLE);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(PhotoActivity.this, "something went wrong ", Toast.LENGTH_SHORT).show();
             }

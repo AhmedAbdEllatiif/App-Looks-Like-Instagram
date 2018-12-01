@@ -56,7 +56,7 @@ public class ProfileFragment extends BaseFragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        userName = view.findViewById(R.id.txt_userName_fragmentProfile);
+        userName = view.findViewById(R.id.txt_userName_profileActivity);
         img_profile = view.findViewById(R.id.img_profile_frahmentProfile);
         img_btn_edit = view.findViewById(R.id.img_btn_edit);
 

@@ -12,4 +12,5 @@
     <color name="seen_color">#74bead</color>
     <color name="black">#000</color>
     <color name="red">#e70e0e</color>
+    <color name="end_color">#4712db</color>
 </resources>

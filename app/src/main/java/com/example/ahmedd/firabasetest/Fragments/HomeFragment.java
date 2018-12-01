@@ -77,18 +77,6 @@ public class HomeFragment extends Fragment {
                         recyclerView.setAdapter(adapter);
 
                         onClickListenerInRecyclerView(adapter);
-                      /*  adapter.setOnAsProfileImgClickListener(new PhotosAdapter.MyOnClickListener() {
-                            @Override
-                            public void myOnClickListener(int position, Photos photosItem) {
-                                HashMap<String,Object> hashMap = new HashMap<>();
-                                hashMap.put("ImageURL",photosItem.getUrl());
-                              MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                                      .updateChildren(hashMap);
-
-                            }
-                        });
-*/
-
 
                     }
 

@@ -102,6 +102,8 @@ public class Main2Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         initViews();
         setToolBar();
         // setCurrentUserInfo();
@@ -124,10 +126,7 @@ public class Main2Activity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
+        setNavHearderInNavigationDrawer();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -143,6 +142,40 @@ public class Main2Activity extends AppCompatActivity
 
         OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
 //        checkWifiConnection();
+
+
+    }
+
+    private void setNavHearderInNavigationDrawer() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View hView =  navigationView.getHeaderView(0);
+        final TextView user_name = (TextView)hView.findViewById(R.id.txt_name_nav_header);
+        final TextView Email = (TextView)hView.findViewById(R.id.txt_email_nav_header);
+        final ImageView img_profile = (ImageView) hView.findViewById(R.id.img_nav_header);
+
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+
+                        user_name.setText(user.getUserName());
+                        Email.setText(MyFireBase.getCurrentUser().getEmail());
+                        if (user.getImageURL().equals("default")){
+                            img_profile.setImageResource(R.mipmap.ic_launcher);
+                        }else {
+                            Picasso.get().load(user.getImageURL()).into(img_profile);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
 
 
     }
@@ -313,6 +346,9 @@ public class Main2Activity extends AppCompatActivity
                         });*/
 
                 return true;
+
+            case R.id.profile_menu :   startActivity(new Intent(Main2Activity.this, ProfileActivity.class));
+            return true;
         }
 
         return false;

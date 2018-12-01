@@ -2,7 +2,6 @@ package com.example.ahmedd.firabasetest.Fragments;
 
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.net.Uri;
@@ -78,7 +77,7 @@ public class UploadPhotosFragment extends Fragment {
         edit_txt_photo_name = view.findViewById(R.id.edit_txt_photo_name);
         edit_txt_photo_decription = view.findViewById(R.id.edit_txt_photo_decription);
         img_upload = view.findViewById(R.id.img_upload);
-        btn_upload = view.findViewById(R.id.btn_upload);
+        btn_upload = view.findViewById(R.id.btn_share);
         txt_showUploads = view.findViewById(R.id.txt_showUploads);
         txt_uploading = view.findViewById(R.id.txt_uploading);
         inputLayout_imgName = view.findViewById(R.id.inputLayout_imgName);
