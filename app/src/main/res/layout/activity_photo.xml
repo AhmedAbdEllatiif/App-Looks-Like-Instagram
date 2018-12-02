@@ -52,6 +52,18 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/guidline" />
 
+        <TextView
+            android:id="@+id/txt_choose_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Photo"
+            android:textSize="18dp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/guidline" />
 
 
 
@@ -82,7 +94,7 @@
             app:counterOverflowTextAppearance="@style/TextLimitError"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_uploading"
+            app:layout_constraintTop_toBottomOf="@id/txt_choose_image"
             android:visibility="visible"
             >
 
@@ -113,7 +125,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:hint="Description..." />
+                android:hint="Description..,optional" />
 
         </android.support.design.widget.TextInputLayout>
 

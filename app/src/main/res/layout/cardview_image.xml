@@ -44,6 +44,16 @@
             app:layout_constraintTop_toTopOf="@id/user_profileImg_cardView_img"
             />
 
+        <ImageView
+            android:id="@+id/delete_cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/txt_name_cardView_photoActivity"
+            />
+
+
         <TextView
             android:id="@+id/txt_name_cardView_photoActivity"
             android:layout_width="wrap_content"

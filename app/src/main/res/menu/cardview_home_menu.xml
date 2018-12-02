@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/setAsProfileImage_menu"
+        android:title="Set as profile image"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/delete_menu"
+        android:title="Delete"
+        app:showAsAction="never"
+        />
+
+</menu>

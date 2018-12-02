@@ -45,10 +45,12 @@ public class ProfileActivity extends AppCompatActivity {
     private Uri img_uri;
     private TextView email_cardView_profileActivity;
     private TextView txt_userName_profileActivity;
+    private TextView txt_change_profileImage;
     private ImageButton img_btn_edit;
     private EditText editText_username_profileActivity;
     private Button btn_update_profileActivity;
     private Button btn_cancel_profileActivity;
+    private String updateUserName;
 
 
     @Override
@@ -81,6 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
                 editText_username_profileActivity.requestFocus();
                 btn_update_profileActivity.setVisibility(View.VISIBLE);
                 btn_cancel_profileActivity.setVisibility(View.VISIBLE);
+                txt_change_profileImage.setVisibility(View.VISIBLE);
             }
         });
 
@@ -92,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
                 email_cardView_profileActivity.setVisibility(View.VISIBLE);
                 btn_update_profileActivity.setVisibility(View.GONE);
                 btn_cancel_profileActivity.setVisibility(View.GONE);
+                txt_change_profileImage.setVisibility(View.GONE);
             }
         });
 
@@ -102,12 +106,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        txt_change_profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
 
     }
 
     private void initViews() {
         email_cardView_profileActivity = findViewById(R.id.email_cardView_profileActivity);
         txt_userName_profileActivity = findViewById(R.id.txt_userName_profileActivity);
+        txt_change_profileImage = findViewById(R.id.txt_change_profileImage);
         editText_username_profileActivity = findViewById(R.id.editText_username_profileActivity);
         img_profile = findViewById(R.id.img_profile_frahmentProfile);
         img_btn_edit = findViewById(R.id.img_btn_edit);
@@ -116,12 +128,14 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         email_cardView_profileActivity.setText(MyFireBase.getCurrentUser().getEmail());
-        txt_userName_profileActivity.setText(MyFireBase.getCurrentUser().getDisplayName());
         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
+
+                        txt_userName_profileActivity.setText(user.getUserName());
+
                         if (user.getImageURL().equals("default")){
                             img_profile.setImageResource(R.mipmap.ic_launcher);
                         }else {
@@ -203,6 +217,7 @@ public class ProfileActivity extends AppCompatActivity {
         //showProgressBar("please wait","uploading your profile Image");
         Log.e("UploadImage","begin the method");
 
+
         Handler handler = new Handler();
         Runnable runnable=  new Runnable() {
             @Override
@@ -228,12 +243,23 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()){
+
                                 Log.e("onComplete","Successful");
                                 Uri downloadUri = task.getResult();
                                 String myUri = downloadUri.toString();
+                                 updateUserName = MyFireBase.getCurrentUser().getDisplayName();
+
+                                if (editText_username_profileActivity.getText().toString().trim().isEmpty()){
+                                    editText_username_profileActivity.setError("username can't be empty");
+                                }
+                                else{
+                                    updateUserName = editText_username_profileActivity.getText().toString().trim();
+                                }
+
 
                                 HashMap<String,Object> hashMap = new HashMap<>();
                                 hashMap.put("ImageURL",myUri);
+                                hashMap.put("userName",updateUserName);
                                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .updateChildren(hashMap);
                                 //hideProgressBar();
@@ -250,6 +276,18 @@ public class ProfileActivity extends AppCompatActivity {
                     });
                 }else {
                     Toast.makeText(ProfileActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                    if (editText_username_profileActivity.getText().toString().trim().isEmpty()){
+                        editText_username_profileActivity.setError("username can't be empty");
+                    }
+                    else{
+                        updateUserName = editText_username_profileActivity.getText().toString().trim();
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("userName",updateUserName);
+                        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                .updateChildren(hashMap);
+                    }
+
+
                 }
             }
         };
@@ -260,9 +298,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data.equals(null)){
-            finish();
-        }
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 

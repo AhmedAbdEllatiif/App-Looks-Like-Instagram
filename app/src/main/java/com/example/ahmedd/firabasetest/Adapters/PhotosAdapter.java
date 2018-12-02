@@ -29,6 +29,12 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     private MyOnClickListener onAsProfileImgClickListener;
     private MyOnClickListener onDescriptionClickListener;
 
+    public void setOnDeleteClickListener(MyOnClickListener onDeleteClickListener) {
+        this.onDeleteClickListener = onDeleteClickListener;
+    }
+
+    private MyOnClickListener onDeleteClickListener;
+
 
     public PhotosAdapter(Context context, List<Photos> photosList ) {
         this.photosList = photosList;
@@ -127,6 +133,16 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                 }
             });
         }
+        if (onDeleteClickListener!=null){
+            holder.delete_cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onDeleteClickListener.myOnClickListener(position,photosItem);
+                }
+            });
+        }
+
+
 
 
     }
@@ -143,6 +159,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         TextView txt_setAsProfileImg;
         TextView img_description;
         TextView img_date;
+        ImageView delete_cardView;
         ImageView img_;
         ImageView user_profileImg_cardView_img;
         ImageView profileImage_updated;
@@ -153,6 +170,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             user_name_cardView_img = itemView.findViewById(R.id.user_name_cardView_img);
             txt_setAsProfileImg = itemView.findViewById(R.id.txt_setAsProfileImg);
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity);
+            delete_cardView = itemView.findViewById(R.id.delete_cardView);
             img_description = itemView.findViewById(R.id.img_description);
             img_date = itemView.findViewById(R.id.img_date);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity);

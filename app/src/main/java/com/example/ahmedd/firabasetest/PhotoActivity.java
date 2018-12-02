@@ -11,6 +11,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -51,11 +53,14 @@ public class PhotoActivity extends AppCompatActivity {
     private ImageView img_upload;
     private Button btn_upload;
     private TextView txt_uploading;
+    private TextView txt_choose_image;
     private String currentTime;
 
     private Uri img_uri;
     private StorageTask mUploadTask;
 
+    private String photoName;
+    private String photoDescription;
 
 
     @Override
@@ -69,6 +74,7 @@ public class PhotoActivity extends AppCompatActivity {
         img_upload = findViewById(R.id.img_upload);
         btn_upload = findViewById(R.id.btn_share);
         txt_uploading = findViewById(R.id.txt_uploading);
+        txt_choose_image = findViewById(R.id.txt_choose_image);
         inputLayout_imgName = findViewById(R.id.inputLayout_imgName);
         inputLayout_description = findViewById(R.id.inputLayout_description);
 
@@ -77,6 +83,49 @@ public class PhotoActivity extends AppCompatActivity {
         MyClickListeners();
         openFileChooser();
 
+        editTextWatchers();
+
+    }
+
+    private void editTextWatchers() {
+        edit_txt_photo_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 15) {
+                    edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        edit_txt_photo_decription.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 100) {
+                    edit_txt_photo_decription.setError("invalid must be less than 100 letters");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void openFileChooser(){
@@ -110,14 +159,74 @@ public class PhotoActivity extends AppCompatActivity {
         btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                String date = getCurrentTime();
+
+                if (edit_txt_photo_name.getText().toString().trim().isEmpty()
+                        || edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+
+                    if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
+                        edit_txt_photo_name.setError("Enter photo name");
+
+                    }
+                    if (edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+                        edit_txt_photo_decription.setError("Enter");
+                    }
+
+                } else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
+                        || !edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+
+                    if (edit_txt_photo_name.getText().toString().length() > 15) {
+                        edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                    }
+
+                    else if (edit_txt_photo_decription.getText().toString().length() > 100) {
+                        edit_txt_photo_decription.setError("invalid must be less than 100 letters");
+                    }else {
+                        photoName = edit_txt_photo_name.getText().toString().trim();
+                        photoDescription = edit_txt_photo_decription.getText().toString().trim();
+
+                        txt_uploading.setVisibility(View.VISIBLE);
+                        txt_choose_image.setVisibility(View.INVISIBLE);
+                        txt_uploading.setText("Uploading...");
+                        upload();
+                    }
+                }
+
+
+                /*if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
+                    edit_txt_photo_name.setError("Enter photo name");
+
+                } else if (edit_txt_photo_name.getText().toString().length() > 15) {
+                    edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                } else {
+                    photoName = edit_txt_photo_name.getText().toString().trim();
+                }
+
+
+                if (edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+                    edit_txt_photo_decription.setError("Enter");
+                } else if (edit_txt_photo_decription.getText().toString().length() > 100) {
+                    edit_txt_photo_decription.setError("invalid must be less than 100 letters");
+                } else {
+                    photoDescription = edit_txt_photo_decription.getText().toString().trim();
+                }
+
                 txt_uploading.setVisibility(View.VISIBLE);
+                txt_choose_image.setVisibility(View.INVISIBLE);
                 txt_uploading.setText("Uploading...");
-                upload();
+                upload();*/
 
             }
         });
 
-       ;
+        txt_choose_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
     }
 
     private void setToolBar() {
@@ -174,7 +283,7 @@ public class PhotoActivity extends AppCompatActivity {
     private void upload() {
 
 
-        Log.e("URI", img_uri.toString());
+//        Log.e("URI", img_uri.toString());
         if (img_uri!=null){
             final StorageReference fileReference = MyFireBase.getStorageReferenceOnPhotos().child(System.currentTimeMillis() +
                     "." + getFileExtension(img_uri));
@@ -199,24 +308,18 @@ public class PhotoActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Log.e("onComplete","Successful");
 
-
-                        String name = edit_txt_photo_name.getText().toString().trim();
-
-                        String description = edit_txt_photo_decription.getText().toString().trim();
-                        String date = getCurrentTime();
-
                         Uri downloadUri = task.getResult();
-                        String imgURL = "default";
+                        String imgURL = "";
                         if(downloadUri!=null){
                             imgURL = downloadUri.toString();
                         }
 
 
-                        HashMap<String,Object> hashMap = new HashMap<>();
-                        hashMap.put("name",name);
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("name", photoName);
                         hashMap.put("url",imgURL);
-                        hashMap.put("description",description);
-                        hashMap.put("date",date);
+                        hashMap.put("description", photoDescription);
+                        hashMap.put("date", getCurrentTime());
 
                         MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
 
@@ -242,6 +345,7 @@ public class PhotoActivity extends AppCompatActivity {
                             }
                         },2000);
                     }
+                    finish();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -254,18 +358,18 @@ public class PhotoActivity extends AppCompatActivity {
             txt_uploading.setVisibility(View.GONE);
             Toast.makeText(PhotoActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
         }
-finish();
 
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data.equals(null)){
-            finish();
-        }
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-
+          /*  if(data.equals(null)){
+                finish();
+            }
+*/
             if (resultCode == RESULT_OK) {
                 if(!result.getUri().equals(null)){
                 img_uri = result.getUri();

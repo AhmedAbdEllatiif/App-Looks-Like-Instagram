@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
@@ -56,6 +57,8 @@ public class HomeFragment extends Fragment {
 
         photosList = new ArrayList<>();
 
+
+
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -63,18 +66,15 @@ public class HomeFragment extends Fragment {
                         photosList.clear();
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             Photos photosItem = snapshot.getValue(Photos.class);
+                            photosItem.setKey(snapshot.getKey());
                             photosList.add(photosItem);
                         }
-
-
                         List<Photos> updatePhotoList = new ArrayList<>();
                         for(int i = (photosList.size())-1; i>=0 ;i--){
                             Photos updatePhotoItem = photosList.get(i);
                             updatePhotoList.add(updatePhotoItem);
                         }
-
                         adapter = new PhotosAdapter(getActivity(),updatePhotoList);
-
                         recyclerView.setAdapter(adapter);
 
                         onClickListenerInRecyclerView(adapter);
@@ -100,6 +100,19 @@ public class HomeFragment extends Fragment {
                         .updateChildren(hashMap);
                 Snackbar.make(view, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+            }
+        });
+
+        photosAdapter.setOnDeleteClickListener(new PhotosAdapter.MyOnClickListener() {
+            @Override
+            public void myOnClickListener(int position, Photos photosItem) {
+
+                MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                        .child(photosItem.getKey()).removeValue();
+                Snackbar.make(view, "Photo Deleted", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            //we can restore the photo by the snackabar listener
 
             }
         });
