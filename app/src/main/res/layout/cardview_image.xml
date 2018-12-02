@@ -112,7 +112,7 @@
             android:id="@+id/profileImage_updated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/ic_done_image_vector_round"
+            android:background="@drawable/ic_add_"
             app:layout_constraintStart_toStartOf="@id/img_cardView_photoActivity"
             app:layout_constraintEnd_toEndOf="@id/img_cardView_photoActivity"
             app:layout_constraintTop_toTopOf="@id/img_cardView_photoActivity"

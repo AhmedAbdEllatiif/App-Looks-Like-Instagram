@@ -1,11 +1,10 @@
 package com.example.ahmedd.firabasetest.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,20 +75,21 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                 Picasso.get().load(photosItem.getUrl()).into(holder.img_);
         }
 
-        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User userItem = snapshot.getValue(User.class);
-                    if(userItem.getId().equals(MyFireBase.getCurrentUser().getUid())){
-                        holder.user_name_cardView_img.setText(userItem.getUserName());
+                User userItem = dataSnapshot.getValue(User.class);
+
+                holder.user_name_cardView_img.setText(userItem.getUserName());
+
                         if (userItem.getImageURL().equals("default")){
                             holder.img_.setImageResource(R.mipmap.ic_launcher);
                         }else {
                             Picasso.get().load(userItem.getImageURL()).into(holder.user_profileImg_cardView_img);
                         }
-                    }
-                }
+
+
             }
 
             @Override
@@ -104,13 +104,16 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                 @Override
                 public void onClick(View v) {
                     onAsProfileImgClickListener.myOnClickListener(position,photosItem);
-                    holder.profileImage_updated.setVisibility(View.VISIBLE);
+
+
+
+                /*    holder.profileImage_updated.setVisibility(View.VISIBLE);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             holder.profileImage_updated.setVisibility(View.GONE);
                         }
-                    },2000);
+                    },2000);*/
                 }
             });
         }

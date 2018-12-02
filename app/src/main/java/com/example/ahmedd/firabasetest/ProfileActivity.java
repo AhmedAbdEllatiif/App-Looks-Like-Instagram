@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -49,12 +50,14 @@ public class ProfileActivity extends AppCompatActivity {
     private Button btn_update_profileActivity;
     private Button btn_cancel_profileActivity;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         initViews();
+        setToolBar();
         MyOnClickListeners();
 
 
@@ -131,6 +134,43 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
+
+    }
+
+    private void setToolBar() {
+        Toolbar toolbar = findViewById(R.id.profileActivity_ToolBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        final TextView userNameToolBar = findViewById(R.id.profileActivity_userName);
+        final ImageView imgToolBar= findViewById(R.id.profileActivity_profile_Image);
+
+        //set user data in the toolBar
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUserID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //getValue hatrg3 object jason
+                //ha3ml class 2st2bl feh l object
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user.getUserName() != null) {
+                    userNameToolBar.setText(user.getUserName());
+                }
+
+                if (user.getImageURL().equals("default")) {
+                    imgToolBar.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Picasso.get().load(user.getImageURL()).into(imgToolBar);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

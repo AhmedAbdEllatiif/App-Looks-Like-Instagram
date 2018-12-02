@@ -3,6 +3,7 @@ package com.example.ahmedd.firabasetest.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -97,6 +98,8 @@ public class HomeFragment extends Fragment {
                 hashMap.put("ImageURL", photosItem.getUrl());
                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                         .updateChildren(hashMap);
+                Snackbar.make(view, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
 
             }
         });
