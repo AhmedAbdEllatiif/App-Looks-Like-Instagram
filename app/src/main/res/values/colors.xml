@@ -6,6 +6,7 @@
     <color name="white">#ffffff</color>
     <color name="gray_messagesBG">#e6e6e6</color>
     <color name="gray">#fde3dddd</color>
+    <color name="lightpink">#c5ef0572</color>
     <color name="status_color">#05df29</color>
     <color name="status_offline">#9ad6d0d0</color>
     <color name="deliverd_color">#bc979494</color>

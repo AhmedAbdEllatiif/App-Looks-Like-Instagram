@@ -117,12 +117,17 @@ public class HomeFragment extends Fragment {
             }
         });
 
-       /* photosAdapter.setOnDescriptionClickListener(new PhotosAdapter.MyOnClickListener() {
+        photosAdapter.setOnDescriptionClickListener(new PhotosAdapter.MyOnClickListener() {
             @Override
             public void myOnClickListener(int position, Photos photosItem) {
-
+           /*     HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("ImageURL", photosItem.getUrl());
+                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                        .updateChildren(hashMap);
+                Snackbar.make(view, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
             }
-        });*/
+        });
     }
 
 }

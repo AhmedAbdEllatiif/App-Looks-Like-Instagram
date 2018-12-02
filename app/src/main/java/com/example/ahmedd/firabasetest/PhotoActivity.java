@@ -60,7 +60,7 @@ public class PhotoActivity extends AppCompatActivity {
     private StorageTask mUploadTask;
 
     private String photoName;
-    private String photoDescription;
+    private String photoDescription = "";
 
 
     @Override
@@ -154,28 +154,29 @@ public class PhotoActivity extends AppCompatActivity {
     }
     private void MyClickListeners(){
 
-
-
         btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                String date = getCurrentTime();
-
-                if (edit_txt_photo_name.getText().toString().trim().isEmpty()
-                        || edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
-
-                    if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
+                if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
                         edit_txt_photo_name.setError("Enter photo name");
 
-                    }
-                    if (edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
-                        edit_txt_photo_decription.setError("Enter");
-                    }
+                }else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
+                        && edit_txt_photo_decription.getText().toString().trim().isEmpty()){
 
-                } else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
-                        || !edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+                    if (edit_txt_photo_name.getText().toString().length() > 15) {
+                        edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                    }
+                    photoName = edit_txt_photo_name.getText().toString().trim();
+                    txt_uploading.setVisibility(View.VISIBLE);
+                    txt_choose_image.setVisibility(View.INVISIBLE);
+                    txt_uploading.setText("Uploading...");
+                    upload();
+
+                }
+
+                else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
+                        && !edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
 
                     if (edit_txt_photo_name.getText().toString().length() > 15) {
                         edit_txt_photo_name.setError("invalid must be less than 15 letters");
@@ -194,29 +195,6 @@ public class PhotoActivity extends AppCompatActivity {
                     }
                 }
 
-
-                /*if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
-                    edit_txt_photo_name.setError("Enter photo name");
-
-                } else if (edit_txt_photo_name.getText().toString().length() > 15) {
-                    edit_txt_photo_name.setError("invalid must be less than 15 letters");
-                } else {
-                    photoName = edit_txt_photo_name.getText().toString().trim();
-                }
-
-
-                if (edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
-                    edit_txt_photo_decription.setError("Enter");
-                } else if (edit_txt_photo_decription.getText().toString().length() > 100) {
-                    edit_txt_photo_decription.setError("invalid must be less than 100 letters");
-                } else {
-                    photoDescription = edit_txt_photo_decription.getText().toString().trim();
-                }
-
-                txt_uploading.setVisibility(View.VISIBLE);
-                txt_choose_image.setVisibility(View.INVISIBLE);
-                txt_uploading.setText("Uploading...");
-                upload();*/
 
             }
         });
@@ -312,6 +290,11 @@ public class PhotoActivity extends AppCompatActivity {
                         String imgURL = "";
                         if(downloadUri!=null){
                             imgURL = downloadUri.toString();
+                        }
+
+
+                        if (photoDescription.equals("")){
+                            photoDescription = "write a description";
                         }
 
 

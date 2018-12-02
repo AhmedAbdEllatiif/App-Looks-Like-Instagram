@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -129,7 +130,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             holder.img_description.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    holder.img_description.setVisibility(View.GONE);
                     onDescriptionClickListener.myOnClickListener(position,photosItem);
+                    holder.write_description.setVisibility(View.VISIBLE);
+
                 }
             });
         }
@@ -159,6 +164,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         TextView txt_setAsProfileImg;
         TextView img_description;
         TextView img_date;
+        EditText write_description;
         ImageView delete_cardView;
         ImageView img_;
         ImageView user_profileImg_cardView_img;
@@ -170,6 +176,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             user_name_cardView_img = itemView.findViewById(R.id.user_name_cardView_img);
             txt_setAsProfileImg = itemView.findViewById(R.id.txt_setAsProfileImg);
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity);
+            write_description = itemView.findViewById(R.id.write_description);
             delete_cardView = itemView.findViewById(R.id.delete_cardView);
             img_description = itemView.findViewById(R.id.img_description);
             img_date = itemView.findViewById(R.id.img_date);

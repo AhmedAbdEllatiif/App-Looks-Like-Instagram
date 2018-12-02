@@ -118,6 +118,21 @@
             app:layout_constraintBottom_toBottomOf="@id/fixed_description"
             tools:ignore="RtlCompat" />
 
+        <EditText
+            android:id="@+id/write_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description..."
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="18dp"
+            app:layout_constraintStart_toEndOf="@id/fixed_description"
+            app:layout_constraintTop_toTopOf="@id/fixed_description"
+            app:layout_constraintBottom_toBottomOf="@id/fixed_description"
+            android:visibility="gone"
+            tools:ignore="RtlCompat" />
+
+
         <ImageView
             android:id="@+id/profileImage_updated"
             android:layout_width="wrap_content"
