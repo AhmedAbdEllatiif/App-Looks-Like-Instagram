@@ -3,6 +3,9 @@ package com.example.ahmedd.firabasetest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -14,6 +17,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -47,6 +51,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class Main2Activity extends AppCompatActivity
@@ -143,9 +149,27 @@ public class Main2Activity extends AppCompatActivity
         OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
 //        checkWifiConnection();
 
+        printKeyHash();
 
     }
+    private void printKeyHash() {
 
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo("com.dentistry.ahmed.dentistryapp",
+                    PackageManager.GET_SIGNATURES);
+            for(Signature signature : packageInfo.signatures){
+                MessageDigest messageDigest = MessageDigest.getInstance("SHA");
+                messageDigest.update(signature.toByteArray());
+                Log.e("KeyHash", Base64.encodeToString(messageDigest.digest(),Base64.DEFAULT));
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+    }
     private void setNavHearderInNavigationDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

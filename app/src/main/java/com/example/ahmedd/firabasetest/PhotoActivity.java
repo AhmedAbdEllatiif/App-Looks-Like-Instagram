@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -156,44 +157,67 @@ public class PhotoActivity extends AppCompatActivity {
 
         btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
 
-                if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
-                        edit_txt_photo_name.setError("Enter photo name");
+                Handler handler = new Handler();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                }else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
-                        && edit_txt_photo_decription.getText().toString().trim().isEmpty()){
+                        if (mUploadTask != null && mUploadTask.isInProgress()) {
+                            Snackbar.make(v, "uploading please wait..", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        } else {
 
-                    if (edit_txt_photo_name.getText().toString().length() > 15) {
-                        edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                            if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
+                                edit_txt_photo_name.setError("Enter photo name");
+
+                            } else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
+                                    && edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+
+                                if (edit_txt_photo_name.getText().toString().length() > 15) {
+                                    edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                                }
+                                photoName = edit_txt_photo_name.getText().toString().trim();
+                                txt_uploading.setVisibility(View.VISIBLE);
+                                txt_choose_image.setVisibility(View.INVISIBLE);
+                                txt_uploading.setText("Uploading...");
+                                upload();
+
+                            } else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
+                                    && !edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
+
+                                if (edit_txt_photo_name.getText().toString().length() > 15) {
+                                    edit_txt_photo_name.setError("invalid must be less than 15 letters");
+                                } else if (edit_txt_photo_decription.getText().toString().length() > 100) {
+                                    edit_txt_photo_decription.setError("invalid must be less than 100 letters");
+                                } else {
+                                    photoName = edit_txt_photo_name.getText().toString().trim();
+                                    photoDescription = edit_txt_photo_decription.getText().toString().trim();
+
+                                    txt_uploading.setVisibility(View.VISIBLE);
+                                    txt_choose_image.setVisibility(View.INVISIBLE);
+                                    txt_uploading.setText("Uploading...");
+                                    upload();
+                                }
+                            }
+
+
+                        }
+
+
+
+
+
+
+
                     }
-                    photoName = edit_txt_photo_name.getText().toString().trim();
-                    txt_uploading.setVisibility(View.VISIBLE);
-                    txt_choose_image.setVisibility(View.INVISIBLE);
-                    txt_uploading.setText("Uploading...");
-                    upload();
+                });
 
-                }
 
-                else if (!edit_txt_photo_name.getText().toString().trim().isEmpty()
-                        && !edit_txt_photo_decription.getText().toString().trim().isEmpty()) {
 
-                    if (edit_txt_photo_name.getText().toString().length() > 15) {
-                        edit_txt_photo_name.setError("invalid must be less than 15 letters");
-                    }
 
-                    else if (edit_txt_photo_decription.getText().toString().length() > 100) {
-                        edit_txt_photo_decription.setError("invalid must be less than 100 letters");
-                    }else {
-                        photoName = edit_txt_photo_name.getText().toString().trim();
-                        photoDescription = edit_txt_photo_decription.getText().toString().trim();
 
-                        txt_uploading.setVisibility(View.VISIBLE);
-                        txt_choose_image.setVisibility(View.INVISIBLE);
-                        txt_uploading.setText("Uploading...");
-                        upload();
-                    }
-                }
 
 
             }
@@ -266,7 +290,6 @@ public class PhotoActivity extends AppCompatActivity {
             final StorageReference fileReference = MyFireBase.getStorageReferenceOnPhotos().child(System.currentTimeMillis() +
                     "." + getFileExtension(img_uri));
             mUploadTask = fileReference.putFile(img_uri);
-
 
 
             mUploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {

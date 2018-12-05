@@ -29,6 +29,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         private String ImgURl;
         private String time;
         private FirebaseUser currentUser;
+        private int type;
 
 
     public MessagesAdapter(Context context, List <Chats> chatsList,String ImgURl) {
@@ -43,6 +44,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType){
+
         if (viewType == MSG_TYPE_RIGHT) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cardview_rightchat, parent, false);

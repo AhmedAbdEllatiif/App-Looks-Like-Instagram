@@ -74,7 +74,13 @@ public class HomeFragment extends Fragment {
                             Photos updatePhotoItem = photosList.get(i);
                             updatePhotoList.add(updatePhotoItem);
                         }
-                        adapter = new PhotosAdapter(getActivity(),updatePhotoList);
+                        int type;
+                        if (updatePhotoList.equals(null)){
+                            type = 0;
+                        }else {
+                            type = 1;
+                        }
+                        adapter = new PhotosAdapter(getActivity(),updatePhotoList,type);
                         recyclerView.setAdapter(adapter);
 
                         onClickListenerInRecyclerView(adapter);
