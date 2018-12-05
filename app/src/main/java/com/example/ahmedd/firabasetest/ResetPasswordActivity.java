@@ -2,10 +2,12 @@ package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,11 +30,20 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         initViews();
         setToolBar();
+        String emailFromIntent = getIntent().getStringExtra("Email");
+        Log.e("Email","emailFromIntent");
+        editTxt_email_resetActivity.setText(emailFromIntent);
+        editTxt_email_resetActivity.requestFocus();
 
         btn_resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (editTxt_email_resetActivity.equals("")){
+            public void onClick(final View v) {
+
+                String emailFromIntent = getIntent().getStringExtra("Email");
+                Log.e("emailFromIntent","emailFromIntent");
+                editTxt_email_resetActivity.setText(emailFromIntent);
+
+                if (editTxt_email_resetActivity.getText().toString().trim().equals("")){
                     editTxt_email_resetActivity.setError(getString(R.string.enter_mail));
                 }else {
                     EMAIL = editTxt_email_resetActivity.getText().toString().trim();
@@ -41,12 +52,14 @@ public class ResetPasswordActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                            if (task.isSuccessful()){
                             Toast.makeText(ResetPasswordActivity.this, "Check your mail", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(ResetPasswordActivity.this,Main2Activity.class));
+                               Snackbar.make(v, "please, Check your mail", Snackbar.LENGTH_LONG)
+                                       .setAction("Action", null).show();
+                               editTxt_email_resetActivity.requestFocus();
                            }else {
                                String taskError = task.getException().getMessage();
                                Toast.makeText(ResetPasswordActivity.this, taskError, Toast.LENGTH_SHORT).show();
 
-
+                                editTxt_email_resetActivity.requestFocus();
                            }
 
 

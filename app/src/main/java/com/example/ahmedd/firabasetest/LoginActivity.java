@@ -1,10 +1,10 @@
 package com.example.ahmedd.firabasetest;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +24,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_login;
     private Toolbar toolbar;
     private TextView txt_forgetPassword;
+
+    private String txt_email;
+    String txt_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String txt_email = email.getText().toString();
-                String txt_password = password.getText().toString();
+                txt_email = email.getText().toString().trim();
+                txt_password = password.getText().toString().trim();
                 Log.e("login","clicked");
                 if (txt_email.isEmpty() || txt_password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "All fields required ", Toast.LENGTH_SHORT).show();
@@ -90,7 +93,15 @@ public class LoginActivity extends AppCompatActivity {
         txt_forgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,ResetPasswordActivity.class));
+                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+
+                if (email.getText().toString().trim().equals("")) {
+                    intent.putExtra("Email", "");
+                }else {
+                    intent.putExtra("Email",email.getText().toString().trim());
+                }
+                startActivity(intent);
+
             }
         });
 

@@ -379,6 +379,7 @@ public class PhotoActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 if(!result.getUri().equals(null)){
                 img_uri = result.getUri();
+                Log.e("uri",img_uri.toString());
                 Picasso.get().load(img_uri).into(img_upload);
                 }
 
