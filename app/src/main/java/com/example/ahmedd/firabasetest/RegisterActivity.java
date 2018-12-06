@@ -29,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btn_register;
     private Toolbar toolbar;
 
+
     private static DatabaseReference userReference;
 
     @Override
@@ -89,6 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String userName = editTextUserName.getText().toString().trim();
                 String email = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
+                String birthday = "dd,MM,YYYY";
 
                 if (userName.isEmpty()) {
                     editTextUserName.setError("Enter user name");
@@ -98,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                     editTextPassword.setError("Enter password at least 6 characters");
                 } else {
                     Log.e("Button", "Clicked");
-                    register(userName, email, password);
+                    register(userName, email, password,birthday);
                 }
 
             }
@@ -106,7 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    public void register(final String userName, String email, String password) {
+    public void register(final String userName, String email, String password, final String userBirthday) {
         Log.e("Register Method","Is here");
         //to create a new user with the email and password
         MyFireBase.getAuth().createUserWithEmailAndPassword(email, password)
@@ -132,6 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("userName", userName);
                             hashMap.put("ImageURL", "default");
                             hashMap.put("status",R.string.offline);
+                            hashMap.put("birthday",userBirthday);
 
 
                             MyFireBase.getReferenceOnAllUsers().child(userID).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {

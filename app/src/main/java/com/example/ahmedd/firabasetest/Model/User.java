@@ -10,14 +10,16 @@ public class User {
     private String id;
     private String userName;
     private String status;
+    private String birthday;
 
     public User() {}
 
-    public User(String id, String userName, String ImageURL,String status) {
+    public User(String id, String userName, String ImageURL,String status,String birthday) {
         this.id = id;
         this.userName = userName;
         this.ImageURL = ImageURL;
         this.status = status;
+        this.birthday = birthday;
     }
 
 
@@ -51,5 +53,13 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

@@ -3,10 +3,11 @@ package com.example.ahmedd.firabasetest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ahmedd.firabasetest.Fragments.DatePickerDialogFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.android.gms.tasks.Continuation;
@@ -36,7 +38,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements DatePickerDialogFragment.OnCompleteListener {
 
 
 
@@ -46,11 +48,17 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView email_cardView_profileActivity;
     private TextView txt_userName_profileActivity;
     private TextView txt_change_profileImage;
+    private TextView txt_birthday;
     private ImageButton img_btn_edit;
+    private ImageButton img_btn_calender;
     private EditText editText_username_profileActivity;
+
     private Button btn_update_profileActivity;
     private Button btn_cancel_profileActivity;
     private String updateUserName;
+    private String updatedBirthday;
+
+
 
 
     @Override
@@ -78,12 +86,12 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 editText_username_profileActivity.setText(MyFireBase.getCurrentUser().getDisplayName());
                 txt_userName_profileActivity.setVisibility(View.INVISIBLE);
-                email_cardView_profileActivity.setVisibility(View.INVISIBLE);
                 editText_username_profileActivity.setVisibility(View.VISIBLE);
                 editText_username_profileActivity.requestFocus();
                 btn_update_profileActivity.setVisibility(View.VISIBLE);
                 btn_cancel_profileActivity.setVisibility(View.VISIBLE);
                 txt_change_profileImage.setVisibility(View.VISIBLE);
+                img_btn_calender.setVisibility(View.VISIBLE);
             }
         });
 
@@ -92,17 +100,17 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 editText_username_profileActivity.setVisibility(View.INVISIBLE);
                 txt_userName_profileActivity.setVisibility(View.VISIBLE);
-                email_cardView_profileActivity.setVisibility(View.VISIBLE);
                 btn_update_profileActivity.setVisibility(View.GONE);
                 btn_cancel_profileActivity.setVisibility(View.GONE);
                 txt_change_profileImage.setVisibility(View.GONE);
+                img_btn_calender.setVisibility(View.GONE);
             }
         });
 
         btn_update_profileActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadProfileImage();
+                updateUserProfile();
             }
         });
 
@@ -113,6 +121,22 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
+        img_btn_calender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerDialogFragment();
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
+
+       /* btn_pick_birthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerDialogFragment();
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });*/
 
     }
 
@@ -125,6 +149,10 @@ public class ProfileActivity extends AppCompatActivity {
         img_btn_edit = findViewById(R.id.img_btn_edit);
         btn_update_profileActivity = findViewById(R.id.btn_update_profileActivity);
         btn_cancel_profileActivity = findViewById(R.id.btn_cancel_profileActivity);
+        txt_birthday = findViewById(R.id.txt_birthday);
+        img_btn_calender = findViewById(R.id.img_btn_calender);
+
+
 
 
         email_cardView_profileActivity.setText(MyFireBase.getCurrentUser().getEmail());
@@ -135,6 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
                         User user = dataSnapshot.getValue(User.class);
 
                         txt_userName_profileActivity.setText(user.getUserName());
+                        txt_birthday.setText(user.getBirthday());
 
                         if (user.getImageURL().equals("default")){
                             img_profile.setImageResource(R.mipmap.ic_launcher);
@@ -148,6 +177,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
+
 
     }
 
@@ -213,7 +243,7 @@ public class ProfileActivity extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(resolver.getType(uri));
     }
 
-    private void uploadProfileImage(){
+    private void updateUserProfile() {
         //showProgressBar("please wait","uploading your profile Image");
         Log.e("UploadImage","begin the method");
 
@@ -247,7 +277,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 Log.e("onComplete","Successful");
                                 Uri downloadUri = task.getResult();
                                 String myUri = downloadUri.toString();
-                                 updateUserName = MyFireBase.getCurrentUser().getDisplayName();
+                                updateUserName = MyFireBase.getCurrentUser().getDisplayName();
+                                updatedBirthday = txt_birthday.getText().toString();
 
                                 if (editText_username_profileActivity.getText().toString().trim().isEmpty()){
                                     editText_username_profileActivity.setError("username can't be empty");
@@ -260,6 +291,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 HashMap<String,Object> hashMap = new HashMap<>();
                                 hashMap.put("ImageURL",myUri);
                                 hashMap.put("userName",updateUserName);
+                                hashMap.put("birthday",updatedBirthday);
                                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .updateChildren(hashMap);
                                 //hideProgressBar();
@@ -306,7 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if(!result.getUri().equals(null)){
                     img_uri = result.getUri();
                     Picasso.get().load(img_uri).into(img_profile);
-                    uploadProfileImage();
+                    updateUserProfile();
                 }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -315,6 +347,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onComplete(String time) {
+        txt_birthday.setText(time);
+    }
 }
 
 

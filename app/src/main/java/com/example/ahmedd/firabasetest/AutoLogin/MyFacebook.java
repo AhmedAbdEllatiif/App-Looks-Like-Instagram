@@ -37,6 +37,7 @@ public class MyFacebook {
     private static Bundle bundle;
     private static String username;
     private static String img_url;
+    private static String birthday = "dd,MM,YYYY";
 
     public static void Login(final Activity context, LoginButton loginButton, CallbackManager callbackManager){
 
@@ -58,6 +59,7 @@ public class MyFacebook {
                             Log.e("jsonTry", object.getString("birthday"));
 
                             username = object.getString("first_name");
+                            birthday = object.getString("birthday");
                             img_url ="http://graph.facebook.com/"+object.getString("id")+"/picture?height=1000&width=1000&type=square&redirect=true";
 
                             AuthCredential credential = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());
@@ -75,6 +77,7 @@ public class MyFacebook {
                                         hashMap.put("id", user.getUid());
                                         hashMap.put("ImageURL", img_url);
                                         hashMap.put("status", String.valueOf(R.string.offline));
+                                        hashMap.put("birthday",birthday);
 
 
                                         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
