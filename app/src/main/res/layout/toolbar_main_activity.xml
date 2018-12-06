@@ -1,71 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Main2Activity">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="true"
-            app:title="Collapse"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Small"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
-            app:expandedTitleMarginStart="15dp"
-            app:collapsedTitleGravity="center_horizontal"
-            >
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/myUserToolBar"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/MyToolbarStyle"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:titleTextColor="@color/white"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_collapseMode="pin"
+                android:layout_height="150dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="true"
+                app:title="Collapse"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Small"
+                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
+                app:expandedTitleMarginStart="15dp"
+                app:collapsedTitleGravity="center_horizontal"
                 >
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_Image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/myUserToolBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:theme="@style/MyToolbarStyle"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:titleTextColor="@color/white"
+                    app:contentScrim="?attr/colorPrimary"
+                    app:layout_collapseMode="pin"
+                    >
 
-                <TextView
-                    android:id="@+id/userName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginStart="25dp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </android.support.v7.widget.Toolbar>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_Image"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+                    <TextView
+                        android:id="@+id/userName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginStart="25dp"
+                        android:textColor="@color/white"
+                        android:text="user name"
+                        android:textStyle="bold" />
+                </android.support.v7.widget.Toolbar>
+
+            </android.support.design.widget.CollapsingToolbarLayout>
 
 
-    </android.support.design.widget.AppBarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main2" />
+        <include layout="@layout/content_main2" />
+        <include layout="@layout/bottom_nav"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="30dp"
-        android:src="@drawable/ic_add_"
-        tools:ignore="RtlCompat" />
 
-</android.support.design.widget.CoordinatorLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="60dp"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/ic_add_"
+            tools:ignore="RtlCompat" />
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</android.support.constraint.ConstraintLayout>
+
+

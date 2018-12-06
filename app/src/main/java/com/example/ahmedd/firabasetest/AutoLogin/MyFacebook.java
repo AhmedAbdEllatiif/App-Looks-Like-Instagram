@@ -57,6 +57,7 @@ public class MyFacebook {
                             Log.e("jsonTry", object.getString("first_name"));
                             Log.e("jsonTry", object.getString("birthday"));
 
+                            username = object.getString("first_name");
                             img_url ="http://graph.facebook.com/"+object.getString("id")+"/picture?height=1000&width=1000&type=square&redirect=true";
 
                             AuthCredential credential = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());

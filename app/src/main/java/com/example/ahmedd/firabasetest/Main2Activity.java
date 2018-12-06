@@ -297,6 +297,8 @@ public class Main2Activity extends AppCompatActivity
 
                 if (user.getUserName() != null) {
                     userName.setText(user.getUserName());
+                }else {
+                    userName.setText("user name");
                 }
 
                 if (user.getImageURL().equals("default")) {
