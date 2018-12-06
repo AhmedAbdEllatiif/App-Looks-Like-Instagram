@@ -15,19 +15,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.util.Base64;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +37,8 @@ import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.Receivers.WIFIBroadCastReceiver;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,9 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -149,27 +148,12 @@ public class Main2Activity extends AppCompatActivity
         OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
 //        checkWifiConnection();
 
-        printKeyHash();
+       // printKeyHash();
 
     }
-    private void printKeyHash() {
 
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo("com.dentistry.ahmed.dentistryapp",
-                    PackageManager.GET_SIGNATURES);
-            for(Signature signature : packageInfo.signatures){
-                MessageDigest messageDigest = MessageDigest.getInstance("SHA");
-                messageDigest.update(signature.toByteArray());
-                Log.e("KeyHash", Base64.encodeToString(messageDigest.digest(),Base64.DEFAULT));
-            }
 
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
 
-    }
     private void setNavHearderInNavigationDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -307,6 +291,8 @@ public class Main2Activity extends AppCompatActivity
 
                 //getValue hatrg3 object jason
                 //ha3ml class 2st2bl feh l object
+
+
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user.getUserName() != null) {
@@ -358,16 +344,10 @@ public class Main2Activity extends AppCompatActivity
                 MyFireBase.getAuth().signOut();
                 startActivity(new Intent(Main2Activity.this, StartActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-              /*  AuthUI.getInstance()
-                        .signOut(this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                // user is now signed out
-
-                                startActivity(new Intent(MainActivity.this, StartActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                            }
-                        });*/
+                    if (AccessToken.getCurrentAccessToken() != null){
+                        LoginManager loginManager =LoginManager.getInstance();
+                        loginManager.logOut();
+                    }
 
                 return true;
 
@@ -440,5 +420,27 @@ public class Main2Activity extends AppCompatActivity
             }
         }
     }
+
+
+    //this method to keyHash
+    //which put in fb sdk
+    private void printKeyHash() {
+
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo("com.dentistry.ahmed.dentistryapp",
+                    PackageManager.GET_SIGNATURES);
+            for(Signature signature : packageInfo.signatures){
+                MessageDigest messageDigest = MessageDigest.getInstance("SHA");
+                messageDigest.update(signature.toByteArray());
+                Log.e("KeyHash", Base64.encodeToString(messageDigest.digest(),Base64.DEFAULT));
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

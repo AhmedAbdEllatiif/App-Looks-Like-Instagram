@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
@@ -34,6 +35,7 @@ public class HomeFragment extends Fragment {
     private List<Photos> photosList;
     private View view;
 
+    private TextView txt_empty_cardView;
 
 
     public HomeFragment() {
@@ -45,6 +47,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        txt_empty_cardView = view.findViewById(R.id.txt_empty_cardView);
         // Inflate the layout for this fragment
         fillRecyclerViewWithPhotos();
     return view;
@@ -74,13 +77,14 @@ public class HomeFragment extends Fragment {
                             Photos updatePhotoItem = photosList.get(i);
                             updatePhotoList.add(updatePhotoItem);
                         }
-                        int type;
-                        if (updatePhotoList.equals(null)){
-                            type = 0;
+
+                        if (photosList.isEmpty()){
+                            txt_empty_cardView.setVisibility(View.VISIBLE);
                         }else {
-                            type = 1;
+                            txt_empty_cardView.setVisibility(View.GONE);
                         }
-                        adapter = new PhotosAdapter(getActivity(),updatePhotoList,type);
+
+                        adapter = new PhotosAdapter(getActivity(),updatePhotoList);
                         recyclerView.setAdapter(adapter);
 
                         onClickListenerInRecyclerView(adapter);

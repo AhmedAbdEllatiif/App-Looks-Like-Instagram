@@ -25,15 +25,11 @@ import java.util.List;
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder> {
 
 
-    public final int EMPTY_RECYCLER_VIEW = 0;
-    public final int PHOTOS_TO_SHOW = 1;
-
-
     private Context context;
     private List<Photos> photosList;
     private MyOnClickListener onAsProfileImgClickListener;
     private MyOnClickListener onDescriptionClickListener;
-    private int type;
+
     public void setOnDeleteClickListener(MyOnClickListener onDeleteClickListener) {
         this.onDeleteClickListener = onDeleteClickListener;
     }
@@ -41,10 +37,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     private MyOnClickListener onDeleteClickListener;
 
 
-    public PhotosAdapter(Context context, List<Photos> photosList,int type ) {
+    public PhotosAdapter(Context context, List<Photos> photosList) {
         this.photosList = photosList;
         this.context = context;
-        this.type = type;
+
     }
 
     public void setOnAsProfileImgClickListener(MyOnClickListener onSetAsProfileImgClickListener) {
@@ -59,18 +55,12 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        if (viewType == PHOTOS_TO_SHOW){
-
-            View view = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cardview_image, parent, false);
         Log.e("count", String.valueOf(getItemCount()));
         return new ViewHolder(view);
-        }
-        else {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cardview_empty,parent,false);
-            return new ViewHolder(view);
-        }
+
+
     }
 
 
@@ -80,8 +70,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
         Log.e("type",holder.getItemViewType()+"");
 
-        if (holder.getItemViewType()==PHOTOS_TO_SHOW){
-            final Photos photosItem = photosList.get(position);
+
+        final Photos photosItem = photosList.get(position);
 
             holder.txt_name.setText(photosItem.getName());
 
@@ -166,44 +156,17 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                     }
                 });
             }
-            else if(holder.getItemViewType() == EMPTY_RECYCLER_VIEW){
-                holder.txt_empty_cardView.setText("nothing to display");
-            }
-
-
-
-        }
-
-
 
 
     }
 
 
-    private int getType(){
-    int count = 10;
-        if (photosList.isEmpty()){
-        return count;
-        }
-        else return 0;
-    }
     @Override
     public int getItemCount() {
-        if (photosList.equals(null)){
-            return 1;
-        }else return photosList.size();
+        return photosList.size();
 
     }
 
-    public int getItemViewType(int position) {
-
-        if (getItemCount()==1) {
-            Log.e("photosList.size",photosList.size()+"");
-            return EMPTY_RECYCLER_VIEW;
-        } else {
-            return PHOTOS_TO_SHOW;
-        }
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 

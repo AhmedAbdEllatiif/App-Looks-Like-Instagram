@@ -3,6 +3,8 @@ package com.example.ahmedd.firabasetest.Application;
 import android.app.Application;
 
 import com.example.ahmedd.firabasetest.OneSignal.MyCustomNotificationHelper;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.onesignal.OneSignal;
 
 public class MyApplication extends Application{
@@ -17,5 +19,6 @@ public class MyApplication extends Application{
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .setNotificationOpenedHandler(new MyCustomNotificationHelper(this))
                 .init();
+
     }
 }
