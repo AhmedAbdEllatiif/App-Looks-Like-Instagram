@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -39,7 +40,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class PhotoActivity extends AppCompatActivity {
@@ -319,13 +322,21 @@ public class PhotoActivity extends AppCompatActivity {
                         if (photoDescription.equals("")){
                             photoDescription = "write a description";
                         }
-
-
                         HashMap<String, Object> hashMap = new HashMap<>();
+                        String currentDate = getCurrentTime() ;
+                        Date date1 = null;
+                        try {
+                            hashMap.put("mydate",new SimpleDateFormat("dd/MM/yyyy").parse(currentDate));
+                            Log.e("mydate",new SimpleDateFormat("dd/MM/yyyy").parse(currentDate)+"");
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                         hashMap.put("name", photoName);
                         hashMap.put("url",imgURL);
                         hashMap.put("description", photoDescription);
                         hashMap.put("date", getCurrentTime());
+
 
                         MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
 

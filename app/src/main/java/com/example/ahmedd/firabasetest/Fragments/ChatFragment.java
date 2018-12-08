@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.ahmedd.firabasetest.Adapters.ChatListAdapter;
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
 import com.example.ahmedd.firabasetest.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.ChatList;
@@ -29,13 +31,15 @@ public class ChatFragment extends Fragment {
 
     private View view;
     private RecyclerView recyclerView;
-    private UsersAdapter adapter;
+    private ChatListAdapter adapter;
 
     private DatabaseReference referenceOnUsersThatHaveChatWith;
 
     private List<User> usersList;
     private List<ChatList> myChatsList;
 
+    private TextView txt_empty_chat_users;
+    private TextView txt_startChat;
     public ChatFragment() {}
 
 
@@ -44,6 +48,8 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
          view = inflater.inflate(R.layout.fragment_chat, container, false);
+        txt_empty_chat_users = view.findViewById(R.id.txt_empty_chat_users);
+        txt_startChat = view.findViewById(R.id.txt_startChat);
 
          setupRecyclerView();
 
@@ -94,9 +100,16 @@ public class ChatFragment extends Fragment {
                     }
                 }
 
-                adapter =  new UsersAdapter(getContext(),usersList,true);
+                if(usersList.isEmpty()){
+                    txt_empty_chat_users.setVisibility(View.VISIBLE);
+                    txt_startChat.setVisibility(View.VISIBLE);
+                }else {
+                    txt_empty_chat_users.setVisibility(View.GONE);
+                    txt_startChat.setVisibility(View.GONE);
+                }
+                adapter =  new ChatListAdapter(getContext(),usersList,true);
                 recyclerView.setAdapter(adapter);
-                adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
+                adapter.setOnCardClickListener(new ChatListAdapter.MyOnclickListener() {
                     @Override
                     public void onClick(int position, User userItem) {
                         Intent intent = new Intent(getActivity(), MessageActivity.class);

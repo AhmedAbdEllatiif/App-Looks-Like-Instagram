@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
+import com.example.ahmedd.firabasetest.Fragments.MyPhotos;
 import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Model.User;
@@ -41,7 +42,6 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,12 +77,12 @@ public class Main2Activity extends AppCompatActivity
 
 
         //Receivers
-        checkWifiConnectionWithWIFIRECEIVER();
+        //checkWifiConnectionWithWIFIRECEIVER();
 
         //initialize views, setToolbar, setCurrentUserInfo
         initViews();
         setToolBar();
-        setCurrentUserInfo();
+        //setCurrentUserInfo();
 
 
         //Set Drawer, FloatingActionButton, ButtonNavigationView
@@ -301,6 +301,7 @@ public class Main2Activity extends AppCompatActivity
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
+
                 case R.id.home:
                     fragment = new HomeFragment();
                     collapsingToolbarLayout.setTitle("Home");
@@ -316,6 +317,12 @@ public class Main2Activity extends AppCompatActivity
                     collapsingToolbarLayout.setTitle("Users");
                     fab.setVisibility(View.GONE);
                     break;
+                case R.id.myPhotos:
+                    fragment = new MyPhotos();
+                    collapsingToolbarLayout.setTitle("My Photos");
+                    fab.setVisibility(View.VISIBLE);
+                    break;
+
             }
 
 
@@ -373,7 +380,7 @@ public class Main2Activity extends AppCompatActivity
                         LoginManager loginManager =LoginManager.getInstance();
                         loginManager.logOut();
                     }
-
+                    finish();
                 return true;
 
             case R.id.profile_menu :   startActivity(new Intent(Main2Activity.this, ProfileActivity.class));

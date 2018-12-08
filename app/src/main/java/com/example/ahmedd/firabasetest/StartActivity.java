@@ -3,6 +3,7 @@ package com.example.ahmedd.firabasetest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -10,6 +11,7 @@ import com.example.ahmedd.firabasetest.AutoLogin.MyFacebook;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,8 +22,8 @@ public class StartActivity extends AppCompatActivity {
 
     private Button btn_login,btn_register;
     private LoginButton btn_FBLogin_start;
-    FirebaseUser firebaseUser;
-    CallbackManager callbackManager;
+    private FirebaseUser firebaseUser;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onStart() {
@@ -29,7 +31,9 @@ public class StartActivity extends AppCompatActivity {
 
         //check if user is already logged in with firebase or facebook
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (firebaseUser != null || AccessToken.getCurrentAccessToken() != null){
+            Log.e("start","not null");
             startActivity(new Intent(StartActivity.this,Main2Activity.class));
             finish();
         }

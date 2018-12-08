@@ -16,6 +16,7 @@ public class MyFireBase {
     private static DatabaseReference referenceOnChats;
     private static DatabaseReference referenceOnPhotos;
     private static DatabaseReference referenceOnChatList;
+    private static DatabaseReference referenceOnFollowers;
     private static FirebaseUser currentUser;
     private static StorageReference storageReferenceOnUploads;
     private static FirebaseDatabase FirebaseDatabase;
@@ -97,6 +98,11 @@ public class MyFireBase {
     public static DatabaseReference getReferenceOnPhotos() {
 
         return referenceOnChatList = getGetFirebaseDatabase().getReference("Photos");
+    }
+
+    public static DatabaseReference getReferenceOnFollowers() {
+
+        return referenceOnFollowers = getGetFirebaseDatabase().getReference("Followers");
     }
 
     public static DatabaseReference getReferenceOnDataBase() {

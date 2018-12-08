@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="@string/hello_blank_fragment"
-            tools:listitem="@layout/cardview_user"
+            tools:listitem="@layout/cardview_user_chat_fragment"
             android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@id/editText_searchUsers"
             app:layout_constraintBottom_toBottomOf="parent"

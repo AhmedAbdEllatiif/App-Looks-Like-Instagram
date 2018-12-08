@@ -21,16 +21,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
+public class ChatListAdapter  extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     private Context context;
     private List<User> userList;
     private MyOnclickListener onCardClickListener;
-    private MyOnclickListener onFollowClickListener;
     private Boolean isOnline;
     private String theLastMessage;
 
-    public UsersAdapter(Context context, List<User> userList,Boolean isOnline) {
+    public ChatListAdapter(Context context, List<User> userList, Boolean isOnline) {
         this.context = context;
         this.userList = userList;
         this.isOnline = isOnline;
@@ -40,16 +39,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         this.onCardClickListener = onCardClickListener;
     }
 
-    public void setOnFollowClickListener(MyOnclickListener onFollowClickListener) {
-        this.onFollowClickListener = onFollowClickListener;
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cardview_user_usersfragment, parent, false);
+                .inflate(R.layout.cardview_user_chat_fragment, parent, false);
 
         return new ViewHolder(view);
     }
@@ -67,27 +62,31 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         }
 
 
-        getLastMessage(userItem.getId(),holder.lastMessage);
+        getLastMessage(userItem.getId(), holder.lastMessage);
 
 
+        if (isOnline) {
+            if (userItem.getStatus().equals("Online")) {
+                holder.status_online.setVisibility(View.VISIBLE);
+                holder.status_offline.setVisibility(View.GONE);
+            } else if (userItem.getStatus().equals("Offline")) {
+                holder.status_online.setVisibility(View.GONE);
+                holder.status_offline.setVisibility(View.VISIBLE);
+            } else {
+                holder.status_online.setVisibility(View.GONE);
+                holder.status_offline.setVisibility(View.GONE);
+            }
+        }
 
-          if(onCardClickListener != null){
+        if (onCardClickListener != null) {
             holder.userCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCardClickListener.onClick(position,userItem);
+                    onCardClickListener.onClick(position, userItem);
                 }
             });
         }
 
-        if(onFollowClickListener != null){
-            holder.txt_follow_userFragment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onFollowClickListener.onClick(position,userItem);
-                }
-            });
-        }
 
     }
 
@@ -100,26 +99,26 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
         TextView userName;
         TextView lastMessage;
-        TextView txt_follow_userFragment;
         CardView userCardView;
         ImageView profile_pic;
-
+        ImageView status_online;
+        ImageView status_offline;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            userName = itemView.findViewById(R.id.userName_AtCardView_userFragment);
-            lastMessage = itemView.findViewById(R.id.txt_lastMessage_userItem_userFragment);
-            txt_follow_userFragment = itemView.findViewById(R.id.txt_follow_userFragment);
-            userCardView = itemView.findViewById(R.id.cardView_user_userFragment);
-            profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView_userFragment);
-
+            userName = itemView.findViewById(R.id.userName_AtCardView);
+            lastMessage = itemView.findViewById(R.id.txt_lastMessage_userItem);
+            userCardView = itemView.findViewById(R.id.cardView_user);
+            profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView);
+            status_online = itemView.findViewById(R.id.img_statusOnline);
+            status_offline = itemView.findViewById(R.id.img_statusOffline);
 
         }
     }
 
-    private void getLastMessage(final String userID, final TextView lastMessage){
+    private void getLastMessage(final String userID, final TextView lastMessage) {
 
         final String currentUserID = MyFireBase.getCurrentUser().getUid();
         theLastMessage = "default";
@@ -127,19 +126,20 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chats chats = snapshot.getValue(Chats.class);
 
                     if (chats.getSender().equals(currentUserID) && chats.getReceiver().equals(userID) ||
-                            chats.getSender().equals(userID) && chats.getReceiver().equals(currentUserID)){
+                            chats.getSender().equals(userID) && chats.getReceiver().equals(currentUserID)) {
 
                         theLastMessage = chats.getMessage();
                     }
                 }
 
-                switch (theLastMessage){
-                    case "default" :
-                        lastMessage.setText(""); break;
+                switch (theLastMessage) {
+                    case "default":
+                        lastMessage.setText("");
+                        break;
                     default:
                         lastMessage.setText(theLastMessage);
                         break;
@@ -157,7 +157,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     }
 
 
-    public interface MyOnclickListener{
+    public interface MyOnclickListener {
         void onClick(int position, User userItem);
     }
 

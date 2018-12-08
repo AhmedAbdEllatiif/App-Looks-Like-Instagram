@@ -8,10 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +19,13 @@ import com.example.ahmedd.firabasetest.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 
 /**
@@ -169,6 +162,30 @@ public class UsersFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+
+
+                    adapter.setOnFollowClickListener(new UsersAdapter.MyOnclickListener() {
+                        @Override
+                        public void onClick(int position, final User userItem) {
+
+                            final DatabaseReference databaseReference = MyFireBase.getReferenceOnFollowers()
+                                    .child(MyFireBase.getCurrentUser().getUid())
+                                    .child(userItem.getId());
+                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.exists()){
+                                        databaseReference.child("id").setValue(userItem.getId());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    });
             }
         }
 
