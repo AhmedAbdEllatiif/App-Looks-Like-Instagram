@@ -40,26 +40,26 @@ import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity implements DatePickerDialogFragment.OnCompleteListener {
 
-
-
-    private ImageView img_profile;
-    private StorageTask uploadTask;
-    private Uri img_uri;
+    //MyViews
     private TextView email_cardView_profileActivity;
     private TextView txt_userName_profileActivity;
     private TextView txt_change_profileImage;
     private TextView txt_birthday;
+    private ImageView img_profile;
     private ImageButton img_btn_edit;
     private ImageButton img_btn_calender;
     private EditText editText_username_profileActivity;
-
+    private EditText edit_txt_birthday;
     private Button btn_update_profileActivity;
     private Button btn_cancel_profileActivity;
-    private String updateUserName;
+
+
+    //Variables to update profile Info
+    private String updatedUserName;
     private String updatedBirthday;
-
-
-
+    private String myUri;
+    private Uri img_uri;
+    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,24 +86,28 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
             public void onClick(View v) {
                 editText_username_profileActivity.setText(MyFireBase.getCurrentUser().getDisplayName());
                 txt_userName_profileActivity.setVisibility(View.INVISIBLE);
+                txt_birthday.setVisibility(View.INVISIBLE);
                 editText_username_profileActivity.setVisibility(View.VISIBLE);
                 editText_username_profileActivity.requestFocus();
                 btn_update_profileActivity.setVisibility(View.VISIBLE);
                 btn_cancel_profileActivity.setVisibility(View.VISIBLE);
                 txt_change_profileImage.setVisibility(View.VISIBLE);
                 img_btn_calender.setVisibility(View.VISIBLE);
+                edit_txt_birthday.setVisibility(View.VISIBLE);
             }
         });
 
         btn_cancel_profileActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editText_username_profileActivity.setVisibility(View.INVISIBLE);
                 txt_userName_profileActivity.setVisibility(View.VISIBLE);
+                txt_birthday.setVisibility(View.VISIBLE);
+                editText_username_profileActivity.setVisibility(View.INVISIBLE);
                 btn_update_profileActivity.setVisibility(View.GONE);
                 btn_cancel_profileActivity.setVisibility(View.GONE);
                 txt_change_profileImage.setVisibility(View.GONE);
                 img_btn_calender.setVisibility(View.GONE);
+                edit_txt_birthday.setVisibility(View.GONE);
             }
         });
 
@@ -111,6 +115,8 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
             @Override
             public void onClick(View v) {
                 updateUserProfile();
+
+
             }
         });
 
@@ -130,13 +136,6 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
             }
         });
 
-       /* btn_pick_birthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newFragment = new DatePickerDialogFragment();
-                newFragment.show(getSupportFragmentManager(), "datePicker");
-            }
-        });*/
 
     }
 
@@ -145,6 +144,7 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
         txt_userName_profileActivity = findViewById(R.id.txt_userName_profileActivity);
         txt_change_profileImage = findViewById(R.id.txt_change_profileImage);
         editText_username_profileActivity = findViewById(R.id.editText_username_profileActivity);
+        edit_txt_birthday = findViewById(R.id.edit_txt_birthday);
         img_profile = findViewById(R.id.img_profile_frahmentProfile);
         img_btn_edit = findViewById(R.id.img_btn_edit);
         btn_update_profileActivity = findViewById(R.id.btn_update_profileActivity);
@@ -164,6 +164,7 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
 
                         txt_userName_profileActivity.setText(user.getUserName());
                         txt_birthday.setText(user.getBirthday());
+                        edit_txt_birthday.setText(user.getBirthday());
 
                         if (user.getImageURL().equals("default")){
                             img_profile.setImageResource(R.mipmap.ic_launcher);
@@ -195,8 +196,6 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //getValue hatrg3 object jason
-                //ha3ml class 2st2bl feh l object
                 User user = dataSnapshot.getValue(User.class);
 
                 if (user.getUserName() != null) {
@@ -244,60 +243,56 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
     }
 
     private void updateUserProfile() {
-        //showProgressBar("please wait","uploading your profile Image");
         Log.e("UploadImage","begin the method");
+
+        final HashMap<String, Object> hashMap = new HashMap<>();
+        updatedBirthday = edit_txt_birthday.getText().toString().trim();
+        updatedUserName = editText_username_profileActivity.getText().toString().trim();
 
 
         Handler handler = new Handler();
         Runnable runnable=  new Runnable() {
             @Override
             public void run() {
-                if (img_uri!=null){
+                if (img_uri != null && !editText_username_profileActivity.getText().toString().trim().isEmpty()
+                        && !edit_txt_birthday.getText().toString().trim().isEmpty()) {
+
                     final StorageReference storageReference= MyFireBase.getStorageReferenceOnUploads().child(System.currentTimeMillis() +
                             "." + getFileExtension(img_uri));
                     uploadTask = storageReference.putFile(img_uri);
 
 
-                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
+                    Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task){
 
-                            if(!task.isSuccessful()){
-                                Log.e("onComplete","not Successful");
-                                throw task.getException();
+                            if (!task.isSuccessful()) {
+                                Log.e("onComplete", "not Successful");
 
                             }
-                            return  storageReference.getDownloadUrl();
+                            return storageReference.getDownloadUrl();
                         }
                     }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-
-                                Log.e("onComplete","Successful");
+                            if (task.isSuccessful()) {
+                                Log.e("onComplete", "Successful");
                                 Uri downloadUri = task.getResult();
-                                String myUri = downloadUri.toString();
-                                updateUserName = MyFireBase.getCurrentUser().getDisplayName();
-                                updatedBirthday = txt_birthday.getText().toString();
+                                if (downloadUri == null) {
+                                    Log.e("Uri", "null");
+                                } else {
 
-                                if (editText_username_profileActivity.getText().toString().trim().isEmpty()){
-                                    editText_username_profileActivity.setError("username can't be empty");
-                                }
-                                else{
-                                    updateUserName = editText_username_profileActivity.getText().toString().trim();
+                                    myUri = downloadUri.toString();
                                 }
 
-
-                                HashMap<String,Object> hashMap = new HashMap<>();
-                                hashMap.put("ImageURL",myUri);
-                                hashMap.put("userName",updateUserName);
-                                hashMap.put("birthday",updatedBirthday);
+                                hashMap.put("ImageURL", myUri);
+                                hashMap.put("userName", updatedUserName);
+                                hashMap.put("birthday", updatedBirthday);
                                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .updateChildren(hashMap);
-                                //hideProgressBar();
-                            }else {
-                                Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                                //hideProgressBar();
+
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -306,24 +301,40 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
                             Toast.makeText(ProfileActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else {
-                    Toast.makeText(ProfileActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
-                    if (editText_username_profileActivity.getText().toString().trim().isEmpty()){
+
+                }
+                if (img_uri == null) {
+
+                    if (img_profile.getResources().equals(R.mipmap.ic_launcher)) {
+                        Toast.makeText(ProfileActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "No  new Image Selected", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+                if (editText_username_profileActivity.getText().toString().trim().isEmpty() ||
+                        edit_txt_birthday.getText().toString().trim().isEmpty()) {
+
+                    if (editText_username_profileActivity.getText().toString().trim().isEmpty()) {
                         editText_username_profileActivity.setError("username can't be empty");
                     }
-                    else{
-                        updateUserName = editText_username_profileActivity.getText().toString().trim();
-                        HashMap<String,Object> hashMap = new HashMap<>();
-                        hashMap.put("userName",updateUserName);
+
+                    if (edit_txt_birthday.getText().toString().trim().isEmpty()) {
+                        edit_txt_birthday.setError("birthday can't be empty");
+                    }
+                } else {
+                    hashMap.put("userName", updatedUserName);
+                    hashMap.put("birthday", updatedBirthday);
                         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                 .updateChildren(hashMap);
                     }
 
 
-                }
             }
         };
         handler.post(runnable);
+
 
     }
 
@@ -348,8 +359,8 @@ public class ProfileActivity extends AppCompatActivity implements DatePickerDial
     }
 
     @Override
-    public void onComplete(String time) {
-        txt_birthday.setText(time);
+    public void onComplete(String birthday) {
+        edit_txt_birthday.setText(birthday);
     }
 }
 

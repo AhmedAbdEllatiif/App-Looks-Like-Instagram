@@ -67,6 +67,7 @@ public class Main2Activity extends AppCompatActivity
     private Uri img_uri;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    private FloatingActionButton fab;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -78,14 +79,17 @@ public class Main2Activity extends AppCompatActivity
                 case R.id.home:
                     fragment = new HomeFragment();
                     collapsingToolbarLayout.setTitle("Home");
+                    fab.setVisibility(View.VISIBLE);
                     break;
                 case R.id.chats:
                     fragment = new ChatFragment();
                     collapsingToolbarLayout.setTitle("Chats");
+                    fab.setVisibility(View.GONE);
                     break;
                 case R.id.users:
                     fragment = new UsersFragment();
                     collapsingToolbarLayout.setTitle("Users");
+                    fab.setVisibility(View.GONE);
                     break;
             }
 
@@ -114,7 +118,7 @@ public class Main2Activity extends AppCompatActivity
         // setCurrentUserInfo();
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -425,7 +429,7 @@ public class Main2Activity extends AppCompatActivity
 
 
     //this method to keyHash
-    //which put in fb sdk
+    //to put in fb sdk
     private void printKeyHash() {
 
         try {
