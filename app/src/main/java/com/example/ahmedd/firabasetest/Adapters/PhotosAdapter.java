@@ -57,7 +57,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
         View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cardview_image, parent, false);
-        Log.e("count", String.valueOf(getItemCount()));
         return new ViewHolder(view);
 
 
@@ -66,10 +65,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-
-
-        Log.e("type",holder.getItemViewType()+"");
-
 
         final Photos photosItem = photosList.get(position);
 
@@ -122,15 +117,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                     public void onClick(View v) {
                         onAsProfileImgClickListener.myOnClickListener(position,photosItem);
 
-
-
-                /*    holder.profileImage_updated.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            holder.profileImage_updated.setVisibility(View.GONE);
-                        }
-                    },2000);*/
                     }
                 });
             }

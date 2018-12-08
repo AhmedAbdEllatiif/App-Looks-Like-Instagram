@@ -57,50 +57,16 @@ import java.util.HashMap;
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //Views
     private ImageView profile_img;
     private TextView userName;
-
-
-    private String currentUserID;
-    private FirebaseUser firebaseCurrentUser;
-    private Fragment fragment;
-    private Uri img_uri;
-
+    private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fab;
 
+    //Fragments
+    private Fragment fragment;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.home:
-                    fragment = new HomeFragment();
-                    collapsingToolbarLayout.setTitle("Home");
-                    fab.setVisibility(View.VISIBLE);
-                    break;
-                case R.id.chats:
-                    fragment = new ChatFragment();
-                    collapsingToolbarLayout.setTitle("Chats");
-                    fab.setVisibility(View.GONE);
-                    break;
-                case R.id.users:
-                    fragment = new UsersFragment();
-                    collapsingToolbarLayout.setTitle("Users");
-                    fab.setVisibility(View.GONE);
-                    break;
-            }
-
-            Log.e("Fragment", "Replacing Fragment");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.viewPager,fragment)
-                    .commit();
-            return true;
-        }
-    };
 
 
 
@@ -108,76 +74,176 @@ public class Main2Activity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
 
+        //Receivers
+        checkWifiConnectionWithWIFIRECEIVER();
 
+        //initialize views, setToolbar, setCurrentUserInfo
         initViews();
         setToolBar();
-        // setCurrentUserInfo();
+        setCurrentUserInfo();
 
 
+        //Set Drawer, FloatingActionButton, ButtonNavigationView
+        setFloatingActionButton();
+        setDrawerLayout();
+        setNavHearderInNavigationDrawer();
+        setBottomNavigationView();
+
+
+        //set a tag to everyuser in oneSingle to help sending notification to it by this tag
+        OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
+
+
+    }
+
+    /*******************************************************************************************************/
+    private void initViews() {
+        profile_img = findViewById(R.id.profile_Image);
+        userName = findViewById(R.id.userName);
+        collapsingToolbarLayout = findViewById(R.id.collapsing);
+        collapsingToolbarLayout.setTitle("Home");
+    }
+
+    private void setToolBar() {
+        toolbar = findViewById(R.id.myUserToolBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+
+        //set user data in the toolBar
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUserID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //getValue hatrg3 object jason
+                //ha3ml class 2st2bl feh l object
+
+
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user.getUserName() != null) {
+                    userName.setText(user.getUserName());
+                } else {
+                    userName.setText("user name");
+                }
+
+                if (user.getImageURL().equals("default")) {
+                    profile_img.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Picasso.get().load(user.getImageURL()).into(profile_img);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void getUserStatus(String status) {
+
+        /*To get user status we update the child status on tha activity lifecycle
+         *when activity onResume() make status online
+         * when activity onPause() make status offline
+         */
+        final HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
+
+    }
+
+    private void setCurrentUserInfo() {
+        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+                    if (user.getId().equals(MyFireBase.getCurrentUser().getUid())) {
+
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(user.getUserName())
+                                .setPhotoUri(Uri.parse(user.getImageURL()))
+                                .build();
+
+                        MyFireBase.getCurrentUser().updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.e("CurrentUserInfoUpdate", "done");
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    /*******************************************************************************************************/
+
+
+
+
+    /*******************************************************************************************************/
+    //FloatingActionButton
+    private void setFloatingActionButton() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-            Intent intent =  new Intent(Main2Activity.this,PhotoActivity.class);
-            startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
+                Intent intent = new Intent(Main2Activity.this, PhotoActivity.class);
+                startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
+    }
+    /*******************************************************************************************************/
 
+
+
+
+    /*******************************************************************************************************/
+    //DrawerLayout
+    private void setDrawerLayout() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        setNavHearderInNavigationDrawer();
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.home);
-
-
-
-
-
-
-        currentUserID = MyFireBase.getCurrentUserID();
-        firebaseCurrentUser = MyFireBase.getCurrentUser();
-
-        OneSignal.sendTag("User ID",MyFireBase.getCurrentUser().getUid());
-//        checkWifiConnection();
-
-       // printKeyHash();
-
     }
-
 
 
     private void setNavHearderInNavigationDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View hView =  navigationView.getHeaderView(0);
-        final TextView user_name = (TextView)hView.findViewById(R.id.txt_name_nav_header);
-        final TextView Email = (TextView)hView.findViewById(R.id.txt_email_nav_header);
+        View hView = navigationView.getHeaderView(0);
+        final TextView user_name = (TextView) hView.findViewById(R.id.txt_name_nav_header);
+        final TextView Email = (TextView) hView.findViewById(R.id.txt_email_nav_header);
         final ImageView img_profile = (ImageView) hView.findViewById(R.id.img_nav_header);
 
         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
+                        User user = dataSnapshot.getValue(User.class);
 
                         user_name.setText(user.getUserName());
                         Email.setText(MyFireBase.getCurrentUser().getEmail());
-                        if (user.getImageURL().equals("default")){
+                        if (user.getImageURL().equals("default")) {
                             img_profile.setImageResource(R.mipmap.ic_launcher);
-                        }else {
+                        } else {
                             Picasso.get().load(user.getImageURL()).into(img_profile);
                         }
                     }
@@ -189,69 +255,7 @@ public class Main2Activity extends AppCompatActivity
                 });
 
 
-
     }
-
-
-    //will try it later
-    private boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
-        }
-        return haveConnectedWifi || haveConnectedMobile;
-    }
-
-
-    private void checkWifiConnection() {
-        WIFIBroadCastReceiver myrecevier = new WIFIBroadCastReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
-        registerReceiver(myrecevier, intentFilter);
-    }
-
-
- /*   private void setupViewPageAdapter() {
-        PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
-
-        pageAdapter.AddFragmentPage(new ChatFragment(),getString(R.string.chats));
-        pageAdapter.AddFragmentPage(new UsersFragment(),getString(R.string.users));
-        pageAdapter.AddFragmentPage(new ProfileFragment(),getString(R.string.profile));
-        pageAdapter.AddFragmentPage(new UploadPhotosFragment(),getString(R.string.photos));
-
-        viewPager.setAdapter(pageAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-    }*/
-
-    private void initViews() {
-        profile_img = findViewById(R.id.profile_Image);
-        userName = findViewById(R.id.userName);
-        collapsingToolbarLayout = findViewById(R.id.collapsing);
-        collapsingToolbarLayout.setTitle("Home");
-    }
-
-
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -278,59 +282,74 @@ public class Main2Activity extends AppCompatActivity
         return true;
     }
 
+    /*******************************************************************************************************/
 
 
+    /*******************************************************************************************************/
+    //BottomNavigationView
+    private void setBottomNavigationView() {
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.home);
 
-    private void setToolBar() {
-        Toolbar toolbar = findViewById(R.id.myUserToolBar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-
-        //set user data in the toolBar
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUserID()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //getValue hatrg3 object jason
-                //ha3ml class 2st2bl feh l object
-
-
-                User user = dataSnapshot.getValue(User.class);
-
-                if (user.getUserName() != null) {
-                    userName.setText(user.getUserName());
-                }else {
-                    userName.setText("user name");
-                }
-
-                if (user.getImageURL().equals("default")) {
-                    profile_img.setImageResource(R.mipmap.ic_launcher);
-                } else {
-                    Picasso.get().load(user.getImageURL()).into(profile_img);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
     }
 
-    private void getUserStatus(String status){
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        /*To get user status we update the child status on tha activity lifecycle
-         *when activity onResume() make status online
-         * when activity onPause() make status offline
-         */
-        final HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status",status);
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.home:
+                    fragment = new HomeFragment();
+                    collapsingToolbarLayout.setTitle("Home");
+                    fab.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.chats:
+                    fragment = new ChatFragment();
+                    collapsingToolbarLayout.setTitle("Chats");
+                    fab.setVisibility(View.GONE);
+                    break;
+                case R.id.users:
+                    fragment = new UsersFragment();
+                    collapsingToolbarLayout.setTitle("Users");
+                    fab.setVisibility(View.GONE);
+                    break;
+            }
 
-        MyFireBase.getReferenceOnAllUsers().child(currentUserID).updateChildren(hashMap);
 
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.viewPager, fragment)
+                    .commit();
+            Log.e("MainActivity", "Replacing Fragment");
+            return true;
+        }
+    };
+    /*******************************************************************************************************/
+
+
+    /*******************************************************************************************************/
+    //WIFI RECEIVER
+    private void checkWifiConnectionWithWIFIRECEIVER() {
+        WIFIBroadCastReceiver myrecevier = new WIFIBroadCastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        registerReceiver(myrecevier, intentFilter);
+    }
+
+    /*******************************************************************************************************/
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
@@ -377,39 +396,7 @@ public class Main2Activity extends AppCompatActivity
         getUserStatus(getString(R.string.offline));
     }
 
-    private void setCurrentUserInfo(){
-        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
-                    if (user.getId().equals(currentUserID)){
 
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(user.getUserName())
-                                .setPhotoUri(Uri.parse(user.getImageURL()))
-                                .build();
-
-                        MyFireBase.getCurrentUser().updateProfile(profileUpdates)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.e("CurrentUserInfoUpdate", "done");
-                                        }
-                                    }
-                                });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -428,8 +415,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
 
-    //this method to keyHash
-    //to put in fb sdk
+    //this method used to get KeyHash to put it in the facebook app developer
     private void printKeyHash() {
 
         try {
@@ -448,5 +434,27 @@ public class Main2Activity extends AppCompatActivity
         }
     }
 
+    //To check what data usage you use
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected()) {
+                    haveConnectedWifi = true;
+                    Log.e("Wifi", "Wifi is connected");
+                } else {
+                    Toast.makeText(this, "Wifi isn't Connected Trun on your mobile data", Toast.LENGTH_LONG).show();
+
+                }
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
 
 }
