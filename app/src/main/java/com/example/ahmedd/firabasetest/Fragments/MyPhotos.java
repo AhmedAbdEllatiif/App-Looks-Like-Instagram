@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,12 +78,15 @@ public class MyPhotos extends Fragment {
 
 
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                .child("Myphotos").orderByChild("uploadedTime")
+                .limitToLast(2)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         photosList.clear();
                         for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                             Photos photosItem = snapshot.getValue(Photos.class);
+                            Log.e("photoname",photosItem.getName());
                             photosItem.setKey(snapshot.getKey());
                             photosList.add(photosItem);
                         }
@@ -98,7 +102,7 @@ public class MyPhotos extends Fragment {
                             txt_empty_cardView.setVisibility(View.GONE);
                         }
 
-                        adapter = new PhotosAdapter(getActivity(),updatePhotoList);
+                        adapter = new PhotosAdapter(getActivity(),photosList);
                         recyclerView.setAdapter(adapter);
 
                         onClickListenerInRecyclerView(adapter);

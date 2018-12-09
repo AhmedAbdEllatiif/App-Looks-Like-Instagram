@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -22,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ahmedd.firabasetest.Model.Following;
+import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.android.gms.tasks.Continuation;
@@ -30,7 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -39,11 +42,14 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class PhotoActivity extends AppCompatActivity {
 
@@ -65,6 +71,14 @@ public class PhotoActivity extends AppCompatActivity {
 
     private String photoName;
     private String photoDescription = "";
+    private String currentUserName;
+    private String currentUserImageURl;
+
+    private List<Following> followingList;
+
+
+    String currentDate;
+    Date date1;
 
 
     @Override
@@ -88,6 +102,28 @@ public class PhotoActivity extends AppCompatActivity {
         openFileChooser();
 
         editTextWatchers();
+
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        currentUserName = user.getUserName();
+                        currentUserImageURl = user.getImageURL();
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+        currentDate = getCurrentTime();
+        date1 = null;
+
 
     }
 
@@ -322,23 +358,75 @@ public class PhotoActivity extends AppCompatActivity {
                         if (photoDescription.equals("")){
                             photoDescription = "write a description";
                         }
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        String currentDate = getCurrentTime() ;
-                        Date date1 = null;
-                        try {
-                            hashMap.put("mydate",new SimpleDateFormat("dd/MM/yyyy").parse(currentDate));
-                            Log.e("mydate",new SimpleDateFormat("dd/MM/yyyy").parse(currentDate)+"");
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        final HashMap<String, Object> hashMap = new HashMap<>();
+
+                        String mydate = null;
+                        DateFormat dateFormat =  new SimpleDateFormat("yyyyMMddHHmmss");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                           mydate = dateFormat.format(Calendar.getInstance().getTime());
                         }
 
                         hashMap.put("name", photoName);
                         hashMap.put("url",imgURL);
                         hashMap.put("description", photoDescription);
                         hashMap.put("date", getCurrentTime());
+                        hashMap.put("userName", currentUserName);
+                        hashMap.put("userImage", currentUserImageURl);
+                        hashMap.put("uploadedTime",Long.parseLong(mydate));
+
+                        MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid())
+                                .child("Myphotos").push().setValue(hashMap);
+
+                        Handler handler =  new Handler();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                followingList = new ArrayList<>();
+                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                        .child("Following").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                            Following followingItem = snapshot.getValue(Following.class);
+                                            Log.e("PhotoActivityFollowItem",followingItem.getId());
+                                            followingList.add(followingItem);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                final DatabaseReference databaseReference = MyFireBase.getReferenceOnAllUsers();
+
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                            for (int i=0;i<followingList.size();i++){
+                                                    Log.e("SnapShotKey",snapshot.getKey());
+                                                if (followingList.get(i).getId().equals(snapshot.getKey())){
+                                                    databaseReference.child(snapshot.getKey()).child("PhotosOfFollowing").push().setValue(hashMap);
+                                                       break;
+                                                }
+                                            }
+                                        }
+                                    }
 
 
-                        MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    }
+                                });
+                            }
+                        });
+
+
+
+
 
                         txt_uploading.setText("Upload Complete");
                         txt_uploading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_, 0);
@@ -399,5 +487,6 @@ public class PhotoActivity extends AppCompatActivity {
             }
         }
     }
+
 
 }

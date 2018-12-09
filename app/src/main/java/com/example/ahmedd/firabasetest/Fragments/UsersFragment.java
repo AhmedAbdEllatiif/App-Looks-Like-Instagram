@@ -168,10 +168,9 @@ public class UsersFragment extends Fragment {
                         @Override
                         public void onClick(int position, final User userItem) {
 
-                            final DatabaseReference databaseReference = MyFireBase.getReferenceOnFollowers()
-                                    .child(MyFireBase.getCurrentUser().getUid())
-                                    .child(userItem.getId());
-                            databaseReference.addValueEventListener(new ValueEventListener() {
+                            final DatabaseReference databaseReference =  MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                    .child("Following").child(userItem.getId());
+                            databaseReference .addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.exists()){
@@ -184,6 +183,8 @@ public class UsersFragment extends Fragment {
 
                                 }
                             });
+
+
                         }
                     });
             }

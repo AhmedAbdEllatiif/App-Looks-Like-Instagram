@@ -102,7 +102,7 @@ public class MyFireBase {
 
     public static DatabaseReference getReferenceOnFollowers() {
 
-        return referenceOnFollowers = getGetFirebaseDatabase().getReference("Followers");
+        return referenceOnFollowers = getGetFirebaseDatabase().getReference("Following");
     }
 
     public static DatabaseReference getReferenceOnDataBase() {

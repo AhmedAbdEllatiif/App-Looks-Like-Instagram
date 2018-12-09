@@ -7,6 +7,8 @@ public class Photos {
     private String description;
     private String date;
     private String key;
+    private String userName;
+    private String userImage;
 
 
     public Photos(String name, String url, String description, String date) {
@@ -62,5 +64,21 @@ public class Photos {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 }
