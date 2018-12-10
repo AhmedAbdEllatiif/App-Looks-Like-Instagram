@@ -22,11 +22,16 @@ import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.PhotoActivity;
 import com.example.ahmedd.firabasetest.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -83,7 +88,7 @@ public class MyPhotos extends Fragment {
 
 
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
-                .child("Myphotos").orderByChild("uploadedTime")
+                .child("Myphotos")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -106,7 +111,7 @@ public class MyPhotos extends Fragment {
                             txt_empty_cardView.setVisibility(View.GONE);
                         }
 
-                        adapter = new PhotosAdapter(getActivity(), photosList);
+                        adapter = new PhotosAdapter(getActivity(), updatePhotoList);
 
                         recyclerView.setAdapter(adapter);
 
@@ -125,28 +130,44 @@ public class MyPhotos extends Fragment {
     private void onClickListenerInRecyclerView(final PhotosAdapter photosAdapter) {
 
 
-        photosAdapter.setOnDescriptionClickListener(new PhotosAdapter.MyOnClickListener() {
+
+        photosAdapter.setOnUpdateClickListener(new PhotosAdapter.MyUpdateAndCancelClickListener() {
             @Override
-            public void myOnClickListener(int position, Photos photosItem) {
-           /*     HashMap<String, Object> hashMap = new HashMap<>();
-                hashMap.put("ImageURL", photosItem.getUrl());
-                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                        .updateChildren(hashMap);
-                Snackbar.make(view, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
+            public void myUpdateAndCancelClickListener(int position, Photos photosItem, TextView txtOptionMenu, TextView txt_name, EditText editTxt_name, EditText editText_description, TextView txtDescription, ImageButton update, ImageButton cancel) {
+
+                if (editText_description.getText().toString().trim().isEmpty()
+                        && editTxt_name.getText().toString().trim().isEmpty()){
+                    txtDescription.setVisibility(View.VISIBLE);
+                    txt_name.setVisibility(View.VISIBLE);
+                    editTxt_name.setVisibility(View.GONE);
+                    editText_description.setVisibility(View.GONE);
+                    update.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+                }else {
+                    photosItem.setDescription(editText_description.getText().toString().trim());
+                    photosItem.setName(editTxt_name.getText().toString().trim());
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("description", photosItem.getDescription());
+                    hashMap.put("name", photosItem.getName());
+
+                    MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                            .child("Myphotos").child(photosItem.getKey())
+                            .updateChildren(hashMap);
+                }
             }
         });
 
+
         photosAdapter.setOnCaneclClickListener(new PhotosAdapter.MyUpdateAndCancelClickListener() {
             @Override
-            public void myUpdateAndCancelClickListener(int position, Photos photosItem, TextView txtOptionMenu,
-                                                       EditText editText_description, TextView txtDescription, ImageButton update,
-                                                       ImageButton cancel) {
-
+            public void myUpdateAndCancelClickListener(int position, Photos photosItem, TextView txtOptionMenu, TextView txt_name, EditText editTxt_name, EditText editText_description, TextView txtDescription, ImageButton update, ImageButton cancel) {
                 txtDescription.setVisibility(View.VISIBLE);
+                txt_name.setVisibility(View.VISIBLE);
+                editTxt_name.setVisibility(View.GONE);
                 editText_description.setVisibility(View.GONE);
                 update.setVisibility(View.GONE);
                 cancel.setVisibility(View.GONE);
+
 
 
             }
@@ -154,10 +175,7 @@ public class MyPhotos extends Fragment {
 
         photosAdapter.setOnMenuClickListener(new PhotosAdapter.MyUpdateAndCancelClickListener() {
             @Override
-            public void myUpdateAndCancelClickListener(final int position, final Photos photosItem, final TextView txtOptionMenu,
-                                                       final EditText editText_description, final TextView txtDescription, final ImageButton update,
-                                                       final ImageButton cancel) {
-
+            public void myUpdateAndCancelClickListener(int position, final Photos photosItem, final TextView txtOptionMenu, final TextView txt_name, final EditText editTxt_name, final EditText editText_description, final TextView txtDescription, final ImageButton update, final ImageButton cancel) {
 
                 PopupMenu popupMenu = new PopupMenu(getActivity(),txtOptionMenu);
                 popupMenu.inflate(R.menu.cardview_home_menu);
@@ -177,8 +195,11 @@ public class MyPhotos extends Fragment {
                                         .setAction("Action", null).show();
                                 break;
                             case R.id.edit_photoInfo :
-                                txtDescription.setVisibility(View.GONE);
-                                //onDescriptionClickListener.myOnClickListener(position,photosItem);
+                                editText_description.setText(photosItem.getDescription());
+                                editTxt_name.setText(photosItem.getName());
+                                txtDescription.setVisibility(View.INVISIBLE);
+                                txt_name.setVisibility(View.INVISIBLE);
+                                editTxt_name.setVisibility(View.VISIBLE);
                                 editText_description.setVisibility(View.VISIBLE);
                                 update.setVisibility(View.VISIBLE);
                                 cancel.setVisibility(View.VISIBLE);

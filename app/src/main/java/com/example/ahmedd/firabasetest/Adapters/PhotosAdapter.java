@@ -32,10 +32,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
     private Context context;
     private List<Photos> photosList;
-    private MyOnClickListener onAsProfileImgClickListener;
-    private MyOnClickListener onDescriptionClickListener;
-    private MyOnClickListener onDeleteClickListener;
+
     private MyUpdateAndCancelClickListener onCaneclClickListener;
+    private MyUpdateAndCancelClickListener onUpdateClickListener;
     private MyUpdateAndCancelClickListener onMenuClickListener;
 
 
@@ -50,23 +49,15 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         this.onMenuClickListener = onMenuClickListener;
     }
 
+    public void setOnUpdateClickListener(MyUpdateAndCancelClickListener onUpdateClickListener) {
+        this.onUpdateClickListener = onUpdateClickListener;
+    }
+
     public void setOnCaneclClickListener(MyUpdateAndCancelClickListener onCaneclClickListener) {
         this.onCaneclClickListener = onCaneclClickListener;
     }
 
-    public void setOnDeleteClickListener(MyOnClickListener onDeleteClickListener) {
-        this.onDeleteClickListener = onDeleteClickListener;
-    }
 
-
-
-    public void setOnAsProfileImgClickListener(MyOnClickListener onSetAsProfileImgClickListener) {
-        this.onAsProfileImgClickListener = onSetAsProfileImgClickListener;
-    }
-
-    public void setOnDescriptionClickListener(MyOnClickListener onDescriptionClickListener) {
-        this.onDescriptionClickListener = onDescriptionClickListener;
-    }
 
     @NonNull
     @Override
@@ -89,7 +80,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
 
             if(photosItem.getDescription().equals("")){
-                holder.img_description.setText("");
+                holder.img_description.setHint("Write a description...");
             }else {
 
                 holder.img_description.setText(photosItem.getDescription());
@@ -129,87 +120,37 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
 
 
-
-
-            if (onDescriptionClickListener!=null){
-                holder.img_description.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        holder.img_description.setVisibility(View.GONE);
-                        onDescriptionClickListener.myOnClickListener(position,photosItem);
-                        holder.editText_description.setVisibility(View.VISIBLE);
-
-                    }
-                });
-            }
-
-
-
             if (onMenuClickListener!=null){
                 holder.txt_menu_option.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onMenuClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.editText_description
+                        onMenuClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.txt_name,
+                                holder.editTxt_name_photoInfo ,holder.editText_description
                                 ,holder.img_description,holder.btn_update_photo_info,
                                 holder.btn_cancel_update_photo_info);
                     }
                 });
             }
-/*
 
-            holder.txt_menu_option.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-
-                    PopupMenu popupMenu = new PopupMenu(context,holder.txt_menu_option);
-                    popupMenu.inflate(R.menu.cardview_home_menu);
-
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-
-                            switch (item.getItemId()){
-
-                                case R.id.set_as_ProfileImage :
-                                    HashMap<String, Object> hashMap = new HashMap<>();
-                                    hashMap.put("ImageURL", photosItem.getUrl());
-                                    MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                                            .updateChildren(hashMap);
-                                    Snackbar.make(holder.txt_menu_option, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                    break;
-                                case R.id.edit_photoInfo :
-                                    holder.img_description.setVisibility(View.GONE);
-                                    onDescriptionClickListener.myOnClickListener(position,photosItem);
-                                    holder.editText_description.setVisibility(View.VISIBLE);
-                                    holder.btn_update_photo_info.setVisibility(View.VISIBLE);
-                                    holder.btn_cancel_update_photo_info.setVisibility(View.VISIBLE);
-
-                                    break;
-                                case R.id.delete_menu :
-                                    MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
-                                            .child("Myphotos").child(photosItem.getKey()).removeValue();
-                                    Snackbar.make(holder.txt_menu_option, "Photo Deleted", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                    break;
-                            }
-
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                }
-            });
-*/
+            if (onUpdateClickListener!=null){
+                holder.btn_update_photo_info.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onUpdateClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.txt_name,
+                                holder.editTxt_name_photoInfo ,holder.editText_description
+                                ,holder.img_description,holder.btn_update_photo_info,
+                                holder.btn_cancel_update_photo_info);
+                    }
+                });
+            }
 
 
             if(onCaneclClickListener!=null){
                 holder.btn_cancel_update_photo_info.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onCaneclClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.editText_description
+                        onCaneclClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.txt_name,
+                                                                                      holder.editTxt_name_photoInfo ,holder.editText_description
                                                                                 ,holder.img_description,holder.btn_update_photo_info,
                                                                                                 holder.btn_cancel_update_photo_info);
                     }
@@ -235,6 +176,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         TextView txt_menu_option;
         TextView txt_empty_cardView;
         EditText editText_description;
+        EditText editTxt_name_photoInfo;
         ImageView img_;
         ImageView user_profileImg_cardView_img;
         ImageView profileImage_updated;
@@ -250,6 +192,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             txt_empty_cardView = itemView.findViewById(R.id.txt_empty_cardView);
             txt_menu_option = itemView.findViewById(R.id.txt_menu_option);
             editText_description = itemView.findViewById(R.id.editText_description);
+            editTxt_name_photoInfo = itemView.findViewById(R.id.editTxt_name_photoInfo);
             img_description = itemView.findViewById(R.id.img_description);
             img_date = itemView.findViewById(R.id.img_date);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity);
@@ -273,7 +216,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     }
 
     public interface MyUpdateAndCancelClickListener {
-        void myUpdateAndCancelClickListener(int position, Photos photosItem,TextView txtOptionMenu, EditText editText_description, TextView txtDescription
+        void myUpdateAndCancelClickListener(int position, Photos photosItem,TextView txtOptionMenu,TextView txt_name,EditText editTxt_name, EditText editText_description, TextView txtDescription
                                                                            ,ImageButton update,ImageButton cancel );
     }
 

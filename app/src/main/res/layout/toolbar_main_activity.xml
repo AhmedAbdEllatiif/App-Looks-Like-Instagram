@@ -21,14 +21,12 @@
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="120dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:titleEnabled="true"
                 app:title="Collapse"
-                app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Small"
+                app:collapsedTitleTextAppearance="@style/MyCollapseStye"
                 app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
-                app:expandedTitleMarginStart="15dp"
-                app:collapsedTitleGravity="center_horizontal"
                 >
 
                 <android.support.v7.widget.Toolbar
@@ -39,7 +37,7 @@
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:titleTextColor="@color/white"
                     app:contentScrim="?attr/colorPrimary"
-                    app:layout_collapseMode="pin"
+                    app:layout_collapseMode="none"
                     >
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -56,6 +54,7 @@
                         android:textColor="@color/white"
                         android:text="user name"
                         android:textStyle="bold" />
+
                 </android.support.v7.widget.Toolbar>
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -63,8 +62,14 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_main2" />
-        <include layout="@layout/bottom_nav"/>
+        <include
+            android:id="@+id/content"
+            layout="@layout/content_main2"
+            />
+
+        <include
+            android:id="@+id/bottom_in_toolBar"
+            layout="@layout/bottom_nav"/>
 
 
         <android.support.design.widget.FloatingActionButton

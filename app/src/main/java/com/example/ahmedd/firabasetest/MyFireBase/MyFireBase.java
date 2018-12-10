@@ -97,7 +97,7 @@ public class MyFireBase {
 
     public static DatabaseReference getReferenceOnPhotos() {
 
-        return referenceOnChatList = getGetFirebaseDatabase().getReference("Photos");
+        return referenceOnPhotos = getGetFirebaseDatabase().getReference("Photos");
     }
 
     public static DatabaseReference getReferenceOnFollowers() {

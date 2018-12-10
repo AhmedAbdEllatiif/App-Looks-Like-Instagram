@@ -21,6 +21,11 @@
     </style>
 
 
+    <style name="MyCollapseStye">
+        <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
 
 
     <style name="TextLimitStyle" parent="TextAppearance.AppCompat.Small">
