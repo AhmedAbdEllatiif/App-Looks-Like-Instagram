@@ -36,23 +36,15 @@
             tools:ignore="RtlCompat" />
 
         <TextView
-            android:id="@+id/txt_setAsProfileImg"
+            android:id="@+id/txt_menu_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set as profile photo"
+            android:text="..."
+            android:textSize="25sp"
+            android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/user_profileImg_cardView_img"
-            />
-
-        <ImageView
-            android:id="@+id/delete_cardView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/txt_name_cardView_photoActivity"
-            />
-
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:id="@+id/txt_name_cardView_photoActivity"
@@ -119,7 +111,7 @@
             tools:ignore="RtlCompat" />
 
         <EditText
-            android:id="@+id/write_description"
+            android:id="@+id/editText_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description..."
@@ -137,13 +129,38 @@
             android:id="@+id/profileImage_updated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_add_"
+            android:background="@drawable/ic_done_"
             app:layout_constraintStart_toStartOf="@id/img_cardView_photoActivity"
             app:layout_constraintEnd_toEndOf="@id/img_cardView_photoActivity"
             app:layout_constraintTop_toTopOf="@id/img_cardView_photoActivity"
             app:layout_constraintBottom_toBottomOf="@id/img_cardView_photoActivity"
             android:visibility="gone"
             />
+
+        <ImageButton
+            android:id="@+id/btn_update_photo_info"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_done_"
+            app:layout_constraintTop_toBottomOf="@id/img_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_cancel_update_photo_info"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            />
+
+        <ImageButton
+            android:id="@+id/btn_cancel_update_photo_info"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_clear_"
+            app:layout_constraintTop_toBottomOf="@id/img_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_update_photo_info"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            />
+
 
     </android.support.constraint.ConstraintLayout>
 

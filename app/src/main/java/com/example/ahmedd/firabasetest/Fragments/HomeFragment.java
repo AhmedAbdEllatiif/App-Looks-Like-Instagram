@@ -2,11 +2,11 @@ package com.example.ahmedd.firabasetest.Fragments;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,6 @@ import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -29,15 +28,9 @@ public class HomeFragment extends Fragment {
 
     private View view;
     private RecyclerView recyclerView;
-    private List<Following> followings;
-    private List<User> userList = new ArrayList<>();
-    private List<Photos> photosList = new ArrayList<>();
-    private List<String> followersID = new ArrayList<>();
-
-    private List<Following> followingList;
-    private List<Photos> photosListOFTheFollowing;
-
     private HomeAdapter adapter;
+
+    private List<Photos> photosListOFTheFollowing;
 
     public HomeFragment() {}
 
@@ -52,72 +45,32 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
-        followings = new ArrayList<>();
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                .child("Following").addValueEventListener(new ValueEventListener() {
+        Handler getThePhotosFormBranchPhotosOfFollowing = new Handler();
+        getThePhotosFormBranchPhotosOfFollowing.post(new Runnable() {
+            @Override
+            public void run() {
+                photosListOFTheFollowing = new ArrayList<>();
+                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                        .child("PhotosOfFollowing").limitToLast(5).addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                photosListOFTheFollowing.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Following followingItem = snapshot.getValue(Following.class);
-                    followings.add(followingItem);
+                    Photos photosItem = snapshot.getValue(Photos.class);
+                    photosListOFTheFollowing.add(photosItem);
                 }
+                adapter = new HomeAdapter(getActivity(), photosListOFTheFollowing);
+                recyclerView.setAdapter(adapter);
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-
-
-        photosListOFTheFollowing = new ArrayList<>();
-        final DatabaseReference databaseReference = MyFireBase.getReferenceOnPhotos();
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    for (int i = 0; i < followings.size(); i++) {
-                        if (followings.get(i).getId().equals(snapshot.getKey())) {
-                            DatabaseReference photosReference = databaseReference.child(snapshot.getKey()).child("Myphotos");
-
-                            photosReference.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot snapPhotos : dataSnapshot.getChildren()) {
-                                        Photos photosItem = snapPhotos.getValue(Photos.class);
-                                        Log.e("HomeFragmentphotoName", photosItem.getName());
-                                        photosListOFTheFollowing.add(photosItem);
-                                    }
-                                    adapter = new HomeAdapter(getActivity(), photosListOFTheFollowing);
-                                    recyclerView.setAdapter(adapter);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
-
-                           /* for (DataSnapshot snapPhotos : snapshot.child("Myphotos").getChildren()) {
-                                Photos photosItem = snapPhotos.getValue(Photos.class);
-                                Log.e("photoName", photosItem.getName());
-                                photosListOFTheFollowing.add(photosItem);
-                            }*/
-                        }
                     }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                });
             }
         });
-
 
         return view;
     }

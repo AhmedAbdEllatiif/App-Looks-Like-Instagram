@@ -28,18 +28,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private List<Photos> photosList;
     private MyOnClickListener onAsProfileImgClickListener;
     private MyOnClickListener onDescriptionClickListener;
-
-    public void setOnDeleteClickListener(MyOnClickListener onDeleteClickListener) {
-        this.onDeleteClickListener = onDeleteClickListener;
-    }
-
     private MyOnClickListener onDeleteClickListener;
-
+    private MyOnClickListener onMenueClickListener;
 
     public HomeAdapter(Context context, List<Photos> photosList) {
         this.photosList = photosList;
         this.context = context;
 
+    }
+
+
+    public void setOnMenueClickListener(MyOnClickListener onMenueClickListener) {
+        this.onMenueClickListener = onMenueClickListener;
+    }
+
+    public void setOnDeleteClickListener(MyOnClickListener onDeleteClickListener) {
+        this.onDeleteClickListener = onDeleteClickListener;
     }
 
     public void setOnAsProfileImgClickListener(MyOnClickListener onSetAsProfileImgClickListener) {
@@ -121,14 +125,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 }
             });
         }
-        if (onDeleteClickListener!=null){
-            holder.delete_cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onDeleteClickListener.myOnClickListener(position,photosItem);
-                }
-            });
-        }
+
+
 
 
     }
@@ -141,7 +139,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView user_name_cardView_img;
         TextView txt_name;
@@ -149,11 +147,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView img_description;
         TextView img_date;
         TextView txt_empty_cardView;
+
         EditText write_description;
-        ImageView delete_cardView;
         ImageView img_;
         ImageView user_profileImg_cardView_img;
         ImageView profileImage_updated;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -162,8 +161,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             txt_setAsProfileImg = itemView.findViewById(R.id.txt_setAsProfileImg_homefrgament);
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity_homefrgament);
             txt_empty_cardView = itemView.findViewById(R.id.txt_empty_cardView);
+
             write_description = itemView.findViewById(R.id.write_description_homefrgament);
-            delete_cardView = itemView.findViewById(R.id.delete_cardView_homefrgament);
             img_description = itemView.findViewById(R.id.img_description_homefrgament);
             img_date = itemView.findViewById(R.id.img_date_homefrgament);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity_homefrgament);

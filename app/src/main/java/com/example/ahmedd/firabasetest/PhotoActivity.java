@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Model.Following;
-import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.android.gms.tasks.Continuation;
@@ -42,9 +41,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -240,24 +237,10 @@ public class PhotoActivity extends AppCompatActivity {
                                     upload();
                                 }
                             }
-
-
                         }
-
-
-
-
-
-
 
                     }
                 });
-
-
-
-
-
-
 
             }
         });
@@ -323,8 +306,6 @@ public class PhotoActivity extends AppCompatActivity {
 
     private void upload() {
 
-
-//        Log.e("URI", img_uri.toString());
         if (img_uri!=null){
             final StorageReference fileReference = MyFireBase.getStorageReferenceOnPhotos().child(System.currentTimeMillis() +
                     "." + getFileExtension(img_uri));
@@ -348,39 +329,46 @@ public class PhotoActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Log.e("onComplete","Successful");
 
-                        Uri downloadUri = task.getResult();
+                        String mydate = null;
                         String imgURL = "";
+
+                        Uri downloadUri = task.getResult();
                         if(downloadUri!=null){
                             imgURL = downloadUri.toString();
                         }
 
-
                         if (photoDescription.equals("")){
                             photoDescription = "write a description";
                         }
-                        final HashMap<String, Object> hashMap = new HashMap<>();
 
-                        String mydate = null;
                         DateFormat dateFormat =  new SimpleDateFormat("yyyyMMddHHmmss");
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                            mydate = dateFormat.format(Calendar.getInstance().getTime());
                         }
 
-                        hashMap.put("name", photoName);
-                        hashMap.put("url",imgURL);
-                        hashMap.put("description", photoDescription);
-                        hashMap.put("date", getCurrentTime());
-                        hashMap.put("userName", currentUserName);
-                        hashMap.put("userImage", currentUserImageURl);
-                        hashMap.put("uploadedTime",Long.parseLong(mydate));
 
-                        MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid())
-                                .child("Myphotos").push().setValue(hashMap);
+                        final HashMap<String, Object> hashMap = getHashMap(photoName, photoDescription, getCurrentTime(),
+                                mydate, imgURL, currentUserName, currentUserImageURl);
 
+
+                        Handler setThePhotoDataInTheUserBranch = new Handler();
+                        setThePhotoDataInTheUserBranch.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid())
+                                        .child("Myphotos").push().setValue(hashMap);
+                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                        .child("PhotosOfFollowing").push().setValue(hashMap);
+                            }
+                        });
+
+
+                        //To the following & To make a branch PhotosOfFollowing
                         Handler handler =  new Handler();
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                //To the following
                                 followingList = new ArrayList<>();
                                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .child("Following").addValueEventListener(new ValueEventListener() {
@@ -399,8 +387,8 @@ public class PhotoActivity extends AppCompatActivity {
                                     }
                                 });
 
+                                //To make a branch PhotosOfFollowing
                                 final DatabaseReference databaseReference = MyFireBase.getReferenceOnAllUsers();
-
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -465,6 +453,21 @@ public class PhotoActivity extends AppCompatActivity {
         }
 
     }
+
+    @NonNull
+    private HashMap<String, Object> getHashMap(String photoName, String photoDescription, String currentTime
+            , String mydate, String imgURL, String currentUserName, String currentUserImageURl) {
+        final HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("name", photoName);
+        hashMap.put("url", imgURL);
+        hashMap.put("description", photoDescription);
+        hashMap.put("date", currentTime);
+        hashMap.put("userName", currentUserName);
+        hashMap.put("userImage", currentUserImageURl);
+        hashMap.put("uploadedTime", Long.parseLong(mydate));
+        return hashMap;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

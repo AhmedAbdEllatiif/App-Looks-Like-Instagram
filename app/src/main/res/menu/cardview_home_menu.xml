@@ -2,15 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/setAsProfileImage_menu"
-        android:title="Set as profile image"
-        app:showAsAction="never"/>
 
     <item
-        android:id="@+id/delete_menu"
-        android:title="Delete"
+        android:id="@+id/set_as_ProfileImage"
+        android:title="Set AS Profile Photo"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/edit_photoInfo"
+        android:title="Edit"
+        app:showAsAction="never"/>
+
+
+    <item
+            android:id="@+id/delete_menu"
+            android:title="Delete"
+            app:showAsAction="never"
+            />
+
+
 
 </menu>
