@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -22,16 +21,11 @@ import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
-import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.PhotoActivity;
 import com.example.ahmedd.firabasetest.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -178,7 +172,7 @@ public class MyPhotos extends Fragment {
             public void myUpdateAndCancelClickListener(int position, final Photos photosItem, final TextView txtOptionMenu, final TextView txt_name, final EditText editTxt_name, final EditText editText_description, final TextView txtDescription, final ImageButton update, final ImageButton cancel) {
 
                 PopupMenu popupMenu = new PopupMenu(getActivity(),txtOptionMenu);
-                popupMenu.inflate(R.menu.cardview_home_menu);
+                popupMenu.inflate(R.menu.cardview_myphotos_menu);
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
