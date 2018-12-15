@@ -3,6 +3,7 @@ package com.example.ahmedd.firabasetest.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -43,7 +44,7 @@ public class MyPhotos extends Fragment {
     private PhotosAdapter adapter;
     private List<Photos> photosList;
     private View view;
-
+    Boolean deleteIsCancelled = false;
     private TextView txt_empty_cardView;
 
 
@@ -179,6 +180,7 @@ public class MyPhotos extends Fragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
 
+                        deleteIsCancelled = false;
                         switch (item.getItemId()){
 
                             case R.id.set_as_ProfileImage :
@@ -222,10 +224,28 @@ public class MyPhotos extends Fragment {
 
                                 break;
                             case R.id.delete_menu :
-                                MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
-                                        .child("Myphotos").child(photosItem.getKey()).removeValue();
-                                Snackbar.make(txtOptionMenu, "Photo Deleted", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
+
+                                Snackbar.make(txtOptionMenu, "Deleting Photo", Snackbar.LENGTH_LONG)
+                                        .setAction("Cancel", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                deleteIsCancelled = true;
+                                            }
+                                        }).show();
+
+                                Handler handler =  new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (deleteIsCancelled == false){
+                                            MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                                                    .child("Myphotos").child(photosItem.getKey()).removeValue();
+                                        }
+                                    }
+                                },3000);
+
+
+
                                 break;
                         }
 
@@ -237,4 +257,5 @@ public class MyPhotos extends Fragment {
         });
 
     }
+
 }
