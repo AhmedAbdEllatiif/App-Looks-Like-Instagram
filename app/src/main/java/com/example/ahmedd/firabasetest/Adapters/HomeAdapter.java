@@ -71,6 +71,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         final Photos photosItem = photosList.get(position);
 
+
         holder.txt_name.setText(photosItem.getName());
 
 
@@ -93,11 +94,26 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             Picasso.get().load(photosItem.getUrl()).into(holder.img_);
         }
 
-        if (photosItem.getUserImage().equals("default")){
-            holder.img_.setImageResource(R.mipmap.ic_launcher);
-        }else {
-            Picasso.get().load(photosItem.getUserImage()).into(holder.user_profileImg_cardView_img);
-        }
+        //set Image profile for every post
+        MyFireBase.getReferenceOnAllUsers().child(photosItem.getUserID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                User user = dataSnapshot.getValue(User.class);
+                if (user.getImageURL().equals("default")) {
+                    holder.user_profileImg_cardView_img.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Picasso.get().load(user.getImageURL()).into(holder.user_profileImg_cardView_img);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
 
 
 
@@ -152,7 +168,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         ImageView img_;
         ImageView user_profileImg_cardView_img;
         ImageView profileImage_updated;
-
 
         public ViewHolder(View itemView) {
             super(itemView);

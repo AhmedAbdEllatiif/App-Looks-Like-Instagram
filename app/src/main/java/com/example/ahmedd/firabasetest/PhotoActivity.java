@@ -464,7 +464,7 @@ public class PhotoActivity extends AppCompatActivity {
         hashMap.put("date", currentTime);
         hashMap.put("userName", currentUserName);
         hashMap.put("userImage", currentUserImageURl);
-        hashMap.put("uploadedTime", Long.parseLong(mydate));
+        hashMap.put("userID", MyFireBase.getCurrentUser().getUid());
         return hashMap;
     }
 

@@ -7,32 +7,43 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+
 public class MyFireBase {
 
     private static FirebaseAuth auth;
+    private static FirebaseDatabase FirebaseDatabase;
+    private static FirebaseStorage firebaseStorage;
     private static DatabaseReference referenceOnAllUsers;
     private static DatabaseReference referenceOnCurrentUser;
     private static DatabaseReference referenceOnDataBase;
     private static DatabaseReference referenceOnChats;
     private static DatabaseReference referenceOnPhotos;
     private static DatabaseReference referenceOnChatList;
-    private static DatabaseReference referenceOnFollowers;
+    private static DatabaseReference referenceOnFollowings;
     private static FirebaseUser currentUser;
     private static StorageReference storageReferenceOnUploads;
-    private static FirebaseDatabase FirebaseDatabase;
-    private static FirebaseStorage firebaseStorage;
     private static StorageReference storageReferenceOnPhotos;
 
 
+    private static DatabaseReference yourNewReference;
 
     public static FirebaseAuth getAuth() {
 
         if (auth == null) {
             auth = FirebaseAuth.getInstance();
         }
-
         return auth;
     }
+
+    private static FirebaseDatabase getGetFirebaseDatabase() {
+
+        if (FirebaseDatabase == null){
+            FirebaseDatabase = FirebaseDatabase.getInstance();
+        }
+        return FirebaseDatabase;
+    }
+
     public static FirebaseStorage getFirebaseStorage() {
 
         if (firebaseStorage == null) {
@@ -41,6 +52,7 @@ public class MyFireBase {
 
         return firebaseStorage;
     }
+
     public static StorageReference getStorageReferenceOnUploads() {
 
         if (storageReferenceOnUploads == null) {
@@ -65,14 +77,14 @@ public class MyFireBase {
         return currentUser;
     }
 
-    private static FirebaseDatabase getGetFirebaseDatabase() {
+    public static void initANewBranchWithChild(String branchName, String child, HashMap<String,Object> hashMap){
+        getGetFirebaseDatabase().getReference(branchName).child(child).push().setValue(hashMap);
 
-        if (FirebaseDatabase == null){
-
-            FirebaseDatabase = FirebaseDatabase.getInstance();
-        }
-
-        return FirebaseDatabase;
+    }
+    public static void updateAChild(String branchName, String child, HashMap<String,Object> hashMap){
+        getGetFirebaseDatabase().getReference(branchName).child(child).updateChildren(hashMap);
+        /* MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .updateChildren(hashMap);*/
     }
 
     public static DatabaseReference getReferenceOnAllUsers() {
@@ -80,7 +92,7 @@ public class MyFireBase {
             return referenceOnAllUsers = getGetFirebaseDatabase().getReference("Users");
     }
 
-    public static DatabaseReference getReferenceOnCurrentUser() {
+    public static DatabaseReference getReferenceOnCurrentUserID() {
 
         return referenceOnCurrentUser = getGetFirebaseDatabase().getReference("Users").child(getCurrentUser().getUid());
     }
@@ -100,9 +112,9 @@ public class MyFireBase {
         return referenceOnPhotos = getGetFirebaseDatabase().getReference("Photos");
     }
 
-    public static DatabaseReference getReferenceOnFollowers() {
+    public static DatabaseReference getReferenceOnFollowings() {
 
-        return referenceOnFollowers = getGetFirebaseDatabase().getReference("Following");
+        return referenceOnFollowings = getGetFirebaseDatabase().getReference("Ahmed");
     }
 
     public static DatabaseReference getReferenceOnDataBase() {
@@ -114,4 +126,10 @@ public class MyFireBase {
     public static String getCurrentUserID(){
        return getCurrentUser().getUid();
     }
+
+
+
+
+
+
 }

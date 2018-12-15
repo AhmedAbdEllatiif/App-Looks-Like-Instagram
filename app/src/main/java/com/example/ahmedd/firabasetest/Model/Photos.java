@@ -9,7 +9,7 @@ public class Photos {
     private String key;
     private String userName;
     private String userImage;
-
+    private String userID;
 
     public Photos(String name, String url, String description, String date) {
         this.name = name;
@@ -80,5 +80,13 @@ public class Photos {
 
     public void setUserImage(String userImage) {
         this.userImage = userImage;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

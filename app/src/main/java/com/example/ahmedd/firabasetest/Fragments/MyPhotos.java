@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.PhotoActivity;
 import com.example.ahmedd.firabasetest.R;
@@ -185,6 +186,27 @@ public class MyPhotos extends Fragment {
                                 hashMap.put("ImageURL", photosItem.getUrl());
                                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                                         .updateChildren(hashMap);
+
+                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                User user = dataSnapshot.getValue(User.class);
+                                                HashMap<String, Object> hashMap1 = new HashMap<>();
+                                                hashMap1.put("userImage", user.getImageURL());
+                                                MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                                                        .child("Myphotos").child(photosItem.getKey()).updateChildren(hashMap1);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+
                                 Snackbar.make(txtOptionMenu, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                                 break;

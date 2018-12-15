@@ -4,8 +4,6 @@ package com.example.ahmedd.firabasetest.Fragments;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.Adapters.HomeAdapter;
 import com.example.ahmedd.firabasetest.Model.Following;
@@ -27,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -53,11 +51,30 @@ public class HomeFragment extends Fragment {
         Log.e("onPause", "is here");
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+      /*  HashMap<String,Object> hashMap =  new HashMap<>();
+        hashMap.put("Ahmed1","Awesome");
+        hashMap.put("Ahmed2","Awesome");
+        hashMap.put("Ahmed3","Awesome");
+        hashMap.put("Ahmed4","Awesome");
+
+        HashMap<String,Object> hashMap2 =  new HashMap<>();
+        hashMap.put("Loooza1","kgh");*/
+
+
+
+       //MyFireBase.initANewBranchWithChild("Ahmed","Loooza",hashMap);
+      // MyFireBase.updateAChild("Ahmed","Loooza",hashMap2);
+
+
+
+
 
         Log.e("onCreateView","is here");
         recyclerView = view.findViewById(R.id.recyclerView_home);
@@ -67,8 +84,6 @@ public class HomeFragment extends Fragment {
         followingList = new ArrayList<>();
         photosListOFTheFollowing = new ArrayList<>();
 
-
-
                 MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                         .child("Following").addValueEventListener(new ValueEventListener() {
                     @Override
@@ -77,7 +92,10 @@ public class HomeFragment extends Fragment {
                             Following followingItem = snapshot.getValue(Following.class);
                             followingList.add(followingItem);
                         }
-                        new GetAllPhotos(getActivity()).execute();
+
+                        for (Following following : followingList) {
+                            new GetAllPhotosByEveryFollowing(getActivity()).execute(following);
+                        }
                     }
 
                     @Override
@@ -87,17 +105,11 @@ public class HomeFragment extends Fragment {
                 });
 
 
-
-
-
-
-
-
-
         return view;
     }
 
 
+    //This class get All Photos
     private class GetAllPhotos extends AsyncTask<Void,Photos,Void>{
 
         final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
@@ -134,7 +146,7 @@ public class HomeFragment extends Fragment {
                                                 for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
                                                     Photos photosItem = myPhotosChildern.getValue(Photos.class);
 
-                                                     publishProgress(photosItem);
+                                                    publishProgress(photosItem);
                                                 }
 
                                             }
@@ -166,17 +178,16 @@ public class HomeFragment extends Fragment {
             });
 
 
+
             return null;
         }
-
-
 
 
         @Override
         protected void onProgressUpdate(Photos... values) {
             super.onProgressUpdate(values);
             Log.e("onProgressUpdate","begin");
-           photosListOFTheFollowing.add(values[0]);
+            photosListOFTheFollowing.add(values[0]);
             adapter = new HomeAdapter(context,photosListOFTheFollowing);
             recyclerView.setAdapter(adapter);
 
@@ -194,27 +205,96 @@ public class HomeFragment extends Fragment {
     }
 
 
+    // This class also get all photos but using parameter by every Followeing
+    private class GetAllPhotosByEveryFollowing extends AsyncTask<Following, Photos, Void> {
 
+        final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
+        Context context;
+        List<Photos> photosList;
 
-    private class GetAllFollowing extends AsyncTask<Void,Void,List<Following>>{
+        public GetAllPhotosByEveryFollowing(Context context) {
+            this.context = context;
+            photosList = new ArrayList<>();
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
-        @Override
-        protected void onPostExecute(List<Following> followings) {
-            super.onPostExecute(followings);
-        }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
+        protected Void doInBackground(Following... followings) {
 
-        @Override
-        protected List<Following> doInBackground(Void... voids) {
+            Following myFollowing;
+            myFollowing = followings[0];
+            final Following finalMyFollowing = myFollowing;
+            referenceOnPhotos.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
+
+                        if (finalMyFollowing.getId().equals(photosChild.getKey())) {
+                            referenceOnPhotos.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    referenceOnPhotos.child(photosChild.getKey())
+                                            .child("Myphotos").addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            //photosListOFTheFollowing.clear();
+                                            for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
+                                                Photos photosItem = myPhotosChildern.getValue(Photos.class);
+                                                photosList.add(photosItem);
+
+                                                publishProgress(photosItem);
+                                            }
+
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             return null;
         }
+
+        @Override
+        protected void onProgressUpdate(Photos... values) {
+            super.onProgressUpdate(values);
+            photosList.add(values[0]);
+            adapter = new HomeAdapter(context, photosList);
+            recyclerView.setAdapter(adapter);
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
     }
 }
