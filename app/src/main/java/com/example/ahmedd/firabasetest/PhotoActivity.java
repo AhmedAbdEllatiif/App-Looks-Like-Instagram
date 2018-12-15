@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -189,6 +190,7 @@ public class PhotoActivity extends AppCompatActivity {
         }
         return currentTime;
     }
+
     private void MyClickListeners(){
 
         btn_upload.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +205,18 @@ public class PhotoActivity extends AppCompatActivity {
                         if (mUploadTask != null && mUploadTask.isInProgress()) {
                             Snackbar.make(v, "uploading please wait..", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
-                        } else {
+                        }
+                        else if(img_uri==null){
+                           // Toast.makeText(PhotoActivity.this, "Choose Image", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(btn_upload,"No Image Selected",Snackbar.LENGTH_LONG)
+                                    .setAction("Choose a new one", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            openFileChooser();
+                                        }
+                                    }).show();
+                        }
+                        else {
 
                             if (edit_txt_photo_name.getText().toString().trim().isEmpty()) {
                                 edit_txt_photo_name.setError("Enter photo name");
@@ -464,6 +477,7 @@ public class PhotoActivity extends AppCompatActivity {
         hashMap.put("date", currentTime);
         hashMap.put("userName", currentUserName);
         hashMap.put("userImage", currentUserImageURl);
+        hashMap.put("uploadedTime", Long.parseLong(mydate));
         hashMap.put("userID", MyFireBase.getCurrentUser().getUid());
         return hashMap;
     }
