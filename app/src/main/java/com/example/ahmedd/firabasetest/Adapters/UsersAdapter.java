@@ -125,8 +125,7 @@ Log.e("followings",followings.size()+"");
             holder.txt_follow_userFragment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onFollowClickListener.onClick(position,userItem,
-                            holder.txt_follow_userFragment,holder.txt_unFollow);
+                    onFollowClickListener.onClick(position,userItem);
                 }
             });
         }
@@ -135,8 +134,7 @@ Log.e("followings",followings.size()+"");
             holder.txt_unFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onUnFollowClickListener.onClick(position,userItem,
-                            holder.txt_follow_userFragment,holder.txt_unFollow);
+                    onUnFollowClickListener.onClick(position,userItem);
                 }
             });
         }
@@ -213,7 +211,7 @@ Log.e("followings",followings.size()+"");
 
     public interface MyOnclickListener{
         void onClick(int position, User userItem);
-        void onClick(int position, User userItem,TextView follow,TextView unfollow);
+
     }
 
 

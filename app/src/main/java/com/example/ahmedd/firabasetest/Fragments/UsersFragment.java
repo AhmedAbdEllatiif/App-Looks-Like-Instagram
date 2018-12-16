@@ -63,7 +63,6 @@ public class UsersFragment extends Fragment {
 
         setupRecyclerView();
         readAllUsers();
-        myClickListeners();
         return view;
     }
 
@@ -156,7 +155,6 @@ public class UsersFragment extends Fragment {
                         userList.add(user);
                     }
                 }
-
                     MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                             .child("Following").addValueEventListener(new ValueEventListener() {
                         @Override
@@ -168,82 +166,22 @@ public class UsersFragment extends Fragment {
                             }
                             adapter = new UsersAdapter(getContext(), userList,followings,false);
                             recyclerView.setAdapter(adapter);
-                            adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
-                                @Override
-                                public void onClick(int position, User userItem) {
-                                    Intent intent = new Intent(getActivity(), MessageActivity.class);
-                                    intent.putExtra("userID", userItem.getId());
-                                    startActivity(intent);
-                                }
+                            myAdapterClickListeners(adapter);
 
-                                @Override
-                                public void onClick(int position, User userItem, TextView follow, TextView unfollow) {
-
-                                }
-                            });
-
-
-                            adapter.setOnFollowClickListener(new UsersAdapter.MyOnclickListener() {
-                                @Override
-                                public void onClick(int position, User userItem) {
-
-                                }
-
-                                @Override
-                                public void onClick(int position, final User userItem, final TextView follow, final TextView unfollow) {
-                                    final DatabaseReference databaseReference =
-                                            MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                                                    .child("Following").child(userItem.getId());
-                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            if (!dataSnapshot.exists()){
-                                                databaseReference.child("id").setValue(userItem.getId());
-                                            }
-                                 /*   follow.setVisibility(View.GONE);
-                                    unfollow.setVisibility(View.VISIBLE);*/
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            });
-
-                            adapter.setOnUnFollowClickListener(new UsersAdapter.MyOnclickListener() {
-                                @Override
-                                public void onClick(int position, User userItem) {
-
-                                }
-
-                                @Override
-                                public void onClick(int position, User userItem, TextView follow, TextView unfollow) {
-                                    MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                                            .child("Following").child(userItem.getId()).removeValue();
-
-                            /*follow.setVisibility(View.VISIBLE);
-                            unfollow.setVisibility(View.GONE);*/
-                                }
-                            });
                         }
-
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                //onCancelled reference following
                         }
                     });
-
-
 
             }
         }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                //onCancelled reference users
             }
         });
     }
@@ -254,9 +192,52 @@ public class UsersFragment extends Fragment {
         MyFireBase.getReferenceOnAllUsers().removeEventListener(readAllUsersListener);
     }
 
-    private void myClickListeners() {
+    private void myAdapterClickListeners(UsersAdapter usersAdapter) {
+
+        usersAdapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
+            @Override
+            public void onClick(int position, User userItem) {
+                Intent intent = new Intent(getActivity(), MessageActivity.class);
+                intent.putExtra("userID", userItem.getId());
+                startActivity(intent);
+            }
+        });
 
 
+        usersAdapter.setOnFollowClickListener(new UsersAdapter.MyOnclickListener() {
+            @Override
+            public void onClick(int position, final User userItem) {
+                final DatabaseReference databaseReference =
+                        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                .child("Following").child(userItem.getId());
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.exists()){
+                            databaseReference.child("id").setValue(userItem.getId());
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+
+        });
+
+        usersAdapter.setOnUnFollowClickListener(new UsersAdapter.MyOnclickListener() {
+            @Override
+            public void onClick(int position, User userItem) {
+                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                        .child("Following").child(userItem.getId()).removeValue();
+            }
+
+
+        });
 
     }
 
