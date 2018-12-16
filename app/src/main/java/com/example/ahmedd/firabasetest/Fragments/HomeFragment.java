@@ -92,10 +92,14 @@ public class HomeFragment extends Fragment {
                             Following followingItem = snapshot.getValue(Following.class);
                             followingList.add(followingItem);
                         }
-
-                        for (Following following : followingList) {
+                        Log.e("folo",followingList.size()+"");
+                            new GetAllPhotos(getActivity()).execute();
+                        //new GetAllPhotos(getActivity());
+                        /*for (Following following : followingList) {
                             new GetAllPhotosByEveryFollowing(getActivity()).execute(following);
-                        }
+
+                        }*/
+
                     }
 
                     @Override

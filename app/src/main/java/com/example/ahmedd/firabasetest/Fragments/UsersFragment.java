@@ -13,15 +13,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
 import com.example.ahmedd.firabasetest.MessageActivity;
+import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -37,6 +40,7 @@ public class UsersFragment extends Fragment {
     private RecyclerView recyclerView;
     private UsersAdapter adapter;
     private List<User> userList;
+    private List<Following> followings;
     private EditText editText_searchUsers;
     private String currentUserID;
     private ValueEventListener readAllUsersListener;
@@ -113,7 +117,7 @@ public class UsersFragment extends Fragment {
                         userList.add(userItem);
                     }
                 }
-                adapter =  new UsersAdapter(getContext(),userList,false);
+                adapter =  new UsersAdapter(getContext(),userList,null,false);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -130,6 +134,7 @@ public class UsersFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         userList = new ArrayList<>();
+        followings = new ArrayList<>();
     }
 
 
@@ -152,41 +157,87 @@ public class UsersFragment extends Fragment {
                     }
                 }
 
-                adapter = new UsersAdapter(getContext(), userList,false);
-                recyclerView.setAdapter(adapter);
-                adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
-                    @Override
-                    public void onClick(int position, User userItem) {
-                        Intent intent = new Intent(getActivity(), MessageActivity.class);
-                        intent.putExtra("userID", userItem.getId());
-                        startActivity(intent);
-                    }
-                });
-
-
-                    adapter.setOnFollowClickListener(new UsersAdapter.MyOnclickListener() {
+                    MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                            .child("Following").addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onClick(int position, final User userItem) {
-
-                            final DatabaseReference databaseReference =  MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                                    .child("Following").child(userItem.getId());
-                            databaseReference .addValueEventListener(new ValueEventListener() {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            followings.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Following followingItem = snapshot.getValue(Following.class);
+                                followings.add(followingItem);
+                            }
+                            adapter = new UsersAdapter(getContext(), userList,followings,false);
+                            recyclerView.setAdapter(adapter);
+                            adapter.setOnCardClickListener(new UsersAdapter.MyOnclickListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (!dataSnapshot.exists()){
-                                        databaseReference.child("id").setValue(userItem.getId());
-                                    }
+                                public void onClick(int position, User userItem) {
+                                    Intent intent = new Intent(getActivity(), MessageActivity.class);
+                                    intent.putExtra("userID", userItem.getId());
+                                    startActivity(intent);
                                 }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                public void onClick(int position, User userItem, TextView follow, TextView unfollow) {
 
                                 }
                             });
 
 
+                            adapter.setOnFollowClickListener(new UsersAdapter.MyOnclickListener() {
+                                @Override
+                                public void onClick(int position, User userItem) {
+
+                                }
+
+                                @Override
+                                public void onClick(int position, final User userItem, final TextView follow, final TextView unfollow) {
+                                    final DatabaseReference databaseReference =
+                                            MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                                    .child("Following").child(userItem.getId());
+                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (!dataSnapshot.exists()){
+                                                databaseReference.child("id").setValue(userItem.getId());
+                                            }
+                                 /*   follow.setVisibility(View.GONE);
+                                    unfollow.setVisibility(View.VISIBLE);*/
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            });
+
+                            adapter.setOnUnFollowClickListener(new UsersAdapter.MyOnclickListener() {
+                                @Override
+                                public void onClick(int position, User userItem) {
+
+                                }
+
+                                @Override
+                                public void onClick(int position, User userItem, TextView follow, TextView unfollow) {
+                                    MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                            .child("Following").child(userItem.getId()).removeValue();
+
+                            /*follow.setVisibility(View.VISIBLE);
+                            unfollow.setVisibility(View.GONE);*/
+                                }
+                            });
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
+
+
+
             }
         }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Model.Chats;
+import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
@@ -25,15 +27,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     private Context context;
     private List<User> userList;
+    private List<Following> followings;
     private MyOnclickListener onCardClickListener;
     private MyOnclickListener onFollowClickListener;
+    private MyOnclickListener onUnFollowClickListener;
     private Boolean isOnline;
     private String theLastMessage;
 
-    public UsersAdapter(Context context, List<User> userList,Boolean isOnline) {
+    public UsersAdapter(Context context, List<User> userList, List<Following> followings, Boolean isOnline) {
         this.context = context;
         this.userList = userList;
         this.isOnline = isOnline;
+        this.followings = followings;
     }
 
     public void setOnCardClickListener(MyOnclickListener onCardClickListener) {
@@ -42,6 +47,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     public void setOnFollowClickListener(MyOnclickListener onFollowClickListener) {
         this.onFollowClickListener = onFollowClickListener;
+    }
+
+    public void setOnUnFollowClickListener(MyOnclickListener onUnFollowClickListener) {
+        this.onUnFollowClickListener = onUnFollowClickListener;
     }
 
     @NonNull
@@ -55,8 +64,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+Log.e("onBind","ishere");
         final User userItem = userList.get(position);
 
         holder.userName.setText(userItem.getUserName());
@@ -79,12 +88,55 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
                 }
             });
         }
+Log.e("followings",followings.size()+"");
+        for (int i=0; i< followings.size();i++){
+              if(userItem.getId().equals(followings.get(i).getId())){
+                  holder.txt_follow_userFragment.setVisibility(View.INVISIBLE);
+                  holder.txt_unFollow.setVisibility(View.VISIBLE);
+              }
+        }
+       /* //set text unfollow after follow
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .child("Following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    if (snapshot.getKey().equals(userItem.getId())){
+                        holder.txt_follow_userFragment.setVisibility(View.INVISIBLE);
+                        holder.txt_unFollow.setVisibility(View.VISIBLE);
+                        Log.e(userItem.getUserName(),"followed");
+                    }else {
+                        holder.txt_follow_userFragment.setVisibility(View.VISIBLE);
+                        holder.txt_unFollow.setVisibility(View.INVISIBLE);
+                        Log.e(userItem.getUserName(),"Unfollowed");
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
         if(onFollowClickListener != null){
             holder.txt_follow_userFragment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onFollowClickListener.onClick(position,userItem);
+                    onFollowClickListener.onClick(position,userItem,
+                            holder.txt_follow_userFragment,holder.txt_unFollow);
+                }
+            });
+        }
+
+        if(onUnFollowClickListener!=null){
+            holder.txt_unFollow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onUnFollowClickListener.onClick(position,userItem,
+                            holder.txt_follow_userFragment,holder.txt_unFollow);
                 }
             });
         }
@@ -101,6 +153,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         TextView userName;
         TextView lastMessage;
         TextView txt_follow_userFragment;
+        TextView txt_unFollow;
         CardView userCardView;
         ImageView profile_pic;
 
@@ -112,6 +165,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             userName = itemView.findViewById(R.id.userName_AtCardView_userFragment);
             lastMessage = itemView.findViewById(R.id.txt_lastMessage_userItem_userFragment);
             txt_follow_userFragment = itemView.findViewById(R.id.txt_follow_userFragment);
+            txt_unFollow = itemView.findViewById(R.id.txt_unFollow);
             userCardView = itemView.findViewById(R.id.cardView_user_userFragment);
             profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView_userFragment);
 
@@ -159,6 +213,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     public interface MyOnclickListener{
         void onClick(int position, User userItem);
+        void onClick(int position, User userItem,TextView follow,TextView unfollow);
     }
+
 
 }
