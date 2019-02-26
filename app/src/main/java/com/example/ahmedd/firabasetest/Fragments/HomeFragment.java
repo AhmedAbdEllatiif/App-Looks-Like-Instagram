@@ -248,6 +248,7 @@ public class HomeFragment extends Fragment {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             //photosListOFTheFollowing.clear();
                                             for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
+                                                photosList.clear();
                                                 Photos photosItem = myPhotosChildern.getValue(Photos.class);
                                                 photosList.add(photosItem);
 
@@ -290,6 +291,7 @@ public class HomeFragment extends Fragment {
         protected void onProgressUpdate(Photos... values) {
             super.onProgressUpdate(values);
             photosList.add(values[0]);
+
             adapter = new HomeAdapter(context, photosList);
             recyclerView.setAdapter(adapter);
         }
