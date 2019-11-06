@@ -317,6 +317,9 @@ public class PhotoActivity extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(resolver.getType(uri));
     }
 
+
+
+
     private void upload() {
 
         if (img_uri!=null){
