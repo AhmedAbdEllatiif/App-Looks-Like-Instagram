@@ -1,7 +1,7 @@
 package com.example.ahmedd.firabasetest.BaseActivities;
 
 import android.content.Context;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/AppBar_profileActivity"
@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/profileActivity_ToolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:popupTheme="@style/MenuStyle"
         app:titleTextColor="@color/white">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -41,6 +41,6 @@
                 app:layout_constraintTop_toTopOf="@id/profileActivity_profile_Image"
                 tools:ignore="RtlCompat" />
 
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.Toolbar>
-</android.support.design.widget.AppBarLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+</com.google.android.material.appbar.AppBarLayout>
