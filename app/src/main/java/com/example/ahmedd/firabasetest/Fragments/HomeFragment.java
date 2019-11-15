@@ -57,23 +57,6 @@ public class HomeFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-      /*  HashMap<String,Object> hashMap =  new HashMap<>();
-        hashMap.put("Ahmed1","Awesome");
-        hashMap.put("Ahmed2","Awesome");
-        hashMap.put("Ahmed3","Awesome");
-        hashMap.put("Ahmed4","Awesome");
-
-        HashMap<String,Object> hashMap2 =  new HashMap<>();
-        hashMap.put("Loooza1","kgh");*/
-
-
-
-       //MyFireBase.initANewBranchWithChild("Ahmed","Loooza",hashMap);
-      // MyFireBase.updateAChild("Ahmed","Loooza",hashMap2);
-
-
-
-
 
         Log.e("onCreateView","is here");
         recyclerView = view.findViewById(R.id.recyclerView_home);

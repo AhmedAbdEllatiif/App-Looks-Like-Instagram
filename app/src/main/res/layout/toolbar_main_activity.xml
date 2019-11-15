@@ -6,9 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Main2Activity">
+   >
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+   <!-- <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -62,9 +62,10 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <include
             android:id="@+id/content"
-            layout="@layout/content_main2"
+            layout="@layout/fragment_main"
             />
 
         <include
@@ -83,7 +84,46 @@
             tools:ignore="RtlCompat" />
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/testToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/red"
+            />
+
+        <include
+            android:id="@+id/content"
+            layout="@layout/fragment_main"
+            app:layout_constraintTop_toBottomOf="@+id/testToolBar"
+            />
+
+        <include
+            android:id="@+id/bottom_in_toolBar"
+            layout="@layout/bottom_nav"/>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="60dp"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/ic_add_"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="RtlCompat" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

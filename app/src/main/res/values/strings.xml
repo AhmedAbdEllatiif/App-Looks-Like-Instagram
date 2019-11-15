@@ -37,4 +37,5 @@
     <string name="birthday">Birthday</string>
     <string name="_01_10_1993">01/10/1993</string>
     <string name="follow">Follow</string>
+    <string name="register">REGISTER</string>
 </resources>

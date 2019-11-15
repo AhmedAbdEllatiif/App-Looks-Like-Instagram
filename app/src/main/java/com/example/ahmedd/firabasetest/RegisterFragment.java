@@ -4,12 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,19 +29,35 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterFragment extends Fragment {
+
+    private View view;
 
     private TextInputEditText editTextUserName, editTextEmail, editTextPassword;
     private Button btn_register;
     private Toolbar toolbar;
 
-
     private static DatabaseReference userReference;
 
+
+    @Nullable
     @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_register, container, false);
+
+
+        initViews();
+
+        registerButtonListener();
+
+
+        return view;
+    }
+
+   /* @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.fragment_register);
 
         initViews();
         setToolBar();
@@ -45,13 +67,13 @@ public class RegisterActivity extends AppCompatActivity {
         //!userName.isEmpty()
 
 
-    }
+    }*/
 
-    private void setToolBar() {
+ /*   private void setToolBar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Register");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+    }*/
 
     private void checkIfUserNameStartsWithCapitalLetter() {
         editTextUserName.addTextChangedListener(new TextWatcher() {
@@ -141,13 +163,13 @@ public class RegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Intent intent = new Intent(RegisterActivity.this, Main2Activity.class);
+                                        Intent intent = new Intent(getActivity() ,Main2Activity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
-                                        Toast.makeText(RegisterActivity.this, "successfuil register", Toast.LENGTH_SHORT).show();
-                                        finish();
+                                        Toast.makeText(getActivity(), "successfuil register", Toast.LENGTH_SHORT).show();
+                                        getActivity().finish();
                                     } else {
-                                        Toast.makeText(RegisterActivity.this, "You can't register", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), "You can't register", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -163,11 +185,10 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void initViews() {
-        editTextUserName = findViewById(R.id.ediText_userName);
-        editTextEmail = findViewById(R.id.ediText_Email);
-        editTextPassword = findViewById(R.id.ediText_password);
-        btn_register = findViewById(R.id.btn_register);
-        toolbar = findViewById(R.id.myToolBar);
+        editTextUserName = view.findViewById(R.id.ediText_userName);
+        editTextEmail = view.findViewById(R.id.ediText_Email);
+        editTextPassword = view.findViewById(R.id.ediText_password);
+        btn_register = view.findViewById(R.id.btn_register);
 
     }
 

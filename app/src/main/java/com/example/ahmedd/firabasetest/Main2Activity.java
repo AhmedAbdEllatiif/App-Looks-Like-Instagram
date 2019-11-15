@@ -12,6 +12,11 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
+import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.CameraFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.MainFragment;
+import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,6 +27,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -54,8 +62,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-public class Main2Activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class Main2Activity extends AppCompatActivity{
 
     //Views
     private ImageView profile_img;
@@ -63,6 +70,7 @@ public class Main2Activity extends AppCompatActivity
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fab;
+    private ViewPager mainViewPager;
 
     //Fragments
     private Fragment fragment;
@@ -73,7 +81,7 @@ public class Main2Activity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.content_main2);
 
 
         //Receivers
@@ -81,16 +89,18 @@ public class Main2Activity extends AppCompatActivity
 
         //initialize views, setToolbar, setCurrentUserInfo
         initViews();
-        setToolBar();
+        //setToolBar();
         //setCurrentUserInfo();
 
 
         //Set Drawer, FloatingActionButton, ButtonNavigationView
-        setFloatingActionButton();
-        setDrawerLayout();
-        setNavHearderInNavigationDrawer();
-        setBottomNavigationView();
+        //setFloatingActionButton();
+        //setDrawerLayout();
+        //setNavHearderInNavigationDrawer();
+        //setBottomNavigationView();
 
+
+        setUpViewPager();
 
         //set a tag to everyuser in oneSingle to help sending notification to it by this tag
         OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
@@ -98,16 +108,37 @@ public class Main2Activity extends AppCompatActivity
 
     }
 
+
+    /*******************************************************************************************************/
+    private void setUpViewPager(){
+        MainPageAdapter pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
+        pageAdapter.addFragment(new CameraFragment());
+        pageAdapter.addFragment(new MainFragment());
+        //pageAdapter.addFragment(new UsersFragment());
+        //pageAdapter.addFragment(new MyPhotos());
+        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
+        mainViewPager.setOffscreenPageLimit(limit);
+        mainViewPager.setCurrentItem(1);
+
+
+        mainViewPager.setAdapter(pageAdapter);
+    }
+
+    /*******************************************************************************************************/
+
+
     /*******************************************************************************************************/
     private void initViews() {
-        profile_img = findViewById(R.id.profile_Image);
-        userName = findViewById(R.id.userName);
-        collapsingToolbarLayout = findViewById(R.id.collapsing);
-        collapsingToolbarLayout.setTitle("Home");
+       // profile_img = findViewById(R.id.profile_Image);
+        //userName = findViewById(R.id.userName);
+        mainViewPager = findViewById(R.id.mainViewPager);
+
+        //collapsingToolbarLayout = findViewById(R.id.collapsing);
+        //collapsingToolbarLayout.setTitle("Home");
     }
 
     private void setToolBar() {
-        toolbar = findViewById(R.id.myUserToolBar);
+        //toolbar = findViewById(R.id.myUserToolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -216,16 +247,16 @@ public class Main2Activity extends AppCompatActivity
     /*******************************************************************************************************/
     //DrawerLayout
     private void setDrawerLayout() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    /*    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
     }
 
 
     private void setNavHearderInNavigationDrawer() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+     /*   NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View hView = navigationView.getHeaderView(0);
@@ -252,12 +283,12 @@ public class Main2Activity extends AppCompatActivity
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
+                });*/
 
 
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+/*    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -280,7 +311,7 @@ public class Main2Activity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
+    }*/
 
     /*******************************************************************************************************/
 
@@ -289,13 +320,14 @@ public class Main2Activity extends AppCompatActivity
     //BottomNavigationView
     private void setBottomNavigationView() {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.home);
 
 
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+  /*  private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
@@ -306,34 +338,38 @@ public class Main2Activity extends AppCompatActivity
                     fragment = new HomeFragment();
                     collapsingToolbarLayout.setTitle("Home");
                     fab.setVisibility(View.VISIBLE);
+                    mainViewPager.setCurrentItem(1);
                     break;
                 case R.id.chats:
                     fragment = new ChatFragment();
                     collapsingToolbarLayout.setTitle("Chats");
+                    mainViewPager.setCurrentItem(0);
                     fab.setVisibility(View.GONE);
                     break;
                 case R.id.users:
                     fragment = new UsersFragment();
                     collapsingToolbarLayout.setTitle("Users");
+                    mainViewPager.setCurrentItem(2);
                     fab.setVisibility(View.GONE);
                     break;
                 case R.id.myPhotos:
                     fragment = new MyPhotos();
                     collapsingToolbarLayout.setTitle("My Photos");
+                    mainViewPager.setCurrentItem(3);
                     fab.setVisibility(View.VISIBLE);
                     break;
 
             }
 
-
+*//*
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.viewPager, fragment)
-                    .commit();
+                    .commit();*//*
             Log.e("MainActivity", "Replacing Fragment");
             return true;
         }
-    };
+    };*/
     /*******************************************************************************************************/
 
 
@@ -374,7 +410,7 @@ public class Main2Activity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.logout:
                 MyFireBase.getAuth().signOut();
-                startActivity(new Intent(Main2Activity.this, StartActivity.class)
+                startActivity(new Intent(Main2Activity.this, StartFragment.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     if (AccessToken.getCurrentAccessToken() != null){
                         LoginManager loginManager =LoginManager.getInstance();

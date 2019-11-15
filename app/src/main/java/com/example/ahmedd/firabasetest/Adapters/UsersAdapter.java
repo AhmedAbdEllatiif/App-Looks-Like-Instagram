@@ -88,7 +88,7 @@ Log.e("onBind","ishere");
                 }
             });
         }
-Log.e("followings",followings.size()+"");
+        Log.e("followings",followings.size()+"");
         for (int i=0; i< followings.size();i++){
               if(userItem.getId().equals(followings.get(i).getId())){
                   holder.txt_follow_userFragment.setVisibility(View.INVISIBLE);
