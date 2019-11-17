@@ -1,21 +1,34 @@
 package com.example.ahmedd.firabasetest.Fragments.MainActivityFragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
 import com.example.ahmedd.firabasetest.Fragments.MyPhotos;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
+import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
 import com.example.ahmedd.firabasetest.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,8 +37,9 @@ public class MainFragment extends Fragment {
 
 
     private View view;
+    private TextView txt_title;
 
-    private ViewPager viewPager;
+    private MyViewPager viewPager;
 
     public MainFragment() {
         // Required empty public constructor
@@ -37,16 +51,20 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
-
         initViews();
 
+        setBottomNavigationView();
 
         return view;
     }
 
     private void initViews() {
-        viewPager =  view.findViewById(R.id.mainFragmentViewPager);
-        setUpViewPager();
+        txt_title = view.findViewById(R.id.title);
+
+        //viewPager =  view.findViewById(R.id.mainFragmentViewPager);
+
+
+        //setUpViewPager();
 
     }
 
@@ -65,4 +83,79 @@ public class MainFragment extends Fragment {
     }
 
     /*******************************************************************************************************/
+
+
+
+    final Fragment fragment1 = new HomeFragment();
+    final Fragment fragment2 = new UsersFragment();
+    final Fragment fragment3 = new MyPhotos();
+    FragmentManager fm ;
+    Fragment active = fragment1;
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fm = getChildFragmentManager();
+    }
+
+    //BottomNavigationView
+    private void setBottomNavigationView() {
+        BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.mainBottom_nav);
+      
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        fm.beginTransaction().add(R.id.mainFragment_view, fragment3, "3").hide(fragment3).commit();
+        fm.beginTransaction().add(R.id.mainFragment_view, fragment2, "2").hide(fragment2).commit();
+        fm.beginTransaction().add(R.id.mainFragment_view,fragment1, "1").commit();
+        navigation.setSelectedItemId(R.id.home);
+
+
+    }
+
+    Fragment fragment;
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.home:
+                    //viewPager.setCurrentItem(0,false);
+                    //fragment = new HomeFragment();
+                    fm.beginTransaction().hide(active).show(fragment1).commit();
+                    active = fragment1;
+                    txt_title.setText("Home");
+                    return true;
+                case R.id.users:
+                    //viewPager.setCurrentItem(1,false);
+                    //fragment = new UsersFragment();
+                    fm.beginTransaction().hide(active).show(fragment2).commit();
+                    active = fragment2;
+                    txt_title.setText("Users");
+                    return true;
+                case R.id.myPhotos:
+                    //viewPager.setCurrentItem(2,false);
+                    fragment = new MyPhotos();
+                    fm.beginTransaction().hide(active).show(fragment3).commit();
+                    active = fragment3;
+                    txt_title.setText("Photos");
+                    return true;
+            }
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainFragment_view, fragment)
+                    .commit();
+            Log.e("MainActivity", "Replacing Fragment");
+            return false;
+        }
+    };
+
+
 }

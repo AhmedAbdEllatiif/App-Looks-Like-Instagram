@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class UsersFragment extends Fragment {
 
-    private View view;
+    private View view = null;
     private RecyclerView recyclerView;
     private UsersAdapter adapter;
     private List<User> userList;
@@ -51,8 +51,9 @@ public class UsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        if (view == null){
         view = inflater.inflate(R.layout.fragment_users, container, false);
+        }
 
         editText_searchUsers = view.findViewById(R.id.editText_searchUsers);
         searchByCapitalLetter();

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ahmedd.firabasetest.Adapters.HomeAdapter;
+import com.example.ahmedd.firabasetest.GetImagesTask;
+import com.example.ahmedd.firabasetest.Main2Activity;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
@@ -25,14 +28,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment  implements GetImagesTask {
 
-    private View view;
+    private View view = null;
     private RecyclerView recyclerView;
     private HomeAdapter adapter;
 
-    private List<Photos> photosListOFTheFollowing;
+    private static List<Photos> photosListOFTheFollowing  = null;
     private List<Following> followingList;
 
 
@@ -52,17 +56,74 @@ public class HomeFragment extends Fragment {
 
 
     @Override
+    public void onGettingImagesCompleted(List<Photos> imgList) {
+        adapter = new HomeAdapter(getContext(),imgList);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+
+
+        followingList = new ArrayList<>();
+        photosListOFTheFollowing = new ArrayList<>();
+
+     /*   MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .child("Following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Following followingItem = snapshot.getValue(Following.class);
+                    followingList.add(followingItem);
+                }
+                Log.e("folo",followingList.size()+"");
+                new GetAllPhotos(getActivity()).execute();
+                //new GetAllPhotos(getActivity());
+                        *//*for (Following following : followingList) {
+                            new GetAllPhotosByEveryFollowing(getActivity()).execute(following);
+
+                        }*//*
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_home, container, false);
+        if (view == null){
+            view = inflater.inflate(R.layout.fragment_home, container, false);
+        }
 
+
+        ((Main2Activity) Objects.requireNonNull(getActivity())).setGetImagesTask(this);
 
         Log.e("onCreateView","is here");
         recyclerView = view.findViewById(R.id.recyclerView_home);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
+      /*  if ( photosListOFTheFollowing.size() > 0 && photosListOFTheFollowing != null){
+            adapter = new HomeAdapter(getContext(),photosListOFTheFollowing);
+            recyclerView.setAdapter(adapter);
+        }else {
+            Log.e("onCreateView","size < 0");
+        }*/
+
+
+
+
+/*
         followingList = new ArrayList<>();
         photosListOFTheFollowing = new ArrayList<>();
 
@@ -77,10 +138,12 @@ public class HomeFragment extends Fragment {
                         Log.e("folo",followingList.size()+"");
                             new GetAllPhotos(getActivity()).execute();
                         //new GetAllPhotos(getActivity());
-                        /*for (Following following : followingList) {
+                        */
+/*for (Following following : followingList) {
                             new GetAllPhotosByEveryFollowing(getActivity()).execute(following);
 
-                        }*/
+                        }*//*
+
 
                     }
 
@@ -89,6 +152,7 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
+*/
 
 
         return view;
@@ -96,6 +160,7 @@ public class HomeFragment extends Fragment {
 
 
     //This class get All Photos
+    List<Photos> myList  = new ArrayList<>();
     private class GetAllPhotos extends AsyncTask<Void,Photos,Void>{
 
         final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
@@ -132,8 +197,12 @@ public class HomeFragment extends Fragment {
                                                 for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
                                                     Photos photosItem = myPhotosChildern.getValue(Photos.class);
 
-                                                    publishProgress(photosItem);
+                                                    //publishProgress(photosItem);
+
+                                                    myList.add(photosItem);
                                                 }
+                                                photosListOFTheFollowing = myList;
+
 
                                             }
 
@@ -173,9 +242,9 @@ public class HomeFragment extends Fragment {
         protected void onProgressUpdate(Photos... values) {
             super.onProgressUpdate(values);
             Log.e("onProgressUpdate","begin");
-            photosListOFTheFollowing.add(values[0]);
-            adapter = new HomeAdapter(context,photosListOFTheFollowing);
-            recyclerView.setAdapter(adapter);
+            //photosListOFTheFollowing.add(values[0]);
+            //adapter = new HomeAdapter(context,photosListOFTheFollowing);
+            //recyclerView.setAdapter(adapter);
 
         }
 

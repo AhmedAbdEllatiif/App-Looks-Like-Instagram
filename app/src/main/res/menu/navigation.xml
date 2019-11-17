@@ -25,7 +25,7 @@
 
     <item
         android:id="@+id/myPhotos"
-        android:icon="@drawable/ic_person_"
+        android:icon="@drawable/ic_person"
         android:title="Photos" />
 
 

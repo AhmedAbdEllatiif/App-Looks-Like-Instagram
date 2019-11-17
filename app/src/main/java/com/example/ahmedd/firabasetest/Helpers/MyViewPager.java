@@ -20,21 +20,13 @@ public class MyViewPager extends ViewPager {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return performClick();
+    public boolean onTouchEvent(MotionEvent ev) {
+        // returning false will not propagate the swipe event
+        return false;
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        return true;
-    }
-
-    public void setPagingEnabled(boolean b) {
-        this.isPagingEnabled = b;
-    }
-
-    @Override
-    public boolean performClick() {
-        return true;
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
     }
 }

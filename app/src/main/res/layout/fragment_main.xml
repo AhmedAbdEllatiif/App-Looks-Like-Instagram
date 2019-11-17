@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    tools:context=".Fragments.MainActivityFragments.MainFragment">
-
+    tools:context=".MainLoginActivity">
 
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/mainFragmentViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
-            />
+    <include
+        android:id="@+id/main_toolBar"
+        layout="@layout/toolbar_mainfragment" />
+
+    <FrameLayout
+        android:id="@+id/mainFragment_view"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/mainBottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/main_toolBar"
+      />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
+        android:id="@+id/mainBottom_nav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:itemBackground="@color/colorPrimaryDark"
+        android:background="@drawable/bottom_nav_background"
         app:itemIconTint="@color/nav_color"
         app:itemTextColor="@color/nav_color"
-        app:menu="@menu/navigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/navigation"
         />
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

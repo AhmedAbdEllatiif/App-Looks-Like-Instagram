@@ -40,10 +40,10 @@ import java.util.List;
  */
 public class MyPhotos extends Fragment {
 
+    private View view = null;
     private RecyclerView recyclerView;
     private PhotosAdapter adapter;
     private List<Photos> photosList;
-    private View view;
     Boolean deleteIsCancelled = false;
     private TextView txt_empty_cardView;
 
@@ -56,7 +56,13 @@ public class MyPhotos extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (view == null){
         view = inflater.inflate(R.layout.fragment_my_photos, container, false);
+        }else {
+            return view;
+        }
+
         txt_empty_cardView = view.findViewById(R.id.txt_empty_cardView);
         // Inflate the layout for this fragment
         fillRecyclerViewWithPhotos();

@@ -17,6 +17,8 @@ import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.CameraFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.MainFragment;
 import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
+import com.example.ahmedd.firabasetest.Model.Following;
+import com.example.ahmedd.firabasetest.Model.Photos;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,6 +32,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +56,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
@@ -60,7 +64,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Main2Activity extends AppCompatActivity{
 
@@ -75,8 +81,9 @@ public class Main2Activity extends AppCompatActivity{
     //Fragments
     private Fragment fragment;
 
-
-
+    private List<Following> followingList;
+    final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
+    List<Photos> myList  = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +108,79 @@ public class Main2Activity extends AppCompatActivity{
 
 
         setUpViewPager();
+       followingList = new ArrayList<>();
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .child("Following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Following followingItem = snapshot.getValue(Following.class);
+                    followingList.add(followingItem);
+                }
+                Log.e("folo",followingList.size()+"");
+
+                referenceOnPhotos.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
+                            for (int i = 0; i < followingList.size(); i++) {
+                                if (followingList.get(i).getId().equals(photosChild.getKey())) {
+                                    referenceOnPhotos.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            referenceOnPhotos.child(photosChild.getKey())
+                                                    .child("Myphotos").addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    //photosListOFTheFollowing.clear();
+                                                    for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
+                                                        Photos photosItem = myPhotosChildern.getValue(Photos.class);
+
+                                                        //publishProgress(photosItem);
+
+
+                                                        myList.add(photosItem);
+                                                    }
+                                                    getImagesTask.onGettingImagesCompleted(myList);
+
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //set a tag to everyuser in oneSingle to help sending notification to it by this tag
         OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
@@ -114,14 +194,16 @@ public class Main2Activity extends AppCompatActivity{
         MainPageAdapter pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
         pageAdapter.addFragment(new CameraFragment());
         pageAdapter.addFragment(new MainFragment());
+        pageAdapter.addFragment(new ChatFragment());
         //pageAdapter.addFragment(new UsersFragment());
         //pageAdapter.addFragment(new MyPhotos());
         int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
         mainViewPager.setOffscreenPageLimit(limit);
+        mainViewPager.setAdapter(pageAdapter);
+
+
         mainViewPager.setCurrentItem(1);
 
-
-        mainViewPager.setAdapter(pageAdapter);
     }
 
     /*******************************************************************************************************/
@@ -387,12 +469,7 @@ public class Main2Activity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
 
@@ -500,4 +577,11 @@ public class Main2Activity extends AppCompatActivity{
         return haveConnectedWifi || haveConnectedMobile;
     }
 
+
+
+    private GetImagesTask getImagesTask;
+
+    public void setGetImagesTask(GetImagesTask getImagesTask) {
+        this.getImagesTask = getImagesTask;
+    }
 }
