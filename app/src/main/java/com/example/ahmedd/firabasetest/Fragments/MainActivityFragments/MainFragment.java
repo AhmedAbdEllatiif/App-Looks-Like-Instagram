@@ -36,61 +36,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainFragment extends Fragment {
 
 
+    //Views
     private View view;
     private TextView txt_title;
 
-    private MyViewPager viewPager;
+    //Prepare Fragments
+    private final Fragment fragment1 = new HomeFragment();
+    private final Fragment fragment2 = new UsersFragment();
+    private final Fragment fragment3 = new MyPhotos();
+    private FragmentManager fm ;
+    private Fragment active = fragment1;
 
     public MainFragment() {
         // Required empty public constructor
     }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_main, container, false);
-
-        initViews();
-
-        setBottomNavigationView();
-
-        return view;
-    }
-
-    private void initViews() {
-        txt_title = view.findViewById(R.id.title);
-
-        //viewPager =  view.findViewById(R.id.mainFragmentViewPager);
-
-
-        //setUpViewPager();
-
-    }
-
-
-    /*******************************************************************************************************/
-    private void setUpViewPager(){
-        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
-        pageAdapter.addFragment(new HomeFragment());
-        pageAdapter.addFragment(new UsersFragment());
-        pageAdapter.addFragment(new MyPhotos());
-        //pageAdapter.addFragment(new UsersFragment());
-        //pageAdapter.addFragment(new MyPhotos());
-        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
-        viewPager.setOffscreenPageLimit(limit);
-        viewPager.setAdapter(pageAdapter);
-    }
-
-    /*******************************************************************************************************/
-
-
-
-    final Fragment fragment1 = new HomeFragment();
-    final Fragment fragment2 = new UsersFragment();
-    final Fragment fragment3 = new MyPhotos();
-    FragmentManager fm ;
-    Fragment active = fragment1;
 
 
     @Override
@@ -105,10 +64,38 @@ public class MainFragment extends Fragment {
         fm = getChildFragmentManager();
     }
 
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_main, container, false);
+
+        initViews();
+
+        setBottomNavigationView();
+
+
+
+        return view;
+    }
+
+    private void initViews() {
+        txt_title = view.findViewById(R.id.title);
+    }
+
+
+
+
+
+
+
+    /*******************************************************************************************************/
     //BottomNavigationView
     private void setBottomNavigationView() {
         BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.mainBottom_nav);
-      
+
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         fm.beginTransaction().add(R.id.mainFragment_view, fragment3, "3").hide(fragment3).commit();
@@ -119,7 +106,6 @@ public class MainFragment extends Fragment {
 
     }
 
-    Fragment fragment;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -142,20 +128,32 @@ public class MainFragment extends Fragment {
                     return true;
                 case R.id.myPhotos:
                     //viewPager.setCurrentItem(2,false);
-                    fragment = new MyPhotos();
                     fm.beginTransaction().hide(active).show(fragment3).commit();
                     active = fragment3;
                     txt_title.setText("Photos");
                     return true;
             }
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.mainFragment_view, fragment)
-                    .commit();
-            Log.e("MainActivity", "Replacing Fragment");
             return false;
         }
     };
+    /*******************************************************************************************************/
 
+
+
+
+
+    /*******************************************************************************************************/
+/*    private void setUpViewPager(){
+        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
+        pageAdapter.addFragment(new HomeFragment());
+        pageAdapter.addFragment(new UsersFragment());
+        pageAdapter.addFragment(new MyPhotos());
+        //pageAdapter.addFragment(new UsersFragment());
+        //pageAdapter.addFragment(new MyPhotos());
+        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
+        viewPager.setOffscreenPageLimit(limit);
+        viewPager.setAdapter(pageAdapter);
+    }*/
+    /*******************************************************************************************************/
 
 }

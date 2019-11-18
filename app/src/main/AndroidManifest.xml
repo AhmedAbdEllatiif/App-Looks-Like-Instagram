@@ -21,20 +21,20 @@
         android:roundIcon="@drawable/duck"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
-
-        <!-- //////////////////////////////////////////////////////////////////////////////// -->
-        <!-- StartFragment -->
-        <activity android:name=".MainLoginActivity">
+        <activity android:name=".TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+        </activity>
+        <!-- //////////////////////////////////////////////////////////////////////////////// -->
+        <!-- StartFragment -->
+        <activity android:name=".MainLoginActivity">
+
         </activity> <!-- //////////////////////////////////////////////////////////////////////////////// -->
-
-
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
@@ -68,7 +68,7 @@
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
             android:name=".ProfileActivity"
-            android:parentActivityName=".Main2Activity"></activity> <!-- //////////////////////////////////////////////////////////////////////////////// -->
+            android:parentActivityName=".Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
             android:name=".Main2Activity"
