@@ -10,29 +10,31 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
 
+
     <application
-        android:name=".Application.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/duck"
         android:label="@string/chat_duck"
         android:roundIcon="@drawable/duck"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
+        <activity android:name=".TestActivity">
 
 
         </activity>
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- StartFragment -->
         <activity android:name=".MainLoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
@@ -54,7 +56,7 @@
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
             android:name=".MessageActivity"
-            android:parentActivityName=".Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
+            android:parentActivityName=".Activities.Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- ResetPasswordActivity -->
         <activity
@@ -64,14 +66,14 @@
         <!-- PhotoActivity -->
         <activity
             android:name=".PhotoActivity"
-            android:parentActivityName=".Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
+            android:parentActivityName=".Activities.Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
             android:name=".ProfileActivity"
-            android:parentActivityName=".Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
+            android:parentActivityName=".Activities.Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
-            android:name=".Main2Activity"
+            android:name=".Activities.Main2Activity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->

@@ -2,30 +2,21 @@ package com.example.ahmedd.firabasetest.Fragments.MainActivityFragments;
 
 
 import android.content.pm.PackageManager;
-import android.graphics.Matrix;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.camera.core.AspectRatio;
+
 import androidx.camera.core.CameraX;
-import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureConfig;
-import androidx.camera.core.ImageProxy;
+
 import androidx.camera.core.Preview;
 import androidx.camera.core.PreviewConfig;
 import androidx.camera.view.CameraView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
-import android.os.Environment;
 import android.util.Log;
-import android.util.Rational;
-import android.util.Size;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +24,6 @@ import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.R;
 
-import java.io.File;
-import java.util.concurrent.Executor;
 
 /**
  * A simple {@link Fragment} subclass.

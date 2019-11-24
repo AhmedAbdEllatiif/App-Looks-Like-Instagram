@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.ahmedd.firabasetest.Activities.Main2Activity;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +45,7 @@ public class StartFragment extends Fragment {
         }*/
         if (firebaseUser != null ){
             Log.e("start","not null");
-            startActivity(new Intent(getActivity(),Main2Activity.class));
+            startActivity(new Intent(getActivity(), Main2Activity.class));
             getActivity().finish();
         }
 

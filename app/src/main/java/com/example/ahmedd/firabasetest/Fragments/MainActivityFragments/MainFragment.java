@@ -6,27 +6,20 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
 import com.example.ahmedd.firabasetest.Fragments.MyPhotos;
 import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
-import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
+import com.example.ahmedd.firabasetest.Helpers.OnCameraToolBarListener;
 import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,9 +29,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainFragment extends Fragment {
 
 
+    private OnCameraToolBarListener onCameraToolBarListener;
+
     //Views
     private View view;
     private TextView txt_title;
+    private ImageButton img_camera;
 
     //Prepare Fragments
     private final Fragment fragment1 = new HomeFragment();
@@ -76,6 +72,7 @@ public class MainFragment extends Fragment {
 
         setBottomNavigationView();
 
+        onViewsClicked();
 
 
         return view;
@@ -83,11 +80,13 @@ public class MainFragment extends Fragment {
 
     private void initViews() {
         txt_title = view.findViewById(R.id.title);
+        img_camera = view.findViewById(R.id.img_camera);
+
     }
 
-
-
-
+    private void onViewsClicked(){
+        img_camera.setOnClickListener(v -> onCameraToolBarListener.onCameraClicked());
+    }
 
 
 
@@ -156,4 +155,8 @@ public class MainFragment extends Fragment {
     }*/
     /*******************************************************************************************************/
 
+
+    public void setOnCameraToolBarListener(OnCameraToolBarListener onCameraToolBarListener) {
+        this.onCameraToolBarListener = onCameraToolBarListener;
+    }
 }

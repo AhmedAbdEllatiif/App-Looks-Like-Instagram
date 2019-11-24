@@ -3,10 +3,11 @@ package com.example.ahmedd.firabasetest;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.example.ahmedd.firabasetest.Activities.Main2Activity;
 import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
@@ -93,7 +94,7 @@ public class LoginFragment extends Fragment {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     Log.e("isSuccessfulLogin",task.isSuccessful()+"");
                                     if (task.isSuccessful()){
-                                        Intent intent = new Intent(getActivity(),Main2Activity.class);
+                                        Intent intent = new Intent(getActivity(), Main2Activity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         Log.e("login","clicked");

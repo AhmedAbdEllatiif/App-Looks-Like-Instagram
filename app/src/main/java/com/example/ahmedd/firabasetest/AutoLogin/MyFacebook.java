@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ahmedd.firabasetest.Main2Activity;
+import com.example.ahmedd.firabasetest.Activities.Main2Activity;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
 import com.facebook.CallbackManager;

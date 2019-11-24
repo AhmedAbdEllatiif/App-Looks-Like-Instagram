@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.ahmedd.firabasetest.Adapters.HomeAdapter;
 import com.example.ahmedd.firabasetest.GetImagesTask;
-import com.example.ahmedd.firabasetest.Main2Activity;
+import com.example.ahmedd.firabasetest.Activities.Main2Activity;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;

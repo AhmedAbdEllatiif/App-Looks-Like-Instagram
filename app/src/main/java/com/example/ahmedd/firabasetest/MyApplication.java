@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest.Application;
+package com.example.ahmedd.firabasetest;
 
 import android.app.Application;
 

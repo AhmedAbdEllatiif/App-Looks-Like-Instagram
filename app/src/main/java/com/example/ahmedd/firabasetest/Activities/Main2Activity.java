@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest;
+package com.example.ahmedd.firabasetest.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,23 +16,24 @@ import androidx.annotation.NonNull;
 import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.CameraFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.MainFragment;
-import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
+import com.example.ahmedd.firabasetest.GetImagesTask;
+import com.example.ahmedd.firabasetest.Helpers.OnCameraToolBarListener;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.PhotoActivity;
+import com.example.ahmedd.firabasetest.ProfileActivity;
+import com.example.ahmedd.firabasetest.R;
+import com.example.ahmedd.firabasetest.StartFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
+
 import androidx.fragment.app.Fragment;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -42,10 +43,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ahmedd.firabasetest.Fragments.ChatFragment;
-import com.example.ahmedd.firabasetest.Fragments.MyPhotos;
-import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
-import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.Receivers.WIFIBroadCastReceiver;
@@ -68,7 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Main2Activity extends AppCompatActivity{
+public class Main2Activity extends AppCompatActivity implements OnCameraToolBarListener {
 
     //Views
     private ImageView profile_img;
@@ -96,6 +94,9 @@ public class Main2Activity extends AppCompatActivity{
 
         //initialize views, setToolbar, setCurrentUserInfo
         initViews();
+
+
+
         //setToolBar();
         //setCurrentUserInfo();
 
@@ -105,6 +106,7 @@ public class Main2Activity extends AppCompatActivity{
         //setDrawerLayout();
         //setNavHearderInNavigationDrawer();
         //setBottomNavigationView();
+
 
 
         setUpViewPager();
@@ -192,8 +194,10 @@ public class Main2Activity extends AppCompatActivity{
     /*******************************************************************************************************/
     private void setUpViewPager(){
         MainPageAdapter pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
+        MainFragment mainFragment  = new MainFragment();
+        mainFragment.setOnCameraToolBarListener(Main2Activity.this);
         pageAdapter.addFragment(new CameraFragment());
-        pageAdapter.addFragment(new MainFragment());
+        pageAdapter.addFragment(mainFragment);
         pageAdapter.addFragment(new ChatFragment());
         //pageAdapter.addFragment(new UsersFragment());
         //pageAdapter.addFragment(new MyPhotos());
@@ -583,5 +587,11 @@ public class Main2Activity extends AppCompatActivity{
 
     public void setGetImagesTask(GetImagesTask getImagesTask) {
         this.getImagesTask = getImagesTask;
+    }
+
+
+    @Override
+    public void onCameraClicked() {
+      mainViewPager.setCurrentItem(0,false);
     }
 }
