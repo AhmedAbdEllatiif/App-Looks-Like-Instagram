@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Adapters.ChatListAdapter;
-import com.example.ahmedd.firabasetest.MessageActivity;
+import com.example.ahmedd.firabasetest.Activities.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.ChatList;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;

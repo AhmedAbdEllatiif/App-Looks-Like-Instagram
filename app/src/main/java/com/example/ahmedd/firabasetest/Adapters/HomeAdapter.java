@@ -167,7 +167,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         EditText write_description;
         ImageView img_;
         ImageView user_profileImg_cardView_img;
-        ImageView profileImage_updated;
+       // ImageView profileImage_updated;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -177,12 +177,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity_homefrgament);
             txt_empty_cardView = itemView.findViewById(R.id.txt_empty_cardView);
 
-            write_description = itemView.findViewById(R.id.write_description_homefrgament);
+            //write_description = itemView.findViewById(R.id.write_description_homefrgament);
             img_description = itemView.findViewById(R.id.img_description_homefrgament);
             img_date = itemView.findViewById(R.id.img_date_homefrgament);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity_homefrgament);
             user_profileImg_cardView_img = itemView.findViewById(R.id.user_profileImg_cardView_img_homefrgament);
-            profileImage_updated = itemView.findViewById(R.id.profileImage_updated_homefrgament);
+            //profileImage_updated = itemView.findViewById(R.id.profileImage_updated_homefrgament);
         }
     }
 

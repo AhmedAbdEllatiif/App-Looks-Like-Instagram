@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest.Fragments;
+package com.example.ahmedd.firabasetest.Fragments.MainFragments;
 
 
 import android.content.Context;
@@ -14,9 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ahmedd.firabasetest.Activities.MainActivity;
 import com.example.ahmedd.firabasetest.Adapters.HomeAdapter;
-import com.example.ahmedd.firabasetest.GetImagesTask;
-import com.example.ahmedd.firabasetest.Activities.Main2Activity;
+import com.example.ahmedd.firabasetest.Helpers.GetImagesTask;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment  implements GetImagesTask {
         }
 
 
-        ((Main2Activity) Objects.requireNonNull(getActivity())).setGetImagesTask(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setGetImagesTask(this);
 
         Log.e("onCreateView","is here");
         recyclerView = view.findViewById(R.id.recyclerView_home);

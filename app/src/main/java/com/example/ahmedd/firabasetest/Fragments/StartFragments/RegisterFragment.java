@@ -1,10 +1,11 @@
-package com.example.ahmedd.firabasetest;
+package com.example.ahmedd.firabasetest.Fragments.StartFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
-import com.example.ahmedd.firabasetest.Activities.Main2Activity;
+import com.example.ahmedd.firabasetest.Activities.MainActivity;
+import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.Nullable;
@@ -164,7 +165,7 @@ public class RegisterFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Intent intent = new Intent(getActivity() , Main2Activity.class);
+                                        Intent intent = new Intent(getActivity() , MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         Toast.makeText(getActivity(), "successfuil register", Toast.LENGTH_SHORT).show();

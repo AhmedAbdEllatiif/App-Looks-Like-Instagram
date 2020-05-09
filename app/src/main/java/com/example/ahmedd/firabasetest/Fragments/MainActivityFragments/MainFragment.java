@@ -1,13 +1,12 @@
 package com.example.ahmedd.firabasetest.Fragments.MainActivityFragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,9 +15,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.ahmedd.firabasetest.Fragments.HomeFragment;
-import com.example.ahmedd.firabasetest.Fragments.MyPhotos;
-import com.example.ahmedd.firabasetest.Fragments.UsersFragment;
+import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.MyPhotos;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.UsersFragment;
+import com.example.ahmedd.firabasetest.Fragments.UploadPhotosFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnCameraToolBarListener;
 import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,32 +37,14 @@ public class MainFragment extends Fragment {
     private View view;
     private TextView txt_title;
     private ImageButton img_camera;
+    private ViewPager viewpager;
 
-    //Prepare Fragments
-    private final Fragment fragment1 = new HomeFragment();
-    private final Fragment fragment2 = new UsersFragment();
-    private final Fragment fragment3 = new MyPhotos();
-    private FragmentManager fm ;
-    private Fragment active = fragment1;
+
+
 
     public MainFragment() {
         // Required empty public constructor
     }
-
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fm = getChildFragmentManager();
-    }
-
-
 
 
     @Override
@@ -74,6 +58,7 @@ public class MainFragment extends Fragment {
 
         onViewsClicked();
 
+        setUpViewPager();
 
         return view;
     }
@@ -81,7 +66,7 @@ public class MainFragment extends Fragment {
     private void initViews() {
         txt_title = view.findViewById(R.id.title);
         img_camera = view.findViewById(R.id.img_camera);
-
+        viewpager = view.findViewById(R.id.viewpager);
     }
 
     private void onViewsClicked(){
@@ -89,20 +74,30 @@ public class MainFragment extends Fragment {
     }
 
 
+    /**
+     * To setup viewPager
+     * */
+    private void setUpViewPager(){
+        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
+        pageAdapter.addFragment(new HomeFragment());
+        pageAdapter.addFragment(new UsersFragment());
+        pageAdapter.addFragment(new UploadPhotosFragment());
+        pageAdapter.addFragment(new MyPhotos());
+        pageAdapter.addFragment(new ProfileFragment());
+        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
+        viewpager.setOffscreenPageLimit(limit);
+        viewpager.setAdapter(pageAdapter);
+    }
 
-    /*******************************************************************************************************/
-    //BottomNavigationView
+
+
+
+    /**
+     * To setup BottomNavigationView
+     * */
     private void setBottomNavigationView() {
-        BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.mainBottom_nav);
-
-
+        BottomNavigationView navigation = view.findViewById(R.id.mainBottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        fm.beginTransaction().add(R.id.mainFragment_view, fragment3, "3").hide(fragment3).commit();
-        fm.beginTransaction().add(R.id.mainFragment_view, fragment2, "2").hide(fragment2).commit();
-        fm.beginTransaction().add(R.id.mainFragment_view,fragment1, "1").commit();
-        navigation.setSelectedItemId(R.id.home);
-
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -112,50 +107,35 @@ public class MainFragment extends Fragment {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.home:
-                    //viewPager.setCurrentItem(0,false);
-                    //fragment = new HomeFragment();
-                    fm.beginTransaction().hide(active).show(fragment1).commit();
-                    active = fragment1;
-                    txt_title.setText("Home");
+                    viewpager.setCurrentItem(0,false);
+                    txt_title.setText(R.string.home);
                     return true;
                 case R.id.users:
-                    //viewPager.setCurrentItem(1,false);
-                    //fragment = new UsersFragment();
-                    fm.beginTransaction().hide(active).show(fragment2).commit();
-                    active = fragment2;
-                    txt_title.setText("Users");
+                    viewpager.setCurrentItem(1,false);
+                    txt_title.setText(R.string.users);
+                    return true;
+                case R.id.add:
+                    viewpager.setCurrentItem(2,false);
+                    txt_title.setText(R.string.upload);
                     return true;
                 case R.id.myPhotos:
-                    //viewPager.setCurrentItem(2,false);
-                    fm.beginTransaction().hide(active).show(fragment3).commit();
-                    active = fragment3;
-                    txt_title.setText("Photos");
+                    viewpager.setCurrentItem(3,false);
+                    txt_title.setText(R.string.photos);
+                    return true;
+                case R.id.myProfile:
+                    viewpager.setCurrentItem(4,false);
+                    txt_title.setText(R.string.profile);
                     return true;
             }
             return false;
         }
     };
-    /*******************************************************************************************************/
 
 
 
-
-
-    /*******************************************************************************************************/
-/*    private void setUpViewPager(){
-        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
-        pageAdapter.addFragment(new HomeFragment());
-        pageAdapter.addFragment(new UsersFragment());
-        pageAdapter.addFragment(new MyPhotos());
-        //pageAdapter.addFragment(new UsersFragment());
-        //pageAdapter.addFragment(new MyPhotos());
-        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
-        viewPager.setOffscreenPageLimit(limit);
-        viewPager.setAdapter(pageAdapter);
-    }*/
-    /*******************************************************************************************************/
-
-
+    /**
+     * To set on camera item clicked listener
+     * */
     public void setOnCameraToolBarListener(OnCameraToolBarListener onCameraToolBarListener) {
         this.onCameraToolBarListener = onCameraToolBarListener;
     }

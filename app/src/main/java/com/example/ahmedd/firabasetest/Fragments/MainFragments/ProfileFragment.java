@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest.Fragments;
+package com.example.ahmedd.firabasetest.Fragments.MainFragments;
 
 
 import android.content.ContentResolver;
@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.BaseActivities.BaseFragment;
+import com.example.ahmedd.firabasetest.Fragments.EditUserNameDialogFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
@@ -35,7 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-public class ProfileFragment extends BaseFragment {
+public class ProfileFragment extends Fragment {
 
     public static final int IMAGE_REQUEST = 1;
 

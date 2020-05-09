@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ahmedd.firabasetest.Activities.Main2Activity;
+import com.example.ahmedd.firabasetest.Activities.MainActivity;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
 import com.facebook.CallbackManager;
@@ -85,7 +85,7 @@ public class MyFacebook {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Intent intent = new Intent(context, Main2Activity.class);
+                                                    Intent intent = new Intent(context, MainActivity.class);
                                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     context.startActivity(intent);
                                                     Toast.makeText(context, "successfuil register", Toast.LENGTH_SHORT).show();

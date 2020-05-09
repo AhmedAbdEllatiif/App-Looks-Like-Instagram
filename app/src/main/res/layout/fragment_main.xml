@@ -6,14 +6,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainLoginActivity">
+    tools:context=".Activities.MainLoginActivity">
 
 
     <include
         android:id="@+id/main_toolBar"
         layout="@layout/toolbar_mainfragment" />
 
-    <FrameLayout
+
+    <com.example.ahmedd.firabasetest.Helpers.MyViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/mainBottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_toolBar"/>
+
+
+   <!-- <FrameLayout
         android:id="@+id/mainFragment_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
@@ -22,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_toolBar"
-      />
+      />-->
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

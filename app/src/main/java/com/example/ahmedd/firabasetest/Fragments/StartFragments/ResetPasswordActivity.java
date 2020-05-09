@@ -1,6 +1,8 @@
-package com.example.ahmedd.firabasetest;
+package com.example.ahmedd.firabasetest.Fragments.StartFragments;
 
 import androidx.annotation.NonNull;
+
+import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import androidx.appcompat.app.AppCompatActivity;

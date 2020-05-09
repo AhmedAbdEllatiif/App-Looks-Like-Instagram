@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest;
+package com.example.ahmedd.firabasetest.Activities;
 
 import android.content.Intent;
 import android.icu.util.Calendar;
@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.os.StrictMode;
 import androidx.annotation.NonNull;
 
-import com.example.ahmedd.firabasetest.Activities.Main2Activity;
+import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.textfield.TextInputEditText;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -213,7 +213,7 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               startActivity(new Intent(MessageActivity.this, Main2Activity.class)
+               startActivity(new Intent(MessageActivity.this, MainActivity.class)
                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });

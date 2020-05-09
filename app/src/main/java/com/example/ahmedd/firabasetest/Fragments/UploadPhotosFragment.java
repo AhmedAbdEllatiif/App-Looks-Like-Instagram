@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-import com.example.ahmedd.firabasetest.PhotoActivity;
+
 import com.example.ahmedd.firabasetest.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -102,8 +102,8 @@ public class UploadPhotosFragment extends Fragment {
         txt_showUploads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =  new Intent(getActivity(), PhotoActivity.class);
-                startActivity(intent);
+               /*TODO:Show My Photos Fragment*/
+                Toast.makeText(getContext(), "Show My Photos Fragment", Toast.LENGTH_SHORT).show();
             }
         });
 

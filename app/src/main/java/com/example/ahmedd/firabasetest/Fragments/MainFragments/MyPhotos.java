@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest.Fragments;
+package com.example.ahmedd.firabasetest.Fragments.MainFragments;
 
 
 import android.content.Intent;
@@ -24,7 +24,7 @@ import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-import com.example.ahmedd.firabasetest.PhotoActivity;
+
 import com.example.ahmedd.firabasetest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,6 +39,8 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class MyPhotos extends Fragment {
+
+    private static final String TAG = "MyPhotos";
 
     private View view = null;
     private RecyclerView recyclerView;
@@ -70,9 +72,7 @@ public class MyPhotos extends Fragment {
         txt_empty_cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PhotoActivity.class);
-                startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
-                Toast.makeText(getActivity(), "clicked", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onClick ==> txt_empty_cardView");
 
             }
         });

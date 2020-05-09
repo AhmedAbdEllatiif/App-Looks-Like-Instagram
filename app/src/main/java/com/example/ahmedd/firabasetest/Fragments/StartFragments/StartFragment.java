@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest;
+package com.example.ahmedd.firabasetest.Fragments.StartFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.ahmedd.firabasetest.Activities.Main2Activity;
+import com.example.ahmedd.firabasetest.Activities.MainActivity;
+import com.example.ahmedd.firabasetest.R;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,12 +41,12 @@ public class StartFragment extends Fragment {
 
         /*if (firebaseUser != null || AccessToken.getCurrentAccessToken() != null){
             Log.e("start","not null");
-            startActivity(new Intent(getActivity(),Main2Activity.class));
+            startActivity(new Intent(getActivity(),MainActivity.class));
             getActivity().finish();
         }*/
         if (firebaseUser != null ){
             Log.e("start","not null");
-            startActivity(new Intent(getActivity(), Main2Activity.class));
+            startActivity(new Intent(getActivity(), MainActivity.class));
             getActivity().finish();
         }
 

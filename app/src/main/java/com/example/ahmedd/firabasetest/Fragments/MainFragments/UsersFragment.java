@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest.Fragments;
+package com.example.ahmedd.firabasetest.Fragments.MainFragments;
 
 
 import android.content.Intent;
@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
-import com.example.ahmedd.firabasetest.MessageActivity;
+import com.example.ahmedd.firabasetest.Activities.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;

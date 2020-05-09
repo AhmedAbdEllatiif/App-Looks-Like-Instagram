@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
 
@@ -29,7 +30,7 @@
         </activity>
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- StartFragment -->
-        <activity android:name=".MainLoginActivity">
+        <activity android:name=".Activities.MainLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,36 +45,29 @@
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- RegisterFragment -->
         <activity
-            android:name=".RegisterFragment"
-            android:parentActivityName=".StartFragment"
+            android:name=".Fragments.StartFragments.RegisterFragment"
+            android:parentActivityName=".Fragments.StartFragments.StartFragment"
             android:theme="@style/AppTheme" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- LoginFragment -->
         <activity
-            android:name=".LoginFragment"
-            android:parentActivityName=".StartFragment"
+            android:name=".Fragments.StartFragments.LoginFragment"
+            android:parentActivityName=".Fragments.StartFragments.StartFragment"
             android:theme="@style/AppTheme" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <activity
-            android:name=".MessageActivity"
-            android:parentActivityName=".Activities.Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
+            android:name=".Activities.MessageActivity"
+            android:parentActivityName=".Activities.MainActivity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- ResetPasswordActivity -->
         <activity
-            android:name=".ResetPasswordActivity"
-            android:parentActivityName=".LoginFragment" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
+            android:name=".Fragments.StartFragments.ResetPasswordActivity"
+            android:parentActivityName=".Fragments.StartFragments.LoginFragment" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->
-        <!-- PhotoActivity -->
+
+
         <activity
-            android:name=".PhotoActivity"
-            android:parentActivityName=".Activities.Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
-        <!-- //////////////////////////////////////////////////////////////////////////////// -->
-        <activity
-            android:name=".ProfileActivity"
-            android:parentActivityName=".Activities.Main2Activity" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
-        <!-- //////////////////////////////////////////////////////////////////////////////// -->
-        <activity
-            android:name=".Activities.Main2Activity"
+            android:name=".Activities.MainActivity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme" /> <!-- //////////////////////////////////////////////////////////////////////////////// -->
         <!-- //////////////////////////////////////////////////////////////////////////////// -->

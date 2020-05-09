@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Fragments.UsersFragment"
+    tools:context=".Fragments.MainFragments.UsersFragment"
     android:background="@color/colorPrimaryDark"
     android:padding="5dp">
 

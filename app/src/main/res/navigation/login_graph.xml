@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.example.ahmedd.firabasetest.StartFragment"
+        android:name="com.example.ahmedd.firabasetest.Fragments.StartFragments.StartFragment"
         android:label="fragment_start"
         tools:layout="@layout/fragment_start" >
         <action
@@ -30,14 +30,14 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.ahmedd.firabasetest.LoginFragment"
+        android:name="com.example.ahmedd.firabasetest.Fragments.StartFragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
 
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.ahmedd.firabasetest.RegisterFragment"
+        android:name="com.example.ahmedd.firabasetest.Fragments.StartFragments.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" />
 

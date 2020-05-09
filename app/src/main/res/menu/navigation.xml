@@ -22,11 +22,21 @@
         android:icon="@drawable/ic_users"
         android:title="Users" />
 
+    <item
+        android:id="@+id/add"
+        android:icon="@drawable/ic_add_circle"
+        android:title="Upload Image" />
+
 
     <item
         android:id="@+id/myPhotos"
-        android:icon="@drawable/ic_person"
+        android:icon="@drawable/ic_menu_gallery"
         android:title="Photos" />
+
+    <item
+        android:id="@+id/myProfile"
+        android:icon="@drawable/ic_person"
+        android:title="Profile" />
 
 
 </menu>
