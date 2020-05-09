@@ -106,6 +106,9 @@ dependencies {
     //implementation "android.arch.navigation:navigation-ui:1.0.0"
 
 
+    //ViewModel and LiveData
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
 
 
 

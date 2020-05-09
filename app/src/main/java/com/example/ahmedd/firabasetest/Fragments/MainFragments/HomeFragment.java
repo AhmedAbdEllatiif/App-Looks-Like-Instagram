@@ -7,6 +7,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +24,7 @@ import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
+import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,14 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class HomeFragment extends Fragment  implements GetImagesTask {
-
+public class HomeFragment extends Fragment {
+    private MainActivityViewModel viewModel;
     private View view = null;
     private RecyclerView recyclerView;
     private HomeAdapter adapter;
 
-    private static List<Photos> photosListOFTheFollowing  = null;
-    private List<Following> followingList;
 
 
     public HomeFragment() {}
@@ -56,302 +58,59 @@ public class HomeFragment extends Fragment  implements GetImagesTask {
 
 
     @Override
-    public void onGettingImagesCompleted(List<Photos> imgList) {
-        adapter = new HomeAdapter(getContext(),imgList);
-        recyclerView.setAdapter(adapter);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
-        followingList = new ArrayList<>();
-        photosListOFTheFollowing = new ArrayList<>();
-
-     /*   MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                .child("Following").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Following followingItem = snapshot.getValue(Following.class);
-                    followingList.add(followingItem);
-                }
-                Log.e("folo",followingList.size()+"");
-                new GetAllPhotos(getActivity()).execute();
-                //new GetAllPhotos(getActivity());
-                        *//*for (Following following : followingList) {
-                            new GetAllPhotosByEveryFollowing(getActivity()).execute(following);
-
-                        }*//*
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        if (view == null){
-            view = inflater.inflate(R.layout.fragment_home, container, false);
-        }
-
-
-        ((MainActivity) Objects.requireNonNull(getActivity())).setGetImagesTask(this);
-
-        Log.e("onCreateView","is here");
-        recyclerView = view.findViewById(R.id.recyclerView_home);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
 
-      /*  if ( photosListOFTheFollowing.size() > 0 && photosListOFTheFollowing != null){
-            adapter = new HomeAdapter(getContext(),photosListOFTheFollowing);
-            recyclerView.setAdapter(adapter);
-        }else {
-            Log.e("onCreateView","size < 0");
-        }*/
+        initViews();
 
-
-
-
-/*
-        followingList = new ArrayList<>();
-        photosListOFTheFollowing = new ArrayList<>();
-
-                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                        .child("Following").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Following followingItem = snapshot.getValue(Following.class);
-                            followingList.add(followingItem);
-                        }
-                        Log.e("folo",followingList.size()+"");
-                            new GetAllPhotos(getActivity()).execute();
-                        //new GetAllPhotos(getActivity());
-                        */
-/*for (Following following : followingList) {
-                            new GetAllPhotosByEveryFollowing(getActivity()).execute(following);
-
-                        }*//*
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-*/
-
+        observeImagesFromLiveData();
 
         return view;
     }
 
 
-    //This class get All Photos
-    List<Photos> myList  = new ArrayList<>();
-    private class GetAllPhotos extends AsyncTask<Void,Photos,Void>{
-
-        final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
-        Context context;
-
-        public GetAllPhotos(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Log.e("onPreExecute","begin");
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.e("doInBackground","begin");
-
-            referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
-                        for (int i = 0; i < followingList.size(); i++) {
-                            if (followingList.get(i).getId().equals(photosChild.getKey())) {
-                                referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        referenceOnPhotos.child(photosChild.getKey())
-                                                .child("Myphotos").addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                //photosListOFTheFollowing.clear();
-                                                for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
-                                                    Photos photosItem = myPhotosChildern.getValue(Photos.class);
-
-                                                    //publishProgress(photosItem);
-
-                                                    myList.add(photosItem);
-                                                }
-                                                photosListOFTheFollowing = myList;
+    /**
+     * To initialize views
+     * */
+    private void initViews(){
+        recyclerView = view.findViewById(R.id.recyclerView_home);
+    }
 
 
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-
-                        }
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-
-
-            return null;
-        }
-
-
-        @Override
-        protected void onProgressUpdate(Photos... values) {
-            super.onProgressUpdate(values);
-            Log.e("onProgressUpdate","begin");
-            //photosListOFTheFollowing.add(values[0]);
-            //adapter = new HomeAdapter(context,photosListOFTheFollowing);
-            //recyclerView.setAdapter(adapter);
-
-        }
-
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Log.e("onPostExecute","begin");
-
-        }
+    /**
+     * To observe the liveData
+     * */
+    private void observeImagesFromLiveData(){
+        viewModel.getHomeFragmentImages().observe(getViewLifecycleOwner(), new Observer<List<Photos>>() {
+            @Override
+            public void onChanged(List<Photos> photos) {
+                setupRecyclerView(photos);
+            }
+        });
 
     }
 
 
-    // This class also get all photos but using parameter by every Followeing
-    private class GetAllPhotosByEveryFollowing extends AsyncTask<Following, Photos, Void> {
-
-        final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
-        Context context;
-        List<Photos> photosList;
-
-        public GetAllPhotosByEveryFollowing(Context context) {
-            this.context = context;
-            photosList = new ArrayList<>();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-
-        @Override
-        protected Void doInBackground(Following... followings) {
-
-            Following myFollowing;
-            myFollowing = followings[0];
-            final Following finalMyFollowing = myFollowing;
-            referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
-
-                        if (finalMyFollowing.getId().equals(photosChild.getKey())) {
-                            referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    referenceOnPhotos.child(photosChild.getKey())
-                                            .child("Myphotos").addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            //photosListOFTheFollowing.clear();
-                                            for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
-                                                photosList.clear();
-                                                Photos photosItem = myPhotosChildern.getValue(Photos.class);
-                                                photosList.add(photosItem);
-
-                                                publishProgress(photosItem);
-                                            }
-
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-
-
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Photos... values) {
-            super.onProgressUpdate(values);
-            photosList.add(values[0]);
-
-            adapter = new HomeAdapter(context, photosList);
-            recyclerView.setAdapter(adapter);
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
+    /**
+     * To setup recyclerView and fill the adapter with the images
+     * */
+    private void setupRecyclerView(List<Photos> photos){
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new HomeAdapter(getContext(),photos);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
+
+
 }

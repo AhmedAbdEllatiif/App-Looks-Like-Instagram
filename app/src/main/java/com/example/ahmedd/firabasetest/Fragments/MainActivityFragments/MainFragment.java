@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -21,22 +22,24 @@ import com.example.ahmedd.firabasetest.Fragments.MainFragments.MyPhotos;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Fragments.UploadPhotosFragment;
-import com.example.ahmedd.firabasetest.Helpers.OnCameraToolBarListener;
+import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.R;
+import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MainFragment extends Fragment {
+    private MainActivityViewModel viewModel;
 
-
-    private OnCameraToolBarListener onCameraToolBarListener;
+    private OnToolBarIconsListener  onToolBarIconsListener;
 
     //Views
     private View view;
     private TextView txt_title;
     private ImageButton img_camera;
+    private ImageButton img_Chat;
     private ViewPager viewpager;
 
 
@@ -52,6 +55,8 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+
         initViews();
 
         setBottomNavigationView();
@@ -66,11 +71,14 @@ public class MainFragment extends Fragment {
     private void initViews() {
         txt_title = view.findViewById(R.id.title);
         img_camera = view.findViewById(R.id.img_camera);
+        img_Chat = view.findViewById(R.id.img_Chat);
         viewpager = view.findViewById(R.id.viewpager);
     }
 
     private void onViewsClicked(){
-        img_camera.setOnClickListener(v -> onCameraToolBarListener.onCameraClicked());
+        img_camera.setOnClickListener(v -> onToolBarIconsListener.onCameraClicked());
+        img_Chat.setOnClickListener(v -> onToolBarIconsListener.onChatClicked());
+
     }
 
 
@@ -136,7 +144,7 @@ public class MainFragment extends Fragment {
     /**
      * To set on camera item clicked listener
      * */
-    public void setOnCameraToolBarListener(OnCameraToolBarListener onCameraToolBarListener) {
-        this.onCameraToolBarListener = onCameraToolBarListener;
+    public void setToolBarListener(OnToolBarIconsListener onToolBarIconsListener) {
+        this.onToolBarIconsListener = onToolBarIconsListener;
     }
 }

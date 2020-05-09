@@ -8,24 +8,24 @@ import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.CameraFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.MainFragment;
 import com.example.ahmedd.firabasetest.Helpers.GetImagesTask;
-import com.example.ahmedd.firabasetest.Helpers.OnCameraToolBarListener;
+import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
+import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
 
 import com.example.ahmedd.firabasetest.R;
 
+import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,8 +33,6 @@ import android.widget.Toast;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-import com.facebook.AccessToken;
-import com.facebook.login.LoginManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,7 +45,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnCameraToolBarListener {
+public class MainActivity extends AppCompatActivity implements OnToolBarIconsListener, OnBackListener_ChatFragment {
+
+    private MainActivityViewModel viewModel;
 
     //Views
     private ImageView profile_img;
@@ -67,97 +67,36 @@ public class MainActivity extends AppCompatActivity implements OnCameraToolBarLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main2);
+        setContentView(R.layout.activity_main);
 
-
+        viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
         initViews();
 
         setUpViewPager();
 
 
-       followingList = new ArrayList<>();
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                .child("Following").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Following followingItem = snapshot.getValue(Following.class);
-                    followingList.add(followingItem);
-                }
-                Log.e("folo",followingList.size()+"");
+        //To get the the user followings images
+        viewModel.getFollowingUsersImagesFromServer();
 
-                referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
-                            for (int i = 0; i < followingList.size(); i++) {
-                                if (followingList.get(i).getId().equals(photosChild.getKey())) {
-                                    referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            referenceOnPhotos.child(photosChild.getKey())
-                                                    .child("Myphotos").addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    //photosListOFTheFollowing.clear();
-                                                    for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
-                                                        Photos photosItem = myPhotosChildern.getValue(Photos.class);
-
-                                                        //publishProgress(photosItem);
-
-
-                                                        myList.add(photosItem);
-                                                    }
-
-                                                    getImagesTask.onGettingImagesCompleted(myList);
-
-
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                }
-                                            });
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+        //To get the current user images
+        viewModel.getCurrentUserImageFromServer();
 
 
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        //set a tag to everyuser in oneSingle to help sending notification to it by this tag
+        //set a tag to everyUser in oneSingle to help sending notification to it by this tag
         OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
 
 
     }
 
 
+    private void setupToolBar_callBack_listener(){
+        MainFragment mainFragment  = new MainFragment();
+        ChatFragment chatFragment  = new ChatFragment();
+        mainFragment.setToolBarListener(MainActivity.this);
+        chatFragment.setOnBackListener_chatFragment(MainActivity.this);
+    }
 
 
 
@@ -169,10 +108,12 @@ public class MainActivity extends AppCompatActivity implements OnCameraToolBarLi
     private void setUpViewPager(){
         MainPageAdapter pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
         MainFragment mainFragment  = new MainFragment();
-        mainFragment.setOnCameraToolBarListener(MainActivity.this);
+        ChatFragment chatFragment  = new ChatFragment();
+        mainFragment.setToolBarListener(MainActivity.this);
+        chatFragment.setOnBackListener_chatFragment(MainActivity.this);
         pageAdapter.addFragment(new CameraFragment());
         pageAdapter.addFragment(mainFragment);
-        pageAdapter.addFragment(new ChatFragment());
+        pageAdapter.addFragment(chatFragment);
         //pageAdapter.addFragment(new UsersFragment());
         //pageAdapter.addFragment(new MyPhotos());
         int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
@@ -247,7 +188,11 @@ public class MainActivity extends AppCompatActivity implements OnCameraToolBarLi
 
     @Override
     public void onBackPressed() {
+        if (!isHomePage()){
+            mainViewPager.setCurrentItem(1);
+        }else {
         super.onBackPressed();
+        }
     }
 
     @Override
@@ -268,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements OnCameraToolBarLi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
@@ -283,17 +227,23 @@ public class MainActivity extends AppCompatActivity implements OnCameraToolBarLi
 
 
 
-
-
-    private GetImagesTask getImagesTask;
-
-    public void setGetImagesTask(GetImagesTask getImagesTask) {
-        this.getImagesTask = getImagesTask;
+    private boolean isHomePage(){
+        return mainViewPager.getCurrentItem() == 1;
     }
 
 
     @Override
+    public void onBackPressed_ChatFragment() {
+        mainViewPager.setCurrentItem(1,true);
+    }
+
+    @Override
     public void onCameraClicked() {
       mainViewPager.setCurrentItem(0,false);
+    }
+
+    @Override
+    public void onChatClicked() {
+        mainViewPager.setCurrentItem(mainViewPager.getChildCount()-1,false);
     }
 }
