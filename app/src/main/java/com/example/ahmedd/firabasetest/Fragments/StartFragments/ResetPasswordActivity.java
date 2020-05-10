@@ -19,6 +19,10 @@ import com.google.android.gms.tasks.Task;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
+
+    private static final String TAG = "ResetPasswordActivity";
+
+
     private Toolbar myResetPasswordToolbar;
     private Button btn_resetPassword;
     private TextInputEditText editTxt_email_resetActivity;
@@ -33,7 +37,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         setToolBar();
         String emailFromIntent = getIntent().getStringExtra("Email");
         Log.e("Email","emailFromIntent");
-        editTxt_email_resetActivity.setText(emailFromIntent);
+       // editTxt_email_resetActivity.setText(emailFromIntent);
         editTxt_email_resetActivity.requestFocus();
 
         btn_resetPassword.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +46,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
                 String emailFromIntent = getIntent().getStringExtra("Email");
                 Log.e("emailFromIntent","emailFromIntent");
-                editTxt_email_resetActivity.setText(emailFromIntent);
+                //editTxt_email_resetActivity.setText(emailFromIntent);
 
                 if (editTxt_email_resetActivity.getText().toString().trim().equals("")){
                     editTxt_email_resetActivity.setError(getString(R.string.enter_mail));
@@ -59,7 +63,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
                            }else {
                                String taskError = task.getException().getMessage();
                                Toast.makeText(ResetPasswordActivity.this, taskError, Toast.LENGTH_SHORT).show();
-
+                                if (taskError != null){
+                                    Log.e(TAG, "onComplete: " + taskError );
+                                }
                                 editTxt_email_resetActivity.requestFocus();
                            }
 

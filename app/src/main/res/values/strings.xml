@@ -40,4 +40,5 @@
     <string name="users">Users</string>
     <string name="upload">Upload</string>
     <string name="profile">Profile</string>
+    <string name="userId">userID</string>
 </resources>

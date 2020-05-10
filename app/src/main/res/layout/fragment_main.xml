@@ -9,9 +9,7 @@
     tools:context=".Activities.MainLoginActivity">
 
 
-    <include
-        android:id="@+id/main_toolBar"
-        layout="@layout/toolbar_mainfragment" />
+
 
 
     <com.example.ahmedd.firabasetest.Helpers.MyViewPager
@@ -21,7 +19,7 @@
         app:layout_constraintBottom_toTopOf="@+id/mainBottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_toolBar"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
    <!-- <FrameLayout

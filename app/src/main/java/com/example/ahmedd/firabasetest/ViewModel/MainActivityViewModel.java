@@ -11,8 +11,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
+import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.MyPhotos;
+import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
+import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
+import com.example.ahmedd.firabasetest.Model.ChatList;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,28 +31,41 @@ import java.util.List;
 
 public class MainActivityViewModel extends AndroidViewModel {
 
+    //LiveData
     private MutableLiveData<List<Photos>> homeFragmentImages;
     private MutableLiveData<List<Photos>> myPhotosFragmentImages;
+    private MutableLiveData<List<User>> userList_chatWith_liveData;
+
+
+    //ToolBar Listeners
+    public OnToolBarIconsListener onToolBarIconsListener;
+    public OnBackListener_ChatFragment onBackListener_chatFragment;
+
+
 
 
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
-        homeFragmentImages = new MutableLiveData<>();
-        myPhotosFragmentImages = new MutableLiveData<>();
+        initLiveData();
     }
 
-    public LiveData<List<Photos>> getHomeFragmentImages(){
-        return homeFragmentImages;
-    }
-    public LiveData<List<Photos>> getMyPhotosFragmentImages(){
-        return myPhotosFragmentImages;
-    }
 
     /**
-     * To get the images of the following users to show in the homePage
+     * to initialize live data
      * */
-    public void getFollowingUsersImagesFromServer(){
+    private void initLiveData(){
+        homeFragmentImages = new MutableLiveData<>();
+        myPhotosFragmentImages = new MutableLiveData<>();
+        userList_chatWith_liveData = new MutableLiveData<>();
+    }
+
+
+    /*////////////////////////////////Request data from FireBase/////////////////////////////////////////////////*/
+    /**
+     * To request the images of the following users to show in the homePage
+     * */
+    public void requestFollowingUsersImagesFromServer(){
         List<Following> followingList = new ArrayList<>();
         DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
         List<Photos> myList  = new ArrayList<>();
@@ -114,9 +134,9 @@ public class MainActivityViewModel extends AndroidViewModel {
 
 
     /**
-     * To get the current user images from the server
+     * To request the current user images from the server
      * */
-    public void getCurrentUserImageFromServer(){
+    public void requestCurrentUserImageFromServer(){
         List<Photos> photosList = new ArrayList<>();
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
                 .child("Myphotos")
@@ -147,4 +167,107 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
 
+    /**
+     * To request the current user ChatList with other users
+     * */
+    public void requestChatListFromServer(){
+
+        DatabaseReference referenceOnUsersThatHaveChatWith = MyFireBase.getReferenceOnChatList()
+                .child(MyFireBase.getCurrentUser().getUid());
+
+        referenceOnUsersThatHaveChatWith.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<ChatList> myChatsList = new ArrayList<>();
+                myChatsList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ChatList chatList = snapshot.getValue(ChatList.class);
+                    myChatsList.add(chatList);
+                }
+
+
+
+                MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                      List<User> usersList = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            User user = snapshot.getValue(User.class);
+                            for (ChatList chatListItem : myChatsList) {
+                                if (user.getId().equals(chatListItem.getId())) {
+                                    usersList.add(user);
+                                }
+                                userList_chatWith_liveData.setValue(usersList);
+                            }
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
+    /*///////////////////////////////////Getters for liveData/////////////////////////////////////////////////*/
+    /**
+     * Getter for {@link HomeFragment} fragment images form liveData
+     * */
+    public LiveData<List<Photos>> getHomeFragmentImages(){
+        return homeFragmentImages;
+    }
+
+
+    /**
+     * Getter for {@link MyPhotos} fragment images from liveData
+     * */
+    public LiveData<List<Photos>> getMyPhotosFragmentImages(){
+        return myPhotosFragmentImages;
+    }
+
+    /**
+     * Getter for ChatList {@link ChatFragment}
+     * */
+    public LiveData<List<User>> getUserChatList(){
+        return userList_chatWith_liveData;
+    }
+
+
+
+
+
+
+
+
+    /*//////////////////////////////////Setters For ToolBar icons listeners///////////////////////////////////////////////*/
+    /**
+     * Setter for the HomeFragment  toolbar icons (Camera & Chat)
+     * */
+    public void setOnToolBarIconsListener(OnToolBarIconsListener onToolBarIconsListener) {
+        this.onToolBarIconsListener = onToolBarIconsListener;
+    }
+
+    /**
+     * Setter for the ChatFragment toolbar back arrow
+     * */
+    public void setOnBackListener_chatFragment(OnBackListener_ChatFragment onBackListener_chatFragment) {
+        this.onBackListener_chatFragment = onBackListener_chatFragment;
+    }
 }

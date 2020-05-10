@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.CameraFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.MainFragment;
-import com.example.ahmedd.firabasetest.Helpers.GetImagesTask;
 import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.Model.Following;
@@ -76,11 +75,20 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         setUpViewPager();
 
 
-        //To get the the user followings images
-        viewModel.getFollowingUsersImagesFromServer();
+        //To request the the user followings images
+        viewModel.requestFollowingUsersImagesFromServer();
 
-        //To get the current user images
-        viewModel.getCurrentUserImageFromServer();
+        //To request the current user images
+        viewModel.requestCurrentUserImageFromServer();
+
+        //To request the user chatList with other users
+        viewModel.requestChatListFromServer();
+
+
+        //To set a listener on the home toolbar icons
+        viewModel.setOnToolBarIconsListener(MainActivity.this);
+
+        viewModel.setOnBackListener_chatFragment(MainActivity.this);
 
 
 
@@ -88,15 +96,9 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
 
 
+
     }
 
-
-    private void setupToolBar_callBack_listener(){
-        MainFragment mainFragment  = new MainFragment();
-        ChatFragment chatFragment  = new ChatFragment();
-        mainFragment.setToolBarListener(MainActivity.this);
-        chatFragment.setOnBackListener_chatFragment(MainActivity.this);
-    }
 
 
 
@@ -109,8 +111,9 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         MainPageAdapter pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
         MainFragment mainFragment  = new MainFragment();
         ChatFragment chatFragment  = new ChatFragment();
-        mainFragment.setToolBarListener(MainActivity.this);
-        chatFragment.setOnBackListener_chatFragment(MainActivity.this);
+        /*HomeFragment homeFragment = new HomeFragment();
+        homeFragment.setToolBarListener(MainActivity.this);*/
+        //chatFragment.setOnBackListener_chatFragment(MainActivity.this);
         pageAdapter.addFragment(new CameraFragment());
         pageAdapter.addFragment(mainFragment);
         pageAdapter.addFragment(chatFragment);

@@ -10,48 +10,14 @@
     tools:context=".Fragments.MainActivityFragments.ChatFragment">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <include
         android:id="@+id/toolBar"
+        layout="@layout/toolbar_chat_fragment"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
-        >
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chats"
-            android:textColor="@color/txt_gray"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:padding="3dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-
-        <ImageButton
-            android:id="@+id/img_arrow_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_arrow_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/dark_gray"
-            />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

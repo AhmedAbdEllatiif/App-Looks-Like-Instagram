@@ -27,6 +27,8 @@ import com.google.firebase.auth.AuthResult;
 
 public class LoginFragment extends Fragment {
 
+    private static final String TAG = "LoginFragment";
+
     private View view;
 
     private TextInputEditText email, password;
@@ -104,6 +106,9 @@ public class LoginFragment extends Fragment {
                                     else {
                                         Toast.makeText(getActivity(), "Auth failed...!", Toast.LENGTH_SHORT).show();
                                         Log.e("login","clicked But failed");
+                                        if (task.getException() != null){
+                                        Log.e(TAG, "onComplete: " + task.getException());
+                                        }
                                     }
 
                                 }

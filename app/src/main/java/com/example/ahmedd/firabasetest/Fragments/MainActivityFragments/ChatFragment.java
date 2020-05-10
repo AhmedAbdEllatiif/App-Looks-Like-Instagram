@@ -4,49 +4,48 @@ package com.example.ahmedd.firabasetest.Fragments.MainActivityFragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.ahmedd.firabasetest.Activities.MainActivity;
 import com.example.ahmedd.firabasetest.Adapters.ChatListAdapter;
 import com.example.ahmedd.firabasetest.Activities.MessageActivity;
-import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
-import com.example.ahmedd.firabasetest.Model.ChatList;
 import com.example.ahmedd.firabasetest.Model.User;
-import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatFragment extends Fragment {
 
+    private static final String TAG = "ChatFragment";
+
+    private MainActivityViewModel viewModel;
+
     private View view;
     private RecyclerView recyclerView;
-    private ChatListAdapter adapter;
+
 
     private DatabaseReference referenceOnUsersThatHaveChatWith;
 
-    private List<User> usersList;
-    private List<ChatList> myChatsList;
+
 
     private TextView txt_empty_chat_users;
     private TextView txt_startChat;
 
     private ImageButton img_arrow_back;
 
-    private OnBackListener_ChatFragment onBackListener_chatFragment;
 
     public ChatFragment() {
     }
@@ -58,102 +57,112 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+
         initViews();
 
         onViewsClicked();
 
-        setupRecyclerView();
 
 
-        myChatsList = new ArrayList<>();
-        referenceOnUsersThatHaveChatWith = MyFireBase.getReferenceOnChatList()
-                .child(MyFireBase.getCurrentUser().getUid());
-
-        referenceOnUsersThatHaveChatWith.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                myChatsList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ChatList chatList = snapshot.getValue(ChatList.class);
-                    myChatsList.add(chatList);
-                }
-                fillTheChatList();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        observeChatListData_liveData();
 
 
         return view;
     }
 
 
+    /**
+     * To initialize views
+     * */
     private void initViews() {
+        recyclerView = view.findViewById(R.id.recyclerView_usersYouHavechatwith);
         txt_empty_chat_users = view.findViewById(R.id.txt_empty_chat_users);
         txt_startChat = view.findViewById(R.id.txt_startChat);
         img_arrow_back = view.findViewById(R.id.img_arrow_back);
     }
 
+    /**
+     * On Views Clicked
+     * */
     private void onViewsClicked() {
-        img_arrow_back.setOnClickListener(view -> onBackListener_chatFragment.onBackPressed_ChatFragment());
-    }
-
-    private void setupRecyclerView() {
-        recyclerView = view.findViewById(R.id.recyclerView_usersYouHavechatwith);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
-    private void fillTheChatList() {
-        usersList = new ArrayList<>();
-        MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                usersList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
-                    for (ChatList chatListItem : myChatsList) {
-                        if (user.getId().equals(chatListItem.getId())) {
-                            usersList.add(user);
-                        }
-                    }
-                }
-
-                if (usersList.isEmpty()) {
-                    txt_empty_chat_users.setVisibility(View.VISIBLE);
-                    txt_startChat.setVisibility(View.VISIBLE);
-                } else {
-                    txt_empty_chat_users.setVisibility(View.GONE);
-                    txt_startChat.setVisibility(View.GONE);
-                }
-                adapter = new ChatListAdapter(getContext(), usersList, true);
-                recyclerView.setAdapter(adapter);
-                adapter.setOnCardClickListener(new ChatListAdapter.MyOnclickListener() {
-                    @Override
-                    public void onClick(int position, User userItem) {
-                        Intent intent = new Intent(getActivity(), MessageActivity.class);
-                        intent.putExtra("userID", userItem.getId());
-                        startActivity(intent);
-
-                    }
-                });
+        img_arrow_back.setOnClickListener(view -> {
+            if (!isOnBackListenerNull()) {
+                viewModel.onBackListener_chatFragment.onBackPressed_ChatFragment();
             }
+        });
+    }
 
+
+    /**
+     * To observe data from live data
+     * */
+    private void observeChatListData_liveData(){
+        viewModel.getUserChatList().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onChanged(List<User> userList) {
+                setupRecyclerView(userList);
+            }
+        });
+    }
+
+
+    /**
+     * To setup recyclerView with usersChatList
+     * */
+    private void setupRecyclerView(List<User> usersList) {
+
+        isUsersChatListIsEmpty(usersList);
+
+        ChatListAdapter adapter = new ChatListAdapter(getContext(), usersList, true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+        onUserClickedToChatWith(adapter);
+
+    }
+
+    /**
+     * To Check if the listener in null
+     * The listener must be initialize in the {@link MainActivity}
+     * This listener move the viewPager inside the mainActivity  from the ChatFragment to HomeFragment
+     * */
+    private boolean isOnBackListenerNull(){
+        if (viewModel.onBackListener_chatFragment == null){
+            Log.e(TAG, "isOnBackListenerNull ==> null pointer" );
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+    /**
+     * To Handle when user press on other user to chat with
+     * Go to {@link MessageActivity} with extra {userID}
+     * */
+    private void onUserClickedToChatWith(ChatListAdapter adapter){
+        adapter.setOnCardClickListener(new ChatListAdapter.MyOnclickListener() {
+            @Override
+            public void onClick(int position, User userItem) {
+                Intent intent = new Intent(getActivity(), MessageActivity.class);
+                intent.putExtra(getString(R.string.userId), userItem.getId());
+                startActivity(intent);
 
             }
         });
-
-
     }
 
-    public void setOnBackListener_chatFragment(OnBackListener_ChatFragment onBackListener_chatFragment) {
-        this.onBackListener_chatFragment = onBackListener_chatFragment;
+    private void isUsersChatListIsEmpty(List<User> usersList){
+        if (usersList.isEmpty()) {
+            txt_empty_chat_users.setVisibility(View.VISIBLE);
+            txt_startChat.setVisibility(View.VISIBLE);
+        } else {
+            txt_empty_chat_users.setVisibility(View.GONE);
+            txt_startChat.setVisibility(View.GONE);
+        }
     }
+
 
 
 

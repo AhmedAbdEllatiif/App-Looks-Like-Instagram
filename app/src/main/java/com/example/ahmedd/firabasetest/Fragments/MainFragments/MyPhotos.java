@@ -31,12 +31,14 @@ import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 
 import com.example.ahmedd.firabasetest.R;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +54,7 @@ public class MyPhotos extends Fragment {
     private PhotosAdapter adapter;
     Boolean deleteIsCancelled = false;
     private TextView txt_empty_cardView;
-
+    private TabLayout tabLayout;
 
     public MyPhotos() {
         // Required empty public constructor
@@ -63,7 +65,7 @@ public class MyPhotos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_my_photos, container, false);
+        view = inflater.inflate(R.layout.myphotos_collapsing_toolbar, container, false);
 
         viewModel = new  ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
@@ -87,6 +89,17 @@ public class MyPhotos extends Fragment {
     private void initViews(){
         txt_empty_cardView = view.findViewById(R.id.txt_empty_cardView);
         recyclerView = view.findViewById(R.id.recyclerView_photos);
+        tabLayout = view.findViewById(R.id.myImages_tabLayout);
+        setUpTabLayout();
+    }
+
+
+    private void setUpTabLayout(){
+        tabLayout.setTabTextColors(getResources().getColor(R.color.black),getResources().getColor(R.color.colorPrimary));
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_home_);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_menu_gallery);
     }
 
 

@@ -33,13 +33,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainFragment extends Fragment {
     private MainActivityViewModel viewModel;
 
-    private OnToolBarIconsListener  onToolBarIconsListener;
+
 
     //Views
     private View view;
-    private TextView txt_title;
-    private ImageButton img_camera;
-    private ImageButton img_Chat;
+
+
     private ViewPager viewpager;
 
 
@@ -61,7 +60,7 @@ public class MainFragment extends Fragment {
 
         setBottomNavigationView();
 
-        onViewsClicked();
+
 
         setUpViewPager();
 
@@ -69,17 +68,11 @@ public class MainFragment extends Fragment {
     }
 
     private void initViews() {
-        txt_title = view.findViewById(R.id.title);
-        img_camera = view.findViewById(R.id.img_camera);
-        img_Chat = view.findViewById(R.id.img_Chat);
+
+
         viewpager = view.findViewById(R.id.viewpager);
     }
 
-    private void onViewsClicked(){
-        img_camera.setOnClickListener(v -> onToolBarIconsListener.onCameraClicked());
-        img_Chat.setOnClickListener(v -> onToolBarIconsListener.onChatClicked());
-
-    }
 
 
     /**
@@ -98,8 +91,6 @@ public class MainFragment extends Fragment {
     }
 
 
-
-
     /**
      * To setup BottomNavigationView
      * */
@@ -107,6 +98,8 @@ public class MainFragment extends Fragment {
         BottomNavigationView navigation = view.findViewById(R.id.mainBottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -116,23 +109,23 @@ public class MainFragment extends Fragment {
             switch (item.getItemId()) {
                 case R.id.home:
                     viewpager.setCurrentItem(0,false);
-                    txt_title.setText(R.string.home);
+                    //txt_title.setText(R.string.home);
                     return true;
                 case R.id.users:
                     viewpager.setCurrentItem(1,false);
-                    txt_title.setText(R.string.users);
+                    //txt_title.setText(R.string.users);
                     return true;
                 case R.id.add:
                     viewpager.setCurrentItem(2,false);
-                    txt_title.setText(R.string.upload);
+                    //txt_title.setText(R.string.upload);
                     return true;
                 case R.id.myPhotos:
                     viewpager.setCurrentItem(3,false);
-                    txt_title.setText(R.string.photos);
+                    //txt_title.setText(R.string.photos);
                     return true;
                 case R.id.myProfile:
                     viewpager.setCurrentItem(4,false);
-                    txt_title.setText(R.string.profile);
+                    //txt_title.setText(R.string.profile);
                     return true;
             }
             return false;
@@ -141,10 +134,4 @@ public class MainFragment extends Fragment {
 
 
 
-    /**
-     * To set on camera item clicked listener
-     * */
-    public void setToolBarListener(OnToolBarIconsListener onToolBarIconsListener) {
-        this.onToolBarIconsListener = onToolBarIconsListener;
-    }
 }
