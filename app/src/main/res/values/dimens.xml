@@ -6,4 +6,6 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="txt_padding">3dp</dimen>
+    <dimen name="follower_size_txt">15sp</dimen>
+    <dimen name="follower_size_num">17sp</dimen>
 </resources>

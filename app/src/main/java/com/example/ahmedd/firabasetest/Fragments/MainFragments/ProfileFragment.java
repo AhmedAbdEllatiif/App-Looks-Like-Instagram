@@ -6,14 +6,17 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
+import com.example.ahmedd.firabasetest.SpacesItemDecoration;
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,9 +138,10 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onChanged(List<Photos> photos) {
 
-               // ShowTextPickImage(photos.isEmpty());
+                ShowTextPickImage(photos.isEmpty());
 
                 //setupRecyclerView(photos);
+                setupRecyclerView_GridLayout(photos);
 
             }
         });
@@ -199,7 +203,22 @@ public class ProfileFragment extends Fragment {
      * */
     private void setupRecyclerView(List<Photos> photos){
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new PhotosAdapter(getActivity(), photos);
+        adapter = new PhotosAdapter(getActivity(), photos,PhotosAdapter.ORDINARY_VIEW);
+        recyclerView.setAdapter(adapter);
+
+        onPhotosAdapterClicked(adapter);
+    }
+
+    /**
+     * To setup recyclerView and fill the adapter with the images
+     * */
+    private void setupRecyclerView_GridLayout(List<Photos> photos){
+        Log.e(TAG, "setupRecyclerView_GridLayout: " );
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
+        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new SpacesItemDecoration(3));
+        adapter = new PhotosAdapter(getActivity(), photos,PhotosAdapter.GRID_VIEW);
         recyclerView.setAdapter(adapter);
 
         onPhotosAdapterClicked(adapter);
