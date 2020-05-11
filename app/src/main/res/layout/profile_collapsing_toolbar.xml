@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/toolBar"
-        layout="@layout/toolbar_myphotos"
+        layout="@layout/toolbar_profile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
        app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +37,7 @@
                 app:layout_scrollFlags="exitUntilCollapsed|scroll"
                 app:expandedTitleMarginStart="48dp"
                 app:expandedTitleMarginEnd="64dp"
-                android:background="@drawable/chat_1"
+                android:background="@color/white"
                 >
 
 

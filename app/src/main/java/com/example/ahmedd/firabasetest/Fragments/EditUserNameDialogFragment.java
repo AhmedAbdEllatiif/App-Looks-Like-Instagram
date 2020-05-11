@@ -35,7 +35,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import static com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment.IMAGE_REQUEST;
+import static com.example.ahmedd.firabasetest.Fragments.MainFragments.AccountFragment.IMAGE_REQUEST;
 
 /**
  * A simple {@link Fragment} subclass.

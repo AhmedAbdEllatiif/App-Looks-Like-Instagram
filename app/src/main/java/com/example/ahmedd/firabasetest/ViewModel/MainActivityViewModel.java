@@ -2,18 +2,15 @@ package com.example.ahmedd.firabasetest.ViewModel;
 
 
 import android.app.Application;
-import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
-import com.example.ahmedd.firabasetest.Fragments.MainFragments.MyPhotos;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.Model.ChatList;
@@ -21,6 +18,7 @@ import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
+import com.example.ahmedd.firabasetest.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +33,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private MutableLiveData<List<Photos>> homeFragmentImages;
     private MutableLiveData<List<Photos>> myPhotosFragmentImages;
     private MutableLiveData<List<User>> userList_chatWith_liveData;
+    private MutableLiveData<User> currentUserData_liveData;
 
 
     //ToolBar Listeners
@@ -58,6 +57,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         homeFragmentImages = new MutableLiveData<>();
         myPhotosFragmentImages = new MutableLiveData<>();
         userList_chatWith_liveData = new MutableLiveData<>();
+        currentUserData_liveData = new MutableLiveData<>();
     }
 
 
@@ -221,6 +221,27 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
 
+    /**
+     * To get current user data from firebase
+     * */
+    public void requestCurrentUserDataFromServer(){
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user =  dataSnapshot.getValue(User.class);
+
+                        currentUserData_liveData.setValue(user);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
 
 
 
@@ -236,7 +257,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
 
     /**
-     * Getter for {@link MyPhotos} fragment images from liveData
+     * Getter for {@link ProfileFragment} fragment images from liveData
      * */
     public LiveData<List<Photos>> getMyPhotosFragmentImages(){
         return myPhotosFragmentImages;
@@ -250,6 +271,9 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
 
+    public LiveData<User> getCurrentUserData(){
+        return currentUserData_liveData;
+    }
 
 
 

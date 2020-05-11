@@ -41,4 +41,9 @@
     <string name="upload">Upload</string>
     <string name="profile">Profile</string>
     <string name="userId">userID</string>
+    <string name="posts">Posts</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="txt_default">default</string>
 </resources>

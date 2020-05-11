@@ -1,211 +1,341 @@
 package com.example.ahmedd.firabasetest.Fragments.MainFragments;
 
 
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
+
+import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
+import com.google.android.material.snackbar.Snackbar;
+
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.ahmedd.firabasetest.BaseActivities.BaseFragment;
-import com.example.ahmedd.firabasetest.Fragments.EditUserNameDialogFragment;
+import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
+import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
+
 import com.example.ahmedd.firabasetest.R;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
 public class ProfileFragment extends Fragment {
 
-    public static final int IMAGE_REQUEST = 1;
+    private static final String TAG = "ProfileFragment";
 
-    private View view;
-    private TextView userName;
-    private ImageView img_profile;
-    private ImageButton img_btn_edit;
+    private MainActivityViewModel viewModel;
 
-    private StorageTask uploadTask;
-    private Uri image_uri;
+    private View view = null;
+    private RecyclerView recyclerView;
+    private PhotosAdapter adapter;
+    Boolean deleteIsCancelled = false;
+    private TextView txt_empty_cardView;
+    private TabLayout tabLayout;
 
-    public ProfileFragment() {}
+    //User data view
+    private CircleImageView profile_img;
+    private TextView txt_user_name;
+
+    public ProfileFragment() {
+        // Required empty public constructor
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        userName = view.findViewById(R.id.txt_userName_profileActivity);
-        img_profile = view.findViewById(R.id.img_profile_frahmentProfile);
-        img_btn_edit = view.findViewById(R.id.img_btn_edit);
+        view = inflater.inflate(R.layout.profile_collapsing_toolbar, container, false);
 
+        viewModel = new  ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
-        img_btn_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditUserNameDialogFragment dialogFragment = new EditUserNameDialogFragment();
-                dialogFragment.show(getChildFragmentManager(),"Dialog Fragment");
-            }
-        });
+        initViews();
+
+        onViewClicked();
 
 
-        setProfileData();
 
-        changeUserName();
+        observeImagesFromLiveData();
+
+        observeCurrentUserData();
+
+
         return view;
     }
 
-    private void changeUserName(){
-        userName.setOnClickListener(new View.OnClickListener() {
+
+    /**
+     * To initialize views
+     * */
+    private void initViews(){
+        txt_empty_cardView = view.findViewById(R.id.txt_empty_cardView);
+        recyclerView = view.findViewById(R.id.recyclerView_photos);
+        tabLayout = view.findViewById(R.id.myImages_tabLayout);
+        profile_img = view.findViewById(R.id.profile_img);
+        txt_user_name = view.findViewById(R.id.user_name);
+        setUpTabLayout();
+    }
+
+
+    private void setUpTabLayout(){
+        tabLayout.setTabTextColors(getResources().getColor(R.color.black),getResources().getColor(R.color.colorPrimary));
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_grid);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_menu_gallery);
+    }
+
+
+    /**
+     * on ViewClicked
+     * */
+    private void onViewClicked(){
+        txt_empty_cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditUserNameDialogFragment dialogFragment = new EditUserNameDialogFragment();
-                dialogFragment.show(getChildFragmentManager(),"Dialog Fragment");
+                Log.e(TAG, "onClick ==> txt_empty_cardView");
+
+            }
+        });
+    }
+
+    /**
+     * To observe the liveData
+     * */
+    private void observeImagesFromLiveData() {
+
+        viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), new Observer<List<Photos>>() {
+            @Override
+            public void onChanged(List<Photos> photos) {
+
+               // ShowTextPickImage(photos.isEmpty());
+
+                //setupRecyclerView(photos);
+
             }
         });
     }
 
-    private void setProfileData() {
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                .addValueEventListener(new ValueEventListener() {
+
+    /**
+     * To observer current user data
+     * */
+    private void observeCurrentUserData(){
+        viewModel.getCurrentUserData().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user =  dataSnapshot.getValue(User.class);
+            public void onChanged(User user) {
+                String userName = user.getUserName();
+                String userImg = user.getImageURL();
 
-               userName.setText(user.getUserName());
-               if (user.getImageURL().equals("default")){
-                   img_profile.setImageResource(R.mipmap.ic_launcher);
-               }else {
-                Picasso.get().load(user.getImageURL()).into(img_profile);
-               }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        img_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImage();
+                //To fill the view with user data
+                setUserDataToViews(userName,userImg);
             }
         });
     }
 
-    private void openImage() {
 
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,IMAGE_REQUEST);
-    }
-
-    private String getFileExtension(Uri uri){
-        ContentResolver resolver = getContext().getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(resolver.getType(uri));
-    }
-
-    private void uploadProfileImage(){
-        //showProgressBar("please wait","uploading your profile Image");
-        Log.e("UploadImage","begin the method");
-
-        Handler handler = new Handler();
-        Runnable runnable=  new Runnable() {
-            @Override
-            public void run() {
-                if (image_uri!=null){
-                    final StorageReference storageReference= MyFireBase.getStorageReferenceOnUploads().child(System.currentTimeMillis() +
-                            "." + getFileExtension(image_uri));
-                    uploadTask = storageReference.putFile(image_uri);
-
-
-                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-
-                            if(!task.isSuccessful()){
-                                Log.e("onComplete","not Successful");
-                                throw task.getException();
-
-                            }
-                            return  storageReference.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                Log.e("onComplete","Successful");
-                                Uri downloadUri = task.getResult();
-                                String myUri = downloadUri.toString();
-
-                                HashMap<String,Object> hashMap = new HashMap<>();
-                                hashMap.put("ImageURL",myUri);
-                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                                        .updateChildren(hashMap);
-                                //hideProgressBar();
-                            }else {
-                                Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
-                                //hideProgressBar();
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else {
-                    Toast.makeText(getContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-        handler.post(runnable);
-
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-      Log.e("onActivityResult","it is here");
-      Log.e("requestCode",requestCode+"");
-
-        if (requestCode == IMAGE_REQUEST && data != null && data.getData() != null){
-                image_uri = data.getData();
-                Log.e("image_uri",image_uri+"");
-                if (uploadTask != null && uploadTask.isInProgress()){
-                    Toast.makeText(getContext(), "Uploading in progress", Toast.LENGTH_SHORT).show();
-                }else {
-                    uploadProfileImage();
-                }
+    /**
+     * To fill views with current user data
+     * */
+    private void setUserDataToViews(String name,String img){
+        txt_user_name.setText(name);
+        if (isUserHasNoImage(img)){
+            profile_img.setImageResource(R.mipmap.ic_launcher);
+        }else {
+            Picasso.get().load(img).into(profile_img);
         }
     }
+
+    /**
+     * To check if user has Profile image or not
+     * return true if user doesn't have profile img
+     * */
+    private boolean isUserHasNoImage(String img){
+       return img.equals(getString(R.string.txt_default));
+    }
+
+
+    /**
+     * Show text (Pick a new photo) if the imagesList is empty
+     * */
+    private void ShowTextPickImage(boolean isPhotosEmpty){
+        if (isPhotosEmpty) {
+            txt_empty_cardView.setVisibility(View.VISIBLE);
+        } else {
+            txt_empty_cardView.setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
+     * To setup recyclerView and fill the adapter with the images
+     * */
+    private void setupRecyclerView(List<Photos> photos){
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new PhotosAdapter(getActivity(), photos);
+        recyclerView.setAdapter(adapter);
+
+        onPhotosAdapterClicked(adapter);
+    }
+
+
+    /**
+     * On child of adapter clicked
+     * */
+    private void onPhotosAdapterClicked(final PhotosAdapter photosAdapter) {
+        photosAdapter.setOnUpdateClickListener(new PhotosAdapter.MyUpdateAndCancelClickListener() {
+            @Override
+            public void myUpdateAndCancelClickListener(int position, Photos photosItem, TextView txtOptionMenu, TextView txt_name, EditText editTxt_name, EditText editText_description, TextView txtDescription, ImageButton update, ImageButton cancel) {
+
+                if (editText_description.getText().toString().trim().isEmpty()
+                        && editTxt_name.getText().toString().trim().isEmpty()) {
+                    txtDescription.setVisibility(View.VISIBLE);
+                    txt_name.setVisibility(View.VISIBLE);
+                    editTxt_name.setVisibility(View.GONE);
+                    editText_description.setVisibility(View.GONE);
+                    update.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+                } else {
+                    photosItem.setDescription(editText_description.getText().toString().trim());
+                    photosItem.setName(editTxt_name.getText().toString().trim());
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("description", photosItem.getDescription());
+                    hashMap.put("name", photosItem.getName());
+
+                    MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                            .child("Myphotos").child(photosItem.getKey())
+                            .updateChildren(hashMap);
+                }
+            }
+        });
+
+
+        photosAdapter.setOnCaneclClickListener(new PhotosAdapter.MyUpdateAndCancelClickListener() {
+            @Override
+            public void myUpdateAndCancelClickListener(int position, Photos photosItem, TextView txtOptionMenu, TextView txt_name, EditText editTxt_name, EditText editText_description, TextView txtDescription, ImageButton update, ImageButton cancel) {
+                txtDescription.setVisibility(View.VISIBLE);
+                txt_name.setVisibility(View.VISIBLE);
+                editTxt_name.setVisibility(View.GONE);
+                editText_description.setVisibility(View.GONE);
+                update.setVisibility(View.GONE);
+                cancel.setVisibility(View.GONE);
+
+
+            }
+        });
+
+        photosAdapter.setOnMenuClickListener(new PhotosAdapter.MyUpdateAndCancelClickListener() {
+            @Override
+            public void myUpdateAndCancelClickListener(int position, final Photos photosItem, final TextView txtOptionMenu, final TextView txt_name, final EditText editTxt_name, final EditText editText_description, final TextView txtDescription, final ImageButton update, final ImageButton cancel) {
+
+                PopupMenu popupMenu = new PopupMenu(getActivity(), txtOptionMenu);
+                popupMenu.inflate(R.menu.cardview_myphotos_menu);
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        deleteIsCancelled = false;
+                        switch (item.getItemId()) {
+
+                            case R.id.set_as_ProfileImage:
+                                HashMap<String, Object> hashMap = new HashMap<>();
+                                hashMap.put("ImageURL", photosItem.getUrl());
+                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                        .updateChildren(hashMap);
+
+                                MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                User user = dataSnapshot.getValue(User.class);
+                                                HashMap<String, Object> hashMap1 = new HashMap<>();
+                                                hashMap1.put("userImage", user.getImageURL());
+                                                MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                                                        .child("Myphotos").child(photosItem.getKey()).updateChildren(hashMap1);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+                                Snackbar.make(txtOptionMenu, "Profile Picture Updated Successful  ", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                                break;
+                            case R.id.edit_photoInfo:
+                                editText_description.setText(photosItem.getDescription());
+                                editTxt_name.setText(photosItem.getName());
+                                txtDescription.setVisibility(View.INVISIBLE);
+                                txt_name.setVisibility(View.INVISIBLE);
+                                editTxt_name.setVisibility(View.VISIBLE);
+                                editText_description.setVisibility(View.VISIBLE);
+                                update.setVisibility(View.VISIBLE);
+                                cancel.setVisibility(View.VISIBLE);
+
+                                break;
+                            case R.id.delete_menu:
+
+                                Snackbar.make(txtOptionMenu, "Deleting Photo", Snackbar.LENGTH_LONG)
+                                        .setAction("Cancel", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                deleteIsCancelled = true;
+                                            }
+                                        }).show();
+
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (deleteIsCancelled == false) {
+                                            MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
+                                                    .child("Myphotos").child(photosItem.getKey()).removeValue();
+                                        }
+                                    }
+                                }, 3000);
+
+
+                                break;
+                        }
+
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
+    }
+
 }

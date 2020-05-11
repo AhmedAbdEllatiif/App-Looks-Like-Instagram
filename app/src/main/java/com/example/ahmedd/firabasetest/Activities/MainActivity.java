@@ -84,10 +84,13 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         //To request the user chatList with other users
         viewModel.requestChatListFromServer();
 
+        //To request current user data
+        viewModel.requestCurrentUserDataFromServer();
 
         //To set a listener on the home toolbar icons
         viewModel.setOnToolBarIconsListener(MainActivity.this);
 
+        //To set a listener on back in ChatFragment toolbar
         viewModel.setOnBackListener_chatFragment(MainActivity.this);
 
 
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         pageAdapter.addFragment(mainFragment);
         pageAdapter.addFragment(chatFragment);
         //pageAdapter.addFragment(new UsersFragment());
-        //pageAdapter.addFragment(new MyPhotos());
+        //pageAdapter.addFragment(new ProfileFragment());
         int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
         mainViewPager.setOffscreenPageLimit(limit);
         mainViewPager.setAdapter(pageAdapter);
