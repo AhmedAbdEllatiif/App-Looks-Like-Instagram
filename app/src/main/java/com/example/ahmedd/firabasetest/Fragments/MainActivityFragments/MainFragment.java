@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
-import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment;
-import com.example.ahmedd.firabasetest.Fragments.MainFragments.AccountFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragments.ProfileFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.UserActivityFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Fragments.UploadPhotosFragment;
 import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
@@ -80,8 +80,8 @@ public class MainFragment extends Fragment {
         pageAdapter.addFragment(new HomeFragment());
         pageAdapter.addFragment(new UsersFragment());
         pageAdapter.addFragment(new UploadPhotosFragment());
+        pageAdapter.addFragment(new UserActivityFragment());
         pageAdapter.addFragment(new ProfileFragment());
-        pageAdapter.addFragment(new AccountFragment());
         int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
         viewpager.setOffscreenPageLimit(limit);
         viewpager.setAdapter(pageAdapter);

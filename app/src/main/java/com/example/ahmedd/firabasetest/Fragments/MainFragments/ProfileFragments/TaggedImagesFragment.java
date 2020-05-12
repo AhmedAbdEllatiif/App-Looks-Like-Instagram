@@ -26,7 +26,7 @@ import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
-import com.example.ahmedd.firabasetest.SpacesItemDecoration;
+import com.example.ahmedd.firabasetest.Helpers.SpacesItemDecoration;
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;

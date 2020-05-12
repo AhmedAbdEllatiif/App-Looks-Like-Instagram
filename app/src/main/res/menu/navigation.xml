@@ -30,8 +30,8 @@
 
     <item
         android:id="@+id/myPhotos"
-        android:icon="@drawable/ic_menu_gallery"
-        android:title="Photos" />
+        android:icon="@drawable/ic_heart"
+        android:title="Activity" />
 
     <item
         android:id="@+id/myProfile"

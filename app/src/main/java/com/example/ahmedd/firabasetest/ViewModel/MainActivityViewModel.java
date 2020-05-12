@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
-import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.Model.ChatList;
