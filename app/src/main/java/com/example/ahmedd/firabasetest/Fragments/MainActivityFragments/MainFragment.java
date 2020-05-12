@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,7 +37,7 @@ public class MainFragment extends Fragment {
     private View view;
 
 
-    private ViewPager viewpager;
+    private ViewPager2 viewpager;
 
 
 
@@ -76,13 +77,13 @@ public class MainFragment extends Fragment {
      * To setup viewPager
      * */
     private void setUpViewPager(){
-        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
+        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), getLifecycle());
         pageAdapter.addFragment(new HomeFragment());
         pageAdapter.addFragment(new UsersFragment());
         pageAdapter.addFragment(new UploadPhotosFragment());
         pageAdapter.addFragment(new ProfileFragment());
         pageAdapter.addFragment(new AccountFragment());
-        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
+        int limit = (pageAdapter.getItemCount() > 1 ? pageAdapter.getItemCount() - 1 : 1);
         viewpager.setOffscreenPageLimit(limit);
         viewpager.setAdapter(pageAdapter);
     }

@@ -24,7 +24,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fab;
-    private ViewPager mainViewPager;
+    private ViewPager2 mainViewPager;
 
     //Fragments
     private Fragment fragment;
@@ -110,25 +112,16 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
 
 
     /*******************************************************************************************************/
+   private MainPageAdapter pageAdapter;
     private void setUpViewPager(){
-        MainPageAdapter pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
-        MainFragment mainFragment  = new MainFragment();
-        ChatFragment chatFragment  = new ChatFragment();
-        /*HomeFragment homeFragment = new HomeFragment();
-        homeFragment.setToolBarListener(MainActivity.this);*/
-        //chatFragment.setOnBackListener_chatFragment(MainActivity.this);
+        pageAdapter = new MainPageAdapter(getSupportFragmentManager(),getLifecycle());
         pageAdapter.addFragment(new CameraFragment());
-        pageAdapter.addFragment(mainFragment);
-        pageAdapter.addFragment(chatFragment);
-        //pageAdapter.addFragment(new UsersFragment());
-        //pageAdapter.addFragment(new ProfileFragment());
-        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
+        pageAdapter.addFragment(new MainFragment());
+        pageAdapter.addFragment(new ChatFragment());
+        int limit = (pageAdapter.getItemCount() > 1 ? pageAdapter.getItemCount() - 1 : 1);
         mainViewPager.setOffscreenPageLimit(limit);
         mainViewPager.setAdapter(pageAdapter);
-
-
         mainViewPager.setCurrentItem(1);
-
     }
 
 
@@ -138,56 +131,16 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
 
     }
 
-    private void setToolBar() {
-        //toolbar = findViewById(R.id.myUserToolBar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-
-        //set user data in the toolBar
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUserID()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //getValue hatrg3 object jason
-                //ha3ml class 2st2bl feh l object
-
-
-                User user = dataSnapshot.getValue(User.class);
-
-                if (user.getUserName() != null) {
-                    userName.setText(user.getUserName());
-                } else {
-                    userName.setText("user name");
-                }
-
-                if (user.getImageURL().equals("default")) {
-                    profile_img.setImageResource(R.mipmap.ic_launcher);
-                } else {
-                    Picasso.get().load(user.getImageURL()).into(profile_img);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
+    /**
+     * To get user status we update the child status on tha activity lifecycle
+     * when activity onResume() make status online
+     * when activity onPause() make status offline
+     */
     private void getUserStatus(String status) {
-
-        /*To get user status we update the child status on tha activity lifecycle
-         *when activity onResume() make status online
-         * when activity onPause() make status offline
-         */
-        final HashMap<String, Object> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
-
         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid()).updateChildren(hashMap);
-
     }
 
 
@@ -250,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
 
     @Override
     public void onChatClicked() {
-        mainViewPager.setCurrentItem(mainViewPager.getChildCount()-1,false);
+        if (pageAdapter != null){
+          mainViewPager.setCurrentItem(pageAdapter.getItemCount()-1,false);
+        }
     }
+
+
 }

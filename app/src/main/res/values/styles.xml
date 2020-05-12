@@ -6,10 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="cardViewStyle">@style/CardView</item>
-        <!--<item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>-->
+        <item name="cardViewStyle">@style/Base.CardView</item>
+
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <item name="android:actionMenuTextColor">@color/red</item>
+
+        <!--To make the wifi and other icons turned in black-->
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
 

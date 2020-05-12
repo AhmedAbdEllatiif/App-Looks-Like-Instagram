@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add_blue"
             android:background="@drawable/ic_circle_white"
-            app:layout_constraintStart_toEndOf="@+id/profile_img"
             app:layout_constraintEnd_toEndOf="@+id/profile_img"
             app:layout_constraintBottom_toBottomOf="@+id/profile_img"
             />
