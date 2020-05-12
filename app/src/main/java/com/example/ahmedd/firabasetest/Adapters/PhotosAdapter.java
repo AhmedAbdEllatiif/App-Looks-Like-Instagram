@@ -90,12 +90,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                holder.txt_name.setText(photosItem.getName());
 
 
-               if(photosItem.getDescription().equals("")){
-                   holder.img_description.setHint("Write a description...");
-               }else {
 
-                   holder.img_description.setText(photosItem.getDescription());
-               }
 
 
                holder.img_date.setText(photosItem.getDate());
@@ -111,16 +106,20 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                            @Override
                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                User userItem = dataSnapshot.getValue(User.class);
+                              if (userItem != null){
+                                  String userName = userItem.getUserName();
 
-                               holder.user_name_cardView_img.setText(userItem.getUserName());
+                                  holder.user_name_cardView_img.setText(userName);
+                                  holder.commentor_name.setText(userName);
 
-                               if (userItem.getImageURL().equals("default")){
-                                   holder.img_.setImageResource(R.mipmap.ic_launcher);
-                               }else {
-                                   Picasso.get().load(userItem.getImageURL()).into(holder.user_profileImg_cardView_img);
-                               }
+                                  if (userItem.getImageURL().equals("default")){
+                                      holder.img_.setImageResource(R.mipmap.ic_launcher);
+                                  }else {
+                                      Picasso.get().load(userItem.getImageURL()).into(holder.user_profileImg_cardView_img);
+                                  }
 
 
+                              }
                            }
 
                            @Override
@@ -135,38 +134,15 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                    holder.txt_menu_option.setOnClickListener(new View.OnClickListener() {
                        @Override
                        public void onClick(View v) {
-                           onMenuClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.txt_name,
-                                   holder.editTxt_name_photoInfo ,holder.editText_description
-                                   ,holder.img_description,holder.btn_update_photo_info,
-                                   holder.btn_cancel_update_photo_info);
-                       }
-                   });
-               }
 
-               if (onUpdateClickListener!=null){
-                   holder.btn_update_photo_info.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View v) {
-                           onUpdateClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.txt_name,
-                                   holder.editTxt_name_photoInfo ,holder.editText_description
-                                   ,holder.img_description,holder.btn_update_photo_info,
-                                   holder.btn_cancel_update_photo_info);
                        }
                    });
                }
 
 
-               if(onCaneclClickListener!=null){
-                   holder.btn_cancel_update_photo_info.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View v) {
-                           onCaneclClickListener.myUpdateAndCancelClickListener(position,photosItem,holder.txt_menu_option,holder.txt_name,
-                                   holder.editTxt_name_photoInfo ,holder.editText_description
-                                   ,holder.img_description,holder.btn_update_photo_info,
-                                   holder.btn_cancel_update_photo_info);
-                       }
-                   });
-               }
+
+
+
            }
            else {
                Log.e(TAG, "onBindViewHolder: Grid");
@@ -200,7 +176,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
         TextView user_name_cardView_img;
         TextView txt_name;
-        TextView img_description;
+        TextView commentor_name;
         TextView img_date;
         TextView txt_menu_option;
         TextView txt_empty_cardView;
@@ -219,19 +195,18 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
 
+            commentor_name = itemView.findViewById(R.id.commentor_name);
+
             user_name_cardView_img = itemView.findViewById(R.id.user_name_cardView_img);
             txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity);
             txt_empty_cardView = itemView.findViewById(R.id.txt_empty_cardView);
             txt_menu_option = itemView.findViewById(R.id.txt_menu_option);
-            editText_description = itemView.findViewById(R.id.editText_description);
-            editTxt_name_photoInfo = itemView.findViewById(R.id.editTxt_name_photoInfo);
-            img_description = itemView.findViewById(R.id.img_description);
+
+
             img_date = itemView.findViewById(R.id.img_date);
             img_ = itemView.findViewById(R.id.img_cardView_photoActivity);
             user_profileImg_cardView_img = itemView.findViewById(R.id.user_profileImg_cardView_img);
-            profileImage_updated = itemView.findViewById(R.id.profileImage_updated);
-            btn_update_photo_info = itemView.findViewById(R.id.btn_update_photo_info);
-            btn_cancel_update_photo_info = itemView.findViewById(R.id.btn_cancel_update_photo_info);
+
 
             //Grid layout views
             img_grid = itemView.findViewById(R.id.img_grid);
