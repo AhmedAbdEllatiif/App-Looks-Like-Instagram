@@ -12,26 +12,17 @@
 
 
 
-    <androidx.viewpager2.widget.ViewPager2
+    <com.example.ahmedd.firabasetest.Helpers.MyViewPager
         android:id="@+id/viewpager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/mainBottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:fillViewport="true"
+        />
 
-
-   <!-- <FrameLayout
-        android:id="@+id/mainFragment_view"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/mainBottom_nav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_toolBar"
-      />-->
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

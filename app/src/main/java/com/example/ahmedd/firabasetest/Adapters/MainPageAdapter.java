@@ -11,51 +11,22 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class MainPageAdapter extends FragmentStateAdapter {
+public class MainPageAdapter extends FragmentPagerAdapter {
 
-    public final ArrayList<Fragment> fragments = new ArrayList<>();
+    private   ArrayList<Fragment> fragments;
     private final ArrayList<String> titles = new ArrayList<>();
 
-    public MainPageAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
-    }
-
-    public MainPageAdapter(@NonNull Fragment fragment) {
-        super(fragment);
-    }
-
-    public MainPageAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
-        super(fragmentManager, lifecycle);
-    }
-
-    /*public MainPageAdapter(@NonNull FragmentManager fm, int behavior) {
+    public MainPageAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
-    }*/
-
-    public void addFragment(Fragment fragment, String title){
-
-        fragments.add(fragment);
-        titles.add(title);
+        fragments = new ArrayList<>();
     }
+
 
 
     public void addFragment(Fragment fragment){
         fragments.add(fragment);
     }
 
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        return fragments.get(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return fragments.size();
-    }
-
-
-    /*
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);
@@ -64,5 +35,5 @@ public class MainPageAdapter extends FragmentStateAdapter {
     @Override
     public int getCount() {
         return fragments.size();
-    }*/
+    }
 }

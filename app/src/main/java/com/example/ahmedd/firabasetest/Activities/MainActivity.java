@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton fab;
-    private ViewPager2 mainViewPager;
+    private ViewPager mainViewPager;
 
     //Fragments
     private Fragment fragment;
@@ -114,11 +114,11 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
     /*******************************************************************************************************/
    private MainPageAdapter pageAdapter;
     private void setUpViewPager(){
-        pageAdapter = new MainPageAdapter(getSupportFragmentManager(),getLifecycle());
+        pageAdapter = new MainPageAdapter(getSupportFragmentManager(),PagerAdapter.POSITION_NONE);
         pageAdapter.addFragment(new CameraFragment());
         pageAdapter.addFragment(new MainFragment());
         pageAdapter.addFragment(new ChatFragment());
-        int limit = (pageAdapter.getItemCount() > 1 ? pageAdapter.getItemCount() - 1 : 1);
+        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
         mainViewPager.setOffscreenPageLimit(limit);
         mainViewPager.setAdapter(pageAdapter);
         mainViewPager.setCurrentItem(1);
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
     @Override
     public void onChatClicked() {
         if (pageAdapter != null){
-          mainViewPager.setCurrentItem(pageAdapter.getItemCount()-1,false);
+          mainViewPager.setCurrentItem(pageAdapter.getCount()-1,false);
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,6 +22,7 @@ import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.AccountFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.UsersFragment;
 import com.example.ahmedd.firabasetest.Fragments.UploadPhotosFragment;
+import com.example.ahmedd.firabasetest.Helpers.MyViewPager;
 import com.example.ahmedd.firabasetest.R;
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,7 +39,7 @@ public class MainFragment extends Fragment {
     private View view;
 
 
-    private ViewPager2 viewpager;
+    private MyViewPager viewpager;
 
 
 
@@ -77,15 +79,17 @@ public class MainFragment extends Fragment {
      * To setup viewPager
      * */
     private void setUpViewPager(){
-        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), getLifecycle());
+        MainPageAdapter pageAdapter = new MainPageAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
         pageAdapter.addFragment(new HomeFragment());
         pageAdapter.addFragment(new UsersFragment());
         pageAdapter.addFragment(new UploadPhotosFragment());
         pageAdapter.addFragment(new ProfileFragment());
         pageAdapter.addFragment(new AccountFragment());
-        int limit = (pageAdapter.getItemCount() > 1 ? pageAdapter.getItemCount() - 1 : 1);
+        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
         viewpager.setOffscreenPageLimit(limit);
         viewpager.setAdapter(pageAdapter);
+
+
     }
 
 

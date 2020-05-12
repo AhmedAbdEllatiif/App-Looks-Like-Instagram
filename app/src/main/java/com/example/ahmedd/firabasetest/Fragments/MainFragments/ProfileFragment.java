@@ -6,10 +6,15 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.example.ahmedd.firabasetest.Adapters.ProfileFragmentViewPagerAdapter;
+import com.example.ahmedd.firabasetest.Fragments.ProfileFragments.CurrentUserImagesFragment;
+import com.example.ahmedd.firabasetest.Fragments.ProfileFragments.TaggedImagesFragment;
 import com.example.ahmedd.firabasetest.SpacesItemDecoration;
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,6 +22,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +43,7 @@ import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 
 import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -65,6 +74,10 @@ public class ProfileFragment extends Fragment {
     //User data view
     private CircleImageView profile_img;
     private TextView txt_user_name;
+
+
+    //ViewPager
+    private ViewPager viewpager_profile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -99,20 +112,30 @@ public class ProfileFragment extends Fragment {
      * */
     private void initViews(){
         txt_empty_cardView = view.findViewById(R.id.txt_empty_cardView);
-        recyclerView = view.findViewById(R.id.recyclerView_photos);
+        //recyclerView = view.findViewById(R.id.recyclerView_photos);
         tabLayout = view.findViewById(R.id.myImages_tabLayout);
         profile_img = view.findViewById(R.id.profile_img);
         txt_user_name = view.findViewById(R.id.user_name);
+
+        viewpager_profile = view.findViewById(R.id.viewpager_profile);
+
         setUpTabLayout();
     }
 
 
     private void setUpTabLayout(){
-        tabLayout.setTabTextColors(getResources().getColor(R.color.black),getResources().getColor(R.color.colorPrimary));
-        tabLayout.addTab(tabLayout.newTab());
-        tabLayout.addTab(tabLayout.newTab());
+        ProfileFragmentViewPagerAdapter adapter
+                = new ProfileFragmentViewPagerAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
+        adapter.addFragment(new CurrentUserImagesFragment());
+        adapter.addFragment(new TaggedImagesFragment());
+        int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
+        viewpager_profile.setAdapter(adapter);
+        viewpager_profile.setOffscreenPageLimit(limit);
+        tabLayout.setupWithViewPager(viewpager_profile);
+        tabLayout.setTabTextColors(getResources().getColor(R.color.black,null),getResources().getColor(R.color.colorPrimary));
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_grid);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_menu_gallery);
+
     }
 
 
@@ -141,7 +164,7 @@ public class ProfileFragment extends Fragment {
                 ShowTextPickImage(photos.isEmpty());
 
                 //setupRecyclerView(photos);
-                setupRecyclerView_GridLayout(photos);
+               //setupRecyclerView_GridLayout(photos);
 
             }
         });
@@ -173,7 +196,10 @@ public class ProfileFragment extends Fragment {
         if (isUserHasNoImage(img)){
             profile_img.setImageResource(R.mipmap.ic_launcher);
         }else {
-            Picasso.get().load(img).into(profile_img);
+
+            Glide.with(Objects.requireNonNull(getActivity()))
+                    .load(img)
+                    .into(profile_img);
         }
     }
 
@@ -192,8 +218,10 @@ public class ProfileFragment extends Fragment {
     private void ShowTextPickImage(boolean isPhotosEmpty){
         if (isPhotosEmpty) {
             txt_empty_cardView.setVisibility(View.VISIBLE);
+            viewpager_profile.setVisibility(View.GONE);
         } else {
             txt_empty_cardView.setVisibility(View.GONE);
+            viewpager_profile.setVisibility(View.VISIBLE);
         }
 
     }
