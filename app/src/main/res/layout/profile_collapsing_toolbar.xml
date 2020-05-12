@@ -44,12 +44,23 @@
                 >
 
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom"
+                    >
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
                 <include
                     layout="@layout/myphotos_tabs"
                     android:layout_gravity="bottom"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     />
+
 
 
                <include

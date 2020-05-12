@@ -4,16 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    android:padding="20dp">
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        >
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_img"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_img"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_add"
@@ -26,36 +32,36 @@
             />
 
 
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ahmed Mohamed"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        app:layout_collapseMode="pin"
-        app:layout_constraintTop_toBottomOf="@+id/profile_img"
-        app:layout_constraintStart_toStartOf="@+id/profile_img" />
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ahmed Mohamed"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            app:layout_collapseMode="pin"
+            app:layout_constraintTop_toBottomOf="@+id/profile_img"
+            app:layout_constraintStart_toStartOf="@+id/profile_img" />
 
-    <include
-        layout="@layout/followers_count_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/profile_img"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_img"
-        app:layout_constraintStart_toEndOf="@+id/profile_img"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <include
+            layout="@layout/followers_count_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/profile_img"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_img"
+            app:layout_constraintStart_toEndOf="@+id/profile_img"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:background="@drawable/edit_profile_rect"
-        app:layout_constraintTop_toBottomOf="@+id/user_name"
-        >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:background="@drawable/edit_profile_rect"
+            app:layout_constraintTop_toBottomOf="@+id/user_name"
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +73,19 @@
                 android:gravity="center"
                 />
 
-    </FrameLayout>
+        </FrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="?attr/actionBarSize"
+        />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
