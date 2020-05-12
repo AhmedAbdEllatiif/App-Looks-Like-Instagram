@@ -1,31 +1,16 @@
-package com.example.ahmedd.firabasetest.Fragments.MainFragments;
-
+package com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 
 import androidx.annotation.NonNull;
-
-import com.bumptech.glide.Glide;
-import com.example.ahmedd.firabasetest.Adapters.ProfileFragmentViewPagerAdapter;
-import com.example.ahmedd.firabasetest.Fragments.ProfileFragments.CurrentUserImagesFragment;
-import com.example.ahmedd.firabasetest.Fragments.ProfileFragments.TaggedImagesFragment;
-import com.example.ahmedd.firabasetest.SpacesItemDecoration;
-import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -40,46 +25,34 @@ import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-
 import com.example.ahmedd.firabasetest.R;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.example.ahmedd.firabasetest.SpacesItemDecoration;
+import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends Fragment {
+public class TaggedImagesFragment extends Fragment {
 
-    private static final String TAG = "ProfileFragment";
+    private static final String TAG = "TaggedImagesFragment";
 
-    private MainActivityViewModel viewModel;
+     private MainActivityViewModel viewModel;
 
-    private View view = null;
+    private View view;
     private RecyclerView recyclerView;
+
     private PhotosAdapter adapter;
+
     Boolean deleteIsCancelled = false;
-    private TextView txt_empty_cardView;
-    private TabLayout tabLayout;
 
-    //User data view
-    private CircleImageView profile_img;
-    private TextView txt_user_name;
-
-
-    //ViewPager
-    private ViewPager viewpager_profile;
-
-    public ProfileFragment() {
+    public TaggedImagesFragment() {
         // Required empty public constructor
     }
 
@@ -87,70 +60,25 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        view = inflater.inflate(R.layout.profile_collapsing_toolbar, container, false);
-
-        viewModel = new  ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_tagged_images, container, false);
+          viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
         initViews();
 
-        onViewClicked();
-
-
-
         observeImagesFromLiveData();
-
-        observeCurrentUserData();
-
-
         return view;
     }
 
 
-    /**
-     * To initialize views
-     * */
     private void initViews(){
-        txt_empty_cardView = view.findViewById(R.id.txt_empty_cardView);
-        //recyclerView = view.findViewById(R.id.recyclerView_photos);
-        tabLayout = view.findViewById(R.id.myImages_tabLayout);
-        profile_img = view.findViewById(R.id.profile_img);
-        txt_user_name = view.findViewById(R.id.user_name);
+        recyclerView = view.findViewById(R.id.recyclerView_photos);
 
-        viewpager_profile = view.findViewById(R.id.viewpager_profile);
-
-        setUpTabLayout();
-    }
-
-
-    private void setUpTabLayout(){
-        ProfileFragmentViewPagerAdapter adapter
-                = new ProfileFragmentViewPagerAdapter(getChildFragmentManager(), PagerAdapter.POSITION_NONE);
-        adapter.addFragment(new CurrentUserImagesFragment());
-        adapter.addFragment(new TaggedImagesFragment());
-        int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
-        viewpager_profile.setAdapter(adapter);
-        viewpager_profile.setOffscreenPageLimit(limit);
-        tabLayout.setupWithViewPager(viewpager_profile);
-        tabLayout.setTabTextColors(getResources().getColor(R.color.black,null),getResources().getColor(R.color.colorPrimary));
-        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_grid);
-        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_menu_gallery);
 
     }
 
 
-    /**
-     * on ViewClicked
-     * */
-    private void onViewClicked(){
-        txt_empty_cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e(TAG, "onClick ==> txt_empty_cardView");
 
-            }
-        });
-    }
 
     /**
      * To observe the liveData
@@ -161,70 +89,15 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onChanged(List<Photos> photos) {
 
-                ShowTextPickImage(photos.isEmpty());
+                //ShowTextPickImage(photos.isEmpty());
 
-                //setupRecyclerView(photos);
-               //setupRecyclerView_GridLayout(photos);
+                setupRecyclerView(photos);
+                //setupRecyclerView_GridLayout(photos);
 
             }
         });
     }
 
-
-    /**
-     * To observer current user data
-     * */
-    private void observeCurrentUserData(){
-        viewModel.getCurrentUserData().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                String userName = user.getUserName();
-                String userImg = user.getImageURL();
-
-                //To fill the view with user data
-                setUserDataToViews(userName,userImg);
-            }
-        });
-    }
-
-
-    /**
-     * To fill views with current user data
-     * */
-    private void setUserDataToViews(String name,String img){
-        txt_user_name.setText(name);
-        if (isUserHasNoImage(img)){
-            profile_img.setImageResource(R.mipmap.ic_launcher);
-        }else {
-
-            Glide.with(Objects.requireNonNull(getActivity()))
-                    .load(img)
-                    .into(profile_img);
-        }
-    }
-
-    /**
-     * To check if user has Profile image or not
-     * return true if user doesn't have profile img
-     * */
-    private boolean isUserHasNoImage(String img){
-       return img.equals(getString(R.string.txt_default));
-    }
-
-
-    /**
-     * Show text (Pick a new photo) if the imagesList is empty
-     * */
-    private void ShowTextPickImage(boolean isPhotosEmpty){
-        if (isPhotosEmpty) {
-            txt_empty_cardView.setVisibility(View.VISIBLE);
-            viewpager_profile.setVisibility(View.GONE);
-        } else {
-            txt_empty_cardView.setVisibility(View.GONE);
-            viewpager_profile.setVisibility(View.VISIBLE);
-        }
-
-    }
 
     /**
      * To setup recyclerView and fill the adapter with the images
@@ -234,8 +107,10 @@ public class ProfileFragment extends Fragment {
         adapter = new PhotosAdapter(getActivity(), photos,PhotosAdapter.ORDINARY_VIEW);
         recyclerView.setAdapter(adapter);
 
-        onPhotosAdapterClicked(adapter);
+
     }
+
+
 
     /**
      * To setup recyclerView and fill the adapter with the images
@@ -243,13 +118,9 @@ public class ProfileFragment extends Fragment {
     private void setupRecyclerView_GridLayout(List<Photos> photos){
         Log.e(TAG, "setupRecyclerView_GridLayout: " );
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
-        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
-        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SpacesItemDecoration(3));
         adapter = new PhotosAdapter(getActivity(), photos,PhotosAdapter.GRID_VIEW);
         recyclerView.setAdapter(adapter);
-
-        onPhotosAdapterClicked(adapter);
     }
 
 
@@ -384,5 +255,7 @@ public class ProfileFragment extends Fragment {
         });
 
     }
+
+
 
 }

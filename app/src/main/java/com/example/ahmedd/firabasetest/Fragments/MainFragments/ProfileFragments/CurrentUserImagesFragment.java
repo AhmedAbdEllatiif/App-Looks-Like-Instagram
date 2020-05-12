@@ -1,4 +1,4 @@
-package com.example.ahmedd.firabasetest.Fragments.ProfileFragments;
+package com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragments;
 
 import android.os.Bundle;
 
