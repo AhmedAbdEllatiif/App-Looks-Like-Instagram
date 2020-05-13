@@ -2,6 +2,7 @@ package com.example.ahmedd.firabasetest.ViewModel;
 
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivityViewModel extends AndroidViewModel {
+
+    private static final String TAG = "MainActivityViewModel";
 
     //LiveData
     private MutableLiveData<List<Photos>> homeFragmentImages;

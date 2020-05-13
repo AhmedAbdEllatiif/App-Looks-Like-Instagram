@@ -146,7 +146,11 @@ public class ProfileFragment extends Fragment {
      */
     private void observeImagesFromLiveData() {
 
-        viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), photos -> ShowTextPickImage(photos.isEmpty()));
+        viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), photos ->{
+            Log.e(TAG, "observeImagesFromLiveData: photos size ==> " + photos.size() );
+            Log.e(TAG, "observeImagesFromLiveData: isPhotosEmpty ==> " + photos.isEmpty() );
+            ShowTextPickImage(photos.isEmpty());
+        });
     }
 
 

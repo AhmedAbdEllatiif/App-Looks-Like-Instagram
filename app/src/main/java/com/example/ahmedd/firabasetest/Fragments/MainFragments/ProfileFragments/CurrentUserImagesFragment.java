@@ -9,12 +9,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ahmedd.firabasetest.Adapters.PhotosAdapter;
+import com.example.ahmedd.firabasetest.Adapters.PostsAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.R;
 import com.example.ahmedd.firabasetest.Helpers.SpacesItemDecoration;
@@ -29,11 +28,12 @@ public class CurrentUserImagesFragment extends Fragment {
     private static final String TAG = "CurrentUserImagesFragme";
 
 
- private MainActivityViewModel viewModel;
+    private MainActivityViewModel viewModel;
     private View view;
-     private RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
-     private PhotosAdapter adapter;
+    private PostsAdapter adapter;
+
     public CurrentUserImagesFragment() {
         // Required empty public constructor
     }
@@ -42,37 +42,37 @@ public class CurrentUserImagesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        Log.e(TAG, "onCreateView: ");
-        view =  inflater.inflate(R.layout.fragment_current_user_images, container, false);
-          viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
+        view = inflater.inflate(R.layout.fragment_current_user_images, container, false);
 
-          initViews();
+        viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
-          observeImagesFromLiveData();
+        //To initialize views
+        initViews();
+
+        //To observe images from the liveData
+        observeImagesFromLiveData();
+
+
         return view;
     }
 
-     private void initViews(){
+    /**
+     * To initialize views
+     * */
+    private void initViews() {
         recyclerView = view.findViewById(R.id.recyclerView_photos);
-
-
     }
 
-     /**
-     * To observe the liveData
-     * */
+    /**
+     * To observe images from the liveData
+     */
     private void observeImagesFromLiveData() {
 
         viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), new Observer<List<Photos>>() {
             @Override
             public void onChanged(List<Photos> photos) {
-
-                //ShowTextPickImage(photos.isEmpty());
-
-                //setupRecyclerView(photos);
                 setupRecyclerView_GridLayout(photos);
-
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -80,26 +80,22 @@ public class CurrentUserImagesFragment extends Fragment {
 
     /**
      * To setup recyclerView and fill the adapter with the images
-     * */
-    private void setupRecyclerView(List<Photos> photos){
+     */
+    private void setupRecyclerView(List<Photos> photos) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new PhotosAdapter(getActivity(), photos,PhotosAdapter.ORDINARY_VIEW);
+        adapter = new PostsAdapter(getActivity(),photos, PostsAdapter.POST_VIEW);
         recyclerView.setAdapter(adapter);
     }
 
 
-
     /**
      * To setup recyclerView and fill the adapter with the images
-     * */
-    private void setupRecyclerView_GridLayout(List<Photos> photos){
-        Log.e(TAG, "setupRecyclerView_GridLayout: " );
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+     */
+    private void setupRecyclerView_GridLayout(List<Photos> photos) {
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerView.addItemDecoration(new SpacesItemDecoration(3));
-        adapter = new PhotosAdapter(getActivity(), photos,PhotosAdapter.GRID_VIEW);
+        adapter = new PostsAdapter(getActivity(),photos, PostsAdapter.GRID_VIEW);
         recyclerView.setAdapter(adapter);
-
-
     }
 
 

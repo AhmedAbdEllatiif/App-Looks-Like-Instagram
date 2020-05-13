@@ -102,8 +102,8 @@ public class UploadPhotosFragment extends Fragment {
         txt_showUploads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /*TODO:Show My Photos Fragment*/
-                Toast.makeText(getContext(), "Show My Photos Fragment", Toast.LENGTH_SHORT).show();
+               /*TODO:Show My PostModel Fragment*/
+                Toast.makeText(getContext(), "Show My PostModel Fragment", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -240,7 +240,7 @@ public class UploadPhotosFragment extends Fragment {
                         hashMap.put("description",description);
                         hashMap.put("date",date);
 
-                        MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
+                        MyFireBase.getReferenceOnDataBase().child("PostModel").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
 
                         txt_uploading.setText("Upload Complete");
                         txt_uploading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_, 0);
