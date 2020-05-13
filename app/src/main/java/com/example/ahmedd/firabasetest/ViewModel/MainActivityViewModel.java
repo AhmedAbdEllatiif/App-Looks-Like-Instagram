@@ -2,7 +2,6 @@ package com.example.ahmedd.firabasetest.ViewModel;
 
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,6 +12,7 @@ import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragm
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
+import com.example.ahmedd.firabasetest.Helpers.OnMyViewPagerListener;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.Model.ChatList;
 import com.example.ahmedd.firabasetest.Model.Following;
@@ -42,6 +42,9 @@ public class MainActivityViewModel extends AndroidViewModel {
     public OnToolBarIconsListener onToolBarIconsListener;
     public OnBackListener_ChatFragment onBackListener_chatFragment;
 
+
+    //ViewPager Listener
+    public OnMyViewPagerListener onMyViewPagerListener;
 
 
 
@@ -295,5 +298,12 @@ public class MainActivityViewModel extends AndroidViewModel {
      * */
     public void setOnBackListener_chatFragment(OnBackListener_ChatFragment onBackListener_chatFragment) {
         this.onBackListener_chatFragment = onBackListener_chatFragment;
+    }
+
+    /**
+     * Setter for OnMyViewPagerListener interface
+     * */
+    public void setOnMyViewPagerListener(OnMyViewPagerListener onMyViewPagerListener) {
+        this.onMyViewPagerListener = onMyViewPagerListener;
     }
 }

@@ -27,6 +27,7 @@ public class MainPageAdapter extends FragmentPagerAdapter {
         fragments.add(fragment);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);
@@ -36,4 +37,6 @@ public class MainPageAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return fragments.size();
     }
+
+
 }

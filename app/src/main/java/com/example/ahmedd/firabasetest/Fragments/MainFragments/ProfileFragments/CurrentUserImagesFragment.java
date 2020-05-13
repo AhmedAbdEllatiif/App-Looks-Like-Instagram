@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.example.ahmedd.firabasetest.Adapters.PostsAdapter;
 import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.R;
-import com.example.ahmedd.firabasetest.Helpers.SpacesItemDecoration;
+import com.example.ahmedd.firabasetest.Helpers.ViewHelpers.SpacesItemDecoration;
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 
 import java.util.List;

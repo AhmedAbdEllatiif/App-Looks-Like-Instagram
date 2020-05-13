@@ -12,7 +12,7 @@
 
 
 
-    <com.example.ahmedd.firabasetest.Helpers.MyViewPager
+    <com.example.ahmedd.firabasetest.Helpers.ViewHelpers.ViewPagerHelperMainFragment
         android:id="@+id/viewpager"
         android:layout_width="0dp"
         android:layout_height="0dp"

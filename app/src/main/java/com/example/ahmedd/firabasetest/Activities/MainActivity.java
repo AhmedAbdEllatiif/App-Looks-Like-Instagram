@@ -2,61 +2,46 @@ package com.example.ahmedd.firabasetest.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 
 import com.example.ahmedd.firabasetest.Adapters.MainPageAdapter;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.CameraFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.MainFragment;
+
+import com.example.ahmedd.firabasetest.Helpers.ViewHelpers.MyViewPager;
 import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
+import com.example.ahmedd.firabasetest.Helpers.OnMyViewPagerListener;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
-import com.example.ahmedd.firabasetest.Model.Following;
-import com.example.ahmedd.firabasetest.Model.Photos;
+
 
 import com.example.ahmedd.firabasetest.R;
 
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.util.Log;
+
 
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
-import com.google.firebase.database.DatabaseReference;
+
 import com.onesignal.OneSignal;
-import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.util.ArrayList;
+
+
 import java.util.HashMap;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnToolBarIconsListener, OnBackListener_ChatFragment {
+
+public class MainActivity extends AppCompatActivity implements OnMyViewPagerListener,OnToolBarIconsListener, OnBackListener_ChatFragment {
+
+    private static final String TAG = "MainActivity";
 
     private MainActivityViewModel viewModel;
-
-    //Views
-    private ImageView profile_img;
-    private TextView userName;
-    private Toolbar toolbar;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private FloatingActionButton fab;
-    private ViewPager mainViewPager;
-
-    //Fragments
-    private Fragment fragment;
-
-    private List<Following> followingList;
-    final DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
-    List<Photos> myList  = new ArrayList<>();
+    private MyViewPager mainViewPager;
+    private MainPageAdapter pageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +50,10 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
 
         viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
+        //to initialize views
         initViews();
 
+        //to setup viewPager
         setUpViewPager();
 
 
@@ -88,13 +75,13 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         //To set a listener on back in ChatFragment toolbar
         viewModel.setOnBackListener_chatFragment(MainActivity.this);
 
-
+        //To set a listener on pageChanged inside the viewPager of MainFragment
+        viewModel.setOnMyViewPagerListener(MainActivity.this);
 
         //set a tag to everyUser in oneSingle to help sending notification to it by this tag
         OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
 
 
-
     }
 
 
@@ -104,20 +91,10 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
 
 
 
-    /*******************************************************************************************************/
-   private MainPageAdapter pageAdapter;
-    private void setUpViewPager(){
-        pageAdapter = new MainPageAdapter(getSupportFragmentManager(),PagerAdapter.POSITION_NONE);
-        pageAdapter.addFragment(new CameraFragment());
-        pageAdapter.addFragment(new MainFragment());
-        pageAdapter.addFragment(new ChatFragment());
-        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
-        mainViewPager.setOffscreenPageLimit(limit);
-        mainViewPager.setAdapter(pageAdapter);
-        mainViewPager.setCurrentItem(1);
-    }
 
-
+    /**
+     * To initialize views
+     * */
     private void initViews() {
 
         mainViewPager = findViewById(R.id.mainViewPager);
@@ -138,51 +115,49 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
 
 
 
+    /**
+     * To setup viewPager
+     * */
+    private void setUpViewPager(){
+        pageAdapter = new MainPageAdapter(getSupportFragmentManager(),PagerAdapter.POSITION_NONE);
+        pageAdapter.addFragment(new CameraFragment());
+        pageAdapter.addFragment(new MainFragment());
+        pageAdapter.addFragment(new ChatFragment());
+        int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
+        mainViewPager.setOffscreenPageLimit(limit);
+        mainViewPager.setAdapter(pageAdapter);
+        mainViewPager.setCurrentItem(1);
+        mainViewPager.setPagingEnabled(true);//To make is scrollable
+    }
+
+    /**
+     * Return true if the current page is the {@link MainFragment}
+     * */
+    private boolean isHomePage(){
+        return mainViewPager.getCurrentItem() == 1;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*/////////////////////////////////////////////////////Callbacks////////////////////////////////////////////////////*/
+
     @Override
     public void onBackPressed() {
         if (!isHomePage()){
             mainViewPager.setCurrentItem(1);
         }else {
-        super.onBackPressed();
+            super.onBackPressed();
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getUserStatus(getString(R.string.online));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        getUserStatus(getString(R.string.offline));
-    }
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Photo uploaded", Toast.LENGTH_SHORT).show();
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Toast.makeText(this, "something went wrong ", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
-
-
-    private boolean isHomePage(){
-        return mainViewPager.getCurrentItem() == 1;
-    }
-
 
     @Override
     public void onBackPressed_ChatFragment() {
@@ -201,5 +176,50 @@ public class MainActivity extends AppCompatActivity implements OnToolBarIconsLis
         }
     }
 
+    /**
+     * Call back of {@link OnMyViewPagerListener} this interface initialized at {@link MainFragment}
+     * To send the position of MainFragment.Viewpager
+     * if the position of MainFragment.Viewpager is 0 ==> prevent  this.mainViewPager from scrolling
+     * else make this.mainViewPager scrollable
+     * */
+    @Override
+    public void onPageChanged(int position) {
+        Log.e(TAG, "onPageSelected: ==> position " + position );
+        if (position != 0){
+            mainViewPager.setPagingEnabled(false);
+        }else {
+            mainViewPager.setPagingEnabled(true);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+/*
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Photo uploaded", Toast.LENGTH_SHORT).show();
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Toast.makeText(this, "something went wrong ", Toast.LENGTH_SHORT).show();
+            }
+        }*/
+    }
+
+
+
+    /*/////////////////////////////////////////////////////LifeCycle////////////////////////////////////////////////////*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUserStatus(getString(R.string.online));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getUserStatus(getString(R.string.offline));
+    }
 
 }
