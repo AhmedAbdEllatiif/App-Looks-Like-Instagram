@@ -46,4 +46,6 @@
     <string name="following">Following</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="txt_default">default</string>
+    <string name="activities">Activities</string>
+    <string name="chats">Chats</string>
 </resources>
