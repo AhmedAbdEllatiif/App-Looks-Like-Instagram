@@ -48,5 +48,7 @@
     <string name="txt_default">default</string>
     <string name="activities">Activities</string>
     <string name="send">Send</string>
+    <string name="direct">Direct</string>
+    <string name="camera">Camera</string>
 
 </resources>

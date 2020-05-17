@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.ahmedd.firabasetest.Model.Chats;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
@@ -58,7 +59,7 @@ public class ChatListAdapter  extends RecyclerView.Adapter<ChatListAdapter.ViewH
         if (userItem.getImageURL().equals("default")) {
             holder.profile_pic.setImageResource(R.mipmap.ic_launcher);
         } else {
-            Picasso.get().load(userItem.getImageURL()).into(holder.profile_pic);
+            Glide.with(context).load(userItem.getImageURL()).into(holder.profile_pic);
         }
 
 
@@ -67,14 +68,11 @@ public class ChatListAdapter  extends RecyclerView.Adapter<ChatListAdapter.ViewH
 
         if (isOnline) {
             if (userItem.getStatus().equals("Online")) {
-                holder.status_online.setVisibility(View.VISIBLE);
-                holder.status_offline.setVisibility(View.GONE);
+                holder.img_userStatus.setSelected(true);
             } else if (userItem.getStatus().equals("Offline")) {
-                holder.status_online.setVisibility(View.GONE);
-                holder.status_offline.setVisibility(View.VISIBLE);
+                holder.img_userStatus.setSelected(false);
             } else {
-                holder.status_online.setVisibility(View.GONE);
-                holder.status_offline.setVisibility(View.GONE);
+                holder.img_userStatus.setSelected(false);
             }
         }
 
@@ -92,31 +90,34 @@ public class ChatListAdapter  extends RecyclerView.Adapter<ChatListAdapter.ViewH
 
     @Override
     public int getItemCount() {
+       // return userList.size();
         return userList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+
+
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView userName;
         TextView lastMessage;
         CardView userCardView;
         ImageView profile_pic;
-        ImageView status_online;
-        ImageView status_offline;
+        ImageView img_userStatus;
+        ImageView img_camera;
 
-
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-
             userName = itemView.findViewById(R.id.userName_AtCardView);
             lastMessage = itemView.findViewById(R.id.txt_lastMessage_userItem);
             userCardView = itemView.findViewById(R.id.cardView_user);
             profile_pic = itemView.findViewById(R.id.profile_pic_AtCardView);
-            status_online = itemView.findViewById(R.id.img_statusOnline);
-            status_offline = itemView.findViewById(R.id.img_statusOffline);
-
+            img_userStatus = itemView.findViewById(R.id.img_userStatus);
+            img_camera = itemView.findViewById(R.id.img_camera);
         }
     }
+
+
 
     private void getLastMessage(final String userID, final TextView lastMessage) {
 

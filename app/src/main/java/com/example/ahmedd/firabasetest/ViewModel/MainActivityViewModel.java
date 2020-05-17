@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.DirectMessageFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.HomeFragment;
 import com.example.ahmedd.firabasetest.Fragments.MainFragments.ProfileFragments.ProfileFragment;
 import com.example.ahmedd.firabasetest.Helpers.OnBackListener_ChatFragment;
@@ -327,7 +327,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     /**
-     * Getter for ChatList {@link ChatFragment}
+     * Getter for ChatList {@link DirectMessageFragment}
      */
     public LiveData<List<User>> getUserChatList() {
         return userList_chatWith_liveData;
@@ -358,7 +358,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     /**
-     * Setter for the ChatFragment toolbar back arrow
+     * Setter for the DirectMessageFragment toolbar back arrow
      */
     public void setOnBackListener_chatFragment(OnBackListener_ChatFragment onBackListener_chatFragment) {
         this.onBackListener_chatFragment = onBackListener_chatFragment;

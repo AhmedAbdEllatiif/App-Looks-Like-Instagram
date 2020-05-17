@@ -80,7 +80,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_info_outline_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_photo_camera_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -91,8 +91,8 @@
                         <option name="values">
                           <map>
                             <entry key="autoMirrored" value="true" />
-                            <entry key="color" value="020000" />
-                            <entry key="outputName" value="ic_info" />
+                            <entry key="color" value="458eff" />
+                            <entry key="outputName" value="ic_camera_blue" />
                             <entry key="sourceFile" value="C:\Users\Ahmedd" />
                           </map>
                         </option>

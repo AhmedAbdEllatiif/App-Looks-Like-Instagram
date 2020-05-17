@@ -27,9 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.List;
 
-public class ChatFragment extends Fragment {
+public class DirectMessageFragment extends Fragment {
 
-    private static final String TAG = "ChatFragment";
+    private static final String TAG = "DirectMessageFragment";
 
     private MainActivityViewModel viewModel;
 
@@ -47,7 +47,7 @@ public class ChatFragment extends Fragment {
     private ImageButton img_arrow_back;
 
 
-    public ChatFragment() {
+    public DirectMessageFragment() {
     }
 
 
@@ -55,7 +55,7 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_chat, container, false);
+        view = inflater.inflate(R.layout.fragment_direct_message, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
@@ -87,9 +87,9 @@ public class ChatFragment extends Fragment {
      * */
     private void onViewsClicked() {
         img_arrow_back.setOnClickListener(view -> {
-         /*   if (!isOnBackListenerNull()) {
+            if (!isOnBackListenerNull()) {
                 viewModel.onBackListener_chatFragment.onBackPressed_ChatFragment();
-            }*/
+            }
         });
     }
 
@@ -127,7 +127,7 @@ public class ChatFragment extends Fragment {
     /**
      * To Check if the listener in null
      * The listener must be initialize in the {@link MainActivity}
-     * This listener move the viewPager inside the mainActivity  from the ChatFragment to HomeFragment
+     * This listener move the viewPager inside the mainActivity  from the DirectMessageFragment to HomeFragment
      * */
     private boolean isOnBackListenerNull(){
         if (viewModel.onBackListener_chatFragment == null){

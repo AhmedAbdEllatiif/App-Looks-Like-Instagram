@@ -13,7 +13,6 @@ import com.example.ahmedd.firabasetest.Helpers.OnMyViewPagerListener;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 
 
-import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.R;
 
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
@@ -27,13 +26,12 @@ import androidx.viewpager.widget.PagerAdapter;
 import android.util.Log;
 
 
-import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
+import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.DirectMessageFragment;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.onesignal.OneSignal;
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
         //To set a listener on the home toolbar icons
         viewModel.setOnToolBarIconsListener(MainActivity.this);
 
-        //To set a listener on back in ChatFragment toolbar
+        //To set a listener on back in DirectMessageFragment toolbar
         viewModel.setOnBackListener_chatFragment(MainActivity.this);
 
         //To set a listener on pageChanged inside the viewPager of MainFragment
@@ -160,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
         pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
         pageAdapter.addFragment(new CameraFragment());
         pageAdapter.addFragment(new MainFragment());
-        pageAdapter.addFragment(new ChatFragment());
+        pageAdapter.addFragment(new DirectMessageFragment());
         int limit = (pageAdapter.getCount() > 1 ? pageAdapter.getCount() - 1 : 1);
         mainViewPager.setOffscreenPageLimit(limit);
         mainViewPager.setAdapter(pageAdapter);

@@ -10,7 +10,7 @@
     <color name="dark_gray">#C8AAA6A6</color>
     <color name="txt_gray">#C8635F5F</color>
     <color name="lightpink">#c5ef0572</color>
-    <color name="status_color">#05df29</color>
+    <color name="green_online">#05df29</color>
     <color name="status_offline">#9ad6d0d0</color>
     <color name="deliverd_color">#bc979494</color>
     <color name="seen_color">#74bead</color>
@@ -23,5 +23,6 @@
 
     <color name="instagram_blue">#458EFF</color>
     <color name="light_gray">#83EFEBEB</color>
+    <color name="off_white">#F1F1FA</color>
 
 </resources>
