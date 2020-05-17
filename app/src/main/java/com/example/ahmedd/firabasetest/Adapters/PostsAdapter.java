@@ -36,12 +36,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     private OnPostMenuOptionClickListener onMenuClickListener;
 
 
-    public PostsAdapter(Context context, List<Photos> postModelList, int myViewType) {
-        this.postModelList = postModelList;
+    public PostsAdapter(Context context, int myViewType) {
         this.context = context;
         this.myViewType = myViewType;
-
-
     }
 
 
@@ -57,7 +54,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     .inflate(R.layout.cardview_image_grid, parent, false);
         } else {
             view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cardview_image, parent, false);
+                    .inflate(R.layout.cardview_post, parent, false);
         }
 
         return new ViewHolder(view);
@@ -91,27 +88,22 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     private void setPostData_POST_VIEW(Photos postModelItem, ViewHolder holder){
 
         String postImgUrl = postModelItem.getUrl();
-
-        holder.txt_emoji.setText(postModelItem.getName());
-        holder.txt_date.setText(postModelItem.getDate());
+        String userName = postModelItem.getUserName();
+        String userImg = postModelItem.getUserImage();
 
         if (isImage(postImgUrl)){// To check if the image exists or no
             Glide.with(context).load(postImgUrl).into(holder.post_img);
         }
 
-
-
-        //To set User data to the post
-        if (currentUser != null){
-            String userName = currentUser.getUserName();
-            String userImg = currentUser.getImageURL();
-            holder.user_name.setText(userName);
-            holder.commenter_name.setText(userName.trim());
-
-            if (isImage(userImg)) {// To check if the image exists or no
-                Glide.with(context).load(userImg).into(holder.user_image);
-            }
+        if (isImage(userImg)) {// To check if the image exists or no
+            Glide.with(context).load(userImg).into(holder.user_image);
         }
+
+        holder.txt_emoji.setText(postModelItem.getName());
+        holder.txt_date.setText(postModelItem.getDate());
+        holder.user_name.setText(userName);
+        holder.commenter_name.setText(userName.trim());
+
 
     }
 
@@ -145,7 +137,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
      * if imageUrl ==> default then there is on image
      * */
     private boolean isImage(String imgUrl){
+        if (imgUrl != null){
         return !imgUrl.equals("default");
+        }
+        return false;
     }
 
 
@@ -213,10 +208,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         this.currentUser = currentUser;
     }
 
-
-
-
-
+    public void setPostModelList(List<Photos> postModelList) {
+        this.postModelList = postModelList;
+    }
 
     /*/////////////////////////////////////Adapter Interfaces//////////////////////////////////////////////////*/
     public interface OnPostMenuOptionClickListener {

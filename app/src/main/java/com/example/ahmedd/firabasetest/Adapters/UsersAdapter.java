@@ -65,7 +65,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-Log.e("onBind","ishere");
+
         final User userItem = userList.get(position);
 
         holder.userName.setText(userItem.getUserName());
@@ -88,7 +88,7 @@ Log.e("onBind","ishere");
                 }
             });
         }
-        Log.e("followings",followings.size()+"");
+        //Log.e("followings",followings.size()+"");
         for (int i=0; i< followings.size();i++){
               if(userItem.getId().equals(followings.get(i).getId())){
                   holder.txt_follow_userFragment.setVisibility(View.INVISIBLE);

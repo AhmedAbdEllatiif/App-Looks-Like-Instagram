@@ -13,10 +13,12 @@ import com.example.ahmedd.firabasetest.Helpers.OnMyViewPagerListener;
 import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 
 
+import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.R;
 
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -28,14 +30,19 @@ import android.util.Log;
 import com.example.ahmedd.firabasetest.Fragments.MainActivityFragments.ChatFragment;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.onesignal.OneSignal;
-
 
 
 import java.util.HashMap;
 
 
-public class MainActivity extends AppCompatActivity implements OnMyViewPagerListener,OnToolBarIconsListener, OnBackListener_ChatFragment {
+public class MainActivity extends AppCompatActivity implements OnMyViewPagerListener, OnToolBarIconsListener, OnBackListener_ChatFragment {
 
     private static final String TAG = "MainActivity";
 
@@ -57,17 +64,17 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
         setUpViewPager();
 
 
-        //To request the the user followings images
-        viewModel.requestFollowingUsersImagesFromServer();
+        //To request the current user followings
+        viewModel.requestFollowingOfCurrentUser();
 
         //To request the current user images
-        viewModel.requestCurrentUserImageFromServer();
+         viewModel.requestCurrentUserImageFromServer();
 
         //To request the user chatList with other users
-        viewModel.requestChatListFromServer();
+         viewModel.requestChatListFromServer();
 
         //To request current user data
-        viewModel.requestCurrentUserDataFromServer();
+         viewModel.requestCurrentUserDataFromServer();
 
         //To set a listener on the home toolbar icons
         viewModel.setOnToolBarIconsListener(MainActivity.this);
@@ -81,24 +88,56 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
         //set a tag to everyUser in oneSingle to help sending notification to it by this tag
         OneSignal.sendTag("User ID", MyFireBase.getCurrentUser().getUid());
 
+        //testFireStore();
 
     }
 
 
+    private void testFireStore() {
 
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-
+        db.collection("users")
+                .document("bXQoU58ULE1YCxzpRSer").collection("posts")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.e(TAG, "onComplete: "+ document.getId() + " => " + document.getData() );
+                    }
+                }else {
+                    Log.e(TAG, "Error getting documents.", task.getException());
+                }
+            }
+        });
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //User user = document.toObject(User.class);
+                               // Log.e(TAG, "onComplete: "+ document.getId() + " => " + document.getData() );
+                                //Log.e(TAG, document.getId() + " => " + document.getData());
+                              /*  Log.e(TAG, document.get() + " => " + document.getData());
+                                Log.e(TAG, document.getId() + " => " + document.getData());*/
+                            }
+                        } else {
+                            Log.e(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
 
 
     /**
      * To initialize views
-     * */
+     */
     private void initViews() {
-
         mainViewPager = findViewById(R.id.mainViewPager);
-
     }
 
 
@@ -114,12 +153,11 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
     }
 
 
-
     /**
      * To setup viewPager
-     * */
-    private void setUpViewPager(){
-        pageAdapter = new MainPageAdapter(getSupportFragmentManager(),PagerAdapter.POSITION_NONE);
+     */
+    private void setUpViewPager() {
+        pageAdapter = new MainPageAdapter(getSupportFragmentManager(), PagerAdapter.POSITION_NONE);
         pageAdapter.addFragment(new CameraFragment());
         pageAdapter.addFragment(new MainFragment());
         pageAdapter.addFragment(new ChatFragment());
@@ -132,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
 
     /**
      * Return true if the current page is the {@link MainFragment}
-     * */
-    private boolean isHomePage(){
+     */
+    private boolean isHomePage() {
         return mainViewPager.getCurrentItem() == 1;
     }
 
@@ -152,27 +190,27 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
 
     @Override
     public void onBackPressed() {
-        if (!isHomePage()){
+        if (!isHomePage()) {
             mainViewPager.setCurrentItem(1);
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
 
     @Override
     public void onBackPressed_ChatFragment() {
-        mainViewPager.setCurrentItem(1,true);
+        mainViewPager.setCurrentItem(1, true);
     }
 
     @Override
     public void onCameraClicked() {
-      mainViewPager.setCurrentItem(0,false);
+        mainViewPager.setCurrentItem(0, false);
     }
 
     @Override
     public void onChatClicked() {
-        if (pageAdapter != null){
-          mainViewPager.setCurrentItem(pageAdapter.getCount()-1,false);
+        if (pageAdapter != null) {
+            mainViewPager.setCurrentItem(pageAdapter.getCount() - 1, false);
         }
     }
 
@@ -181,13 +219,13 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
      * To send the position of MainFragment.Viewpager
      * if the position of MainFragment.Viewpager is 0 ==> prevent  this.mainViewPager from scrolling
      * else make this.mainViewPager scrollable
-     * */
+     */
     @Override
     public void onPageChanged(int position) {
-        Log.e(TAG, "onPageSelected: ==> position " + position );
-        if (position != 0){
+        Log.e(TAG, "onPageSelected: ==> position " + position);
+        if (position != 0) {
             mainViewPager.setPagingEnabled(false);
-        }else {
+        } else {
             mainViewPager.setPagingEnabled(true);
         }
     }
@@ -206,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements OnMyViewPagerList
             }
         }*/
     }
-
 
 
     /*/////////////////////////////////////////////////////LifeCycle////////////////////////////////////////////////////*/

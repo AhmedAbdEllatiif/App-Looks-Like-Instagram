@@ -2,6 +2,7 @@ package com.example.ahmedd.firabasetest.ViewModel;
 
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,6 +18,7 @@ import com.example.ahmedd.firabasetest.Helpers.OnToolBarIconsListener;
 import com.example.ahmedd.firabasetest.Model.ChatList;
 import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.PostModel;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +38,9 @@ public class MainActivityViewModel extends AndroidViewModel {
     private MutableLiveData<List<Photos>> myPhotosFragmentImages;
     private MutableLiveData<List<User>> userList_chatWith_liveData;
     private MutableLiveData<User> currentUserData_liveData;
+    private MutableLiveData<List<PostModel>> postModel_liveData;
+    private MutableLiveData<List<Following>> followingsUsers;
+
 
 
     //ToolBar Listeners
@@ -47,8 +52,6 @@ public class MainActivityViewModel extends AndroidViewModel {
     public OnMyViewPagerListener onMyViewPagerListener;
 
 
-
-
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
         initLiveData();
@@ -57,91 +60,88 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     /**
      * to initialize live data
-     * */
-    private void initLiveData(){
+     */
+    private void initLiveData() {
         homeFragmentImages = new MutableLiveData<>();
         myPhotosFragmentImages = new MutableLiveData<>();
         userList_chatWith_liveData = new MutableLiveData<>();
         currentUserData_liveData = new MutableLiveData<>();
+        postModel_liveData = new MutableLiveData<>();
+        followingsUsers = new MutableLiveData<>();
+
     }
 
 
     /*////////////////////////////////Request data from FireBase/////////////////////////////////////////////////*/
+
     /**
      * To request the images of the following users to show in the homePage
-     * */
-    public void requestFollowingUsersImagesFromServer(){
-        List<Following> followingList = new ArrayList<>();
-        DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
-        List<Photos> myList  = new ArrayList<>();
+     */
 
-        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
-                .child("Following").addValueEventListener(new ValueEventListener() {
+    private String oneOfFollowingUsers_ID;
+    private String photoID;
+    public void requestFollowingUsersImagesFromServer(List<Following> followingList) {
+        List<DataSnapshot> photosIDs = new ArrayList<>();
+        DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
+
+        referenceOnPhotos.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Following followingItem = snapshot.getValue(Following.class);
-                    followingList.add(followingItem);
+                for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
+                    for (int i = 0; i < followingList.size(); i++) {
+                    oneOfFollowingUsers_ID = followingList.get(i).getId();
+                    photoID = photosChild.getKey();
+                        if (oneOfFollowingUsers_ID .equals(photoID)) {
+                            photosIDs.add(photosChild);
+                        }
+                    }
                 }
 
-                referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (final DataSnapshot photosChild : dataSnapshot.getChildren()) {
-                            for (int i = 0; i < followingList.size(); i++) {
-                                if (followingList.get(i).getId().equals(photosChild.getKey())) {
-                                    referenceOnPhotos.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            referenceOnPhotos.child(photosChild.getKey())
-                                                    .child("Myphotos").addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
-                                                        Photos photosItem = myPhotosChildern.getValue(Photos.class);
+                requestPhotosOfFollowing_accordingToPhotosID(photosIDs);
 
-                                                        myList.add(photosItem);
-                                                    }
-                                                    homeFragmentImages.setValue(myList);
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                }
-                                            });
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
 
 
+    private void requestPhotosOfFollowing_accordingToPhotosID(List<DataSnapshot> photosOfFollowings) {
+        DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
+        for (DataSnapshot image : photosOfFollowings){
+            referenceOnPhotos.child(image.getKey())
+                    .child("Myphotos").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    List<Photos> myList  = new ArrayList<>();
+                    myList.clear();
+                    for (DataSnapshot myPhotosChildern : dataSnapshot.getChildren()) {
+                        Photos photosItem = myPhotosChildern.getValue(Photos.class);
+                        myList.add(photosItem);
+                    }
+                    //createPostsModelList(myList);
+                    Log.e(TAG, "onDataChange44: photosSize ==> " + myList.size());
+                    homeFragmentImages.setValue(myList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+    }
+
+
+
     /**
      * To request the current user images from the server
-     * */
-    public void requestCurrentUserImageFromServer(){
+     */
+    public void requestCurrentUserImageFromServer() {
         List<Photos> photosList = new ArrayList<>();
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
                 .child("Myphotos")
@@ -174,8 +174,8 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     /**
      * To request the current user ChatList with other users
-     * */
-    public void requestChatListFromServer(){
+     */
+    public void requestChatListFromServer() {
 
         DatabaseReference referenceOnUsersThatHaveChatWith = MyFireBase.getReferenceOnChatList()
                 .child(MyFireBase.getCurrentUser().getUid());
@@ -191,11 +191,10 @@ public class MainActivityViewModel extends AndroidViewModel {
                 }
 
 
-
                 MyFireBase.getReferenceOnAllUsers().addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                      List<User> usersList = new ArrayList<>();
+                        List<User> usersList = new ArrayList<>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
                             for (ChatList chatListItem : myChatsList) {
@@ -205,7 +204,6 @@ public class MainActivityViewModel extends AndroidViewModel {
                                 userList_chatWith_liveData.setValue(usersList);
                             }
                         }
-
 
 
                     }
@@ -228,13 +226,13 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     /**
      * To get current user data from firebase
-     * */
-    public void requestCurrentUserDataFromServer(){
+     */
+    public void requestCurrentUserDataFromServer() {
         MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user =  dataSnapshot.getValue(User.class);
+                        User user = dataSnapshot.getValue(User.class);
 
                         currentUserData_liveData.setValue(user);
 
@@ -248,61 +246,127 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
 
+    public void requestFollowingOfCurrentUser() {
+        MyFireBase.getReferenceOnAllUsers().child(MyFireBase.getCurrentUser().getUid())
+                .child("Following").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Following> followingList = new ArrayList<>();
+                followingList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Following followingItem = snapshot.getValue(Following.class);
+                    followingList.add(followingItem);
+                }
+                followingsUsers.setValue(followingList);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "requestFollowingOfCurrentUser ==> onCancelled: " + databaseError);
+            }
+        });
+    }
+
+
+    public void createPostsModelList(List<Photos> photos) {
+        Log.e(TAG, "createPostsModelList: photosSize ==> " + photos.size());
+        List<User> users = new ArrayList<>();
+        List<PostModel> postModels = new ArrayList<>();
+        List<String> usersIDs = new ArrayList<>();
+
+
+        for (Photos photo : photos) {
+            usersIDs.add(photo.getUserID());
+
+        }
+        for (String id : usersIDs) {
+            MyFireBase.getReferenceOnAllUsers().child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    users.add(user);
+                    Log.e(TAG, "onDataChange: userName ==> " + user.getUserName());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+        Log.e(TAG, "createPostsModelList: usersSize ==> " + users.size());
+        if (usersIDs.size() == users.size()) {
+            for (int i = 0; i < photos.size(); i++) {
+                postModels.add(new PostModel(photos.get(i)));
+            }
+            postModel_liveData.setValue(postModels);
+        }
+
+
+    }
 
 
 
     /*///////////////////////////////////Getters for liveData/////////////////////////////////////////////////*/
+
     /**
      * Getter for {@link HomeFragment} fragment images form liveData
-     * */
-    public LiveData<List<Photos>> getHomeFragmentImages(){
+     */
+    public LiveData<List<Photos>> getHomeFragmentImages() {
         return homeFragmentImages;
     }
 
 
     /**
      * Getter for {@link ProfileFragment} fragment images from liveData
-     * */
-    public LiveData<List<Photos>> getMyPhotosFragmentImages(){
+     */
+    public LiveData<List<Photos>> getMyPhotosFragmentImages() {
         return myPhotosFragmentImages;
     }
 
     /**
      * Getter for ChatList {@link ChatFragment}
-     * */
-    public LiveData<List<User>> getUserChatList(){
+     */
+    public LiveData<List<User>> getUserChatList() {
         return userList_chatWith_liveData;
     }
 
 
-    public LiveData<User> getCurrentUserData(){
+    public LiveData<User> getCurrentUserData() {
         return currentUserData_liveData;
     }
 
-
+    /**
+     * Getter of the current user followings
+     */
+    public LiveData<List<Following>> getFollowingsUsers() {
+        return followingsUsers;
+    }
 
 
 
 
     /*//////////////////////////////////Setters For ToolBar icons listeners///////////////////////////////////////////////*/
+
     /**
      * Setter for the HomeFragment  toolbar icons (Camera & Chat)
-     * */
+     */
     public void setOnToolBarIconsListener(OnToolBarIconsListener onToolBarIconsListener) {
         this.onToolBarIconsListener = onToolBarIconsListener;
     }
 
     /**
      * Setter for the ChatFragment toolbar back arrow
-     * */
+     */
     public void setOnBackListener_chatFragment(OnBackListener_ChatFragment onBackListener_chatFragment) {
         this.onBackListener_chatFragment = onBackListener_chatFragment;
     }
 
     /**
      * Setter for OnMyViewPagerListener interface
-     * */
+     */
     public void setOnMyViewPagerListener(OnMyViewPagerListener onMyViewPagerListener) {
         this.onMyViewPagerListener = onMyViewPagerListener;
     }

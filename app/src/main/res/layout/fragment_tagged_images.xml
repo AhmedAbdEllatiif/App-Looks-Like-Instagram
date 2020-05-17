@@ -16,7 +16,7 @@
         android:visibility="visible"
         tools:itemCount="4"
 
-        tools:listitem="@layout/cardview_image" />
+        tools:listitem="@layout/cardview_post" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

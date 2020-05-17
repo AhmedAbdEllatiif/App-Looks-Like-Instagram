@@ -30,13 +30,13 @@ public class ProfileFragmentViewPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        Log.e(TAG, "getItem: " + position );
+      //  Log.e(TAG, "getItem: " + position );
         return fragments.get(position);
     }
 
     @Override
     public int getCount() {
-        Log.e(TAG, "getCount: " + fragments.size() );
+       // Log.e(TAG, "getCount: " + fragments.size() );
             return fragments.size();
     }
 

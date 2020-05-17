@@ -21,4 +21,7 @@
     <color name="green_follow">#05df29</color>
     <color name="cancel_red">#df1c0e</color>
 
+    <color name="instagram_blue">#458EFF</color>
+    <color name="light_gray">#83EFEBEB</color>
+
 </resources>

@@ -10,9 +10,11 @@ import com.example.ahmedd.firabasetest.R;
 import com.google.android.material.textfield.TextInputEditText;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,8 +52,10 @@ public class MessageActivity extends AppCompatActivity {
     private CircleImageView profile_pic;
     private TextView userName;
     private TextView status;
-    private ImageButton imageButton_send;
+    private TextView txt_send;
     private TextInputEditText editText_messageToSend;
+    private ImageButton img_arrow_back;
+    private ConstraintLayout icons_layout;
 
     //recyclerView
     private RecyclerView recyclerView;
@@ -73,7 +77,8 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
 
         initViews();
-        setupToolbar();
+
+        onViewClicked();
 
         MyFireBase.getReferenceOnAllUsers().child(getTheUserIdYouChatWIth()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -112,16 +117,19 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(editText_messageToSend.getText().toString().trim().length() > 0){
-                    imageButton_send.setVisibility(View.VISIBLE);
+                    txt_send.setVisibility(View.VISIBLE);
+                    icons_layout.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if(editText_messageToSend.getText().toString().trim().length() > 0){
-                    imageButton_send.setVisibility(View.VISIBLE);
+                    txt_send.setVisibility(View.VISIBLE);
+                    icons_layout.setVisibility(View.GONE);
                 }else if (editText_messageToSend.getText().toString().trim().isEmpty()){
-                    imageButton_send.setVisibility(View.INVISIBLE);
+                    txt_send.setVisibility(View.INVISIBLE);
+                    icons_layout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -167,7 +175,10 @@ public class MessageActivity extends AppCompatActivity {
         profile_pic = findViewById(R.id.messageActivity_profile_Image);
         userName = findViewById(R.id.messageActivity_userName);
         status = findViewById(R.id.online_offline_message_activity);
-        imageButton_send = findViewById(R.id.img_btn_send);
+        txt_send = findViewById(R.id.img_btn_send);
+        img_arrow_back = findViewById(R.id.img_arrow_back);
+        icons_layout = findViewById(R.id.icons_layout);
+
         editText_messageToSend = findViewById(R.id.editText_messageToSend);
         editText_messageToSend.requestFocus();
 
@@ -181,8 +192,13 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
+
+    private void onViewClicked(){
+        img_arrow_back.setOnClickListener(view -> onBackPressed());
+    }
+
     private void Button_send_listener() {
-        imageButton_send.setOnClickListener(new View.OnClickListener() {
+        txt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -204,25 +220,10 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.messageActivity_ToolBar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               startActivity(new Intent(MessageActivity.this, MainActivity.class)
-                       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            }
-        });
-
-
-    }
 
     private void sendMessage(String sender,String receiver,String message,String time){
-
+        String currentUserId = MyFireBase.getCurrentUser().getUid();
         //To make a new branch jason called Chats
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
@@ -235,7 +236,7 @@ public class MessageActivity extends AppCompatActivity {
         MyFireBase.getReferenceOnDataBase().child("Chats").push().setValue(hashMap);
 
         final DatabaseReference referenceChatList = FirebaseDatabase.getInstance().getReference("ChatList")
-                .child(MyFireBase.getCurrentUser().getUid())
+                .child(currentUserId)
                 .child(userToChatWith);
 
         referenceChatList.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -251,6 +252,29 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
+        //To set the set the current user in the chatList of the receiver user
+        DatabaseReference referenceOnReceiverUser = FirebaseDatabase.getInstance().getReference("ChatList")
+                .child(userToChatWith)
+                .child(currentUserId);
+        referenceChatList.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    referenceOnReceiverUser.child("id").setValue(currentUserId);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private void readMessages(final String myID, final String userID, final String imageURl){

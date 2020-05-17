@@ -79,7 +79,8 @@
             android:src="@mipmap/ic_launcher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_post_emoji" />
+            app:layout_constraintTop_toBottomOf="@id/txt_post_emoji"
+            tools:ignore="ContentDescription" />
 
 
         <!--Actions layout-->
@@ -92,8 +93,7 @@
             app:layout_constraintTop_toBottomOf="@+id/post_img" />
 
 
-        <!--*************************************************************************-->
-        <!--Description-->
+        <!--Comment-->
         <TextView
             android:id="@+id/commentor_name"
             android:layout_width="wrap_content"
@@ -119,7 +119,6 @@
             tools:ignore="RtlCompat" />
 
 
-        <!--****************************************************************************-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

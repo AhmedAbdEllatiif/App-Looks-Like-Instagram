@@ -49,6 +49,8 @@ public class CurrentUserImagesFragment extends Fragment {
         //To initialize views
         initViews();
 
+        setupRecyclerView_GridLayout();
+
         //To observe images from the liveData
         observeImagesFromLiveData();
 
@@ -71,8 +73,13 @@ public class CurrentUserImagesFragment extends Fragment {
         viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), new Observer<List<Photos>>() {
             @Override
             public void onChanged(List<Photos> photos) {
-                setupRecyclerView_GridLayout(photos);
-                adapter.notifyDataSetChanged();
+                if (photos != null) {
+                    adapter.setPostModelList(photos);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+
+
             }
         });
     }
@@ -81,9 +88,9 @@ public class CurrentUserImagesFragment extends Fragment {
     /**
      * To setup recyclerView and fill the adapter with the images
      */
-    private void setupRecyclerView(List<Photos> photos) {
+    private void setupRecyclerView() {
+        adapter = new PostsAdapter(getActivity(), PostsAdapter.POST_VIEW);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new PostsAdapter(getActivity(),photos, PostsAdapter.POST_VIEW);
         recyclerView.setAdapter(adapter);
     }
 
@@ -91,11 +98,11 @@ public class CurrentUserImagesFragment extends Fragment {
     /**
      * To setup recyclerView and fill the adapter with the images
      */
-    private void setupRecyclerView_GridLayout(List<Photos> photos) {
+    private void setupRecyclerView_GridLayout() {
+        adapter = new PostsAdapter(getActivity(), PostsAdapter.GRID_VIEW);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerView.addItemDecoration(new SpacesItemDecoration(3));
-        adapter = new PostsAdapter(getActivity(),photos, PostsAdapter.GRID_VIEW);
-        recyclerView.setAdapter(adapter);
+
     }
 
 

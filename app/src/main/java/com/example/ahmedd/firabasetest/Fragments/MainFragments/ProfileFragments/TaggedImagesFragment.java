@@ -51,11 +51,14 @@ public class TaggedImagesFragment extends Fragment {
         //To initialize views
         initViews();
 
+
+        setupRecyclerView();
+
         //To observe user images the liveData
         observeImagesFromLiveData();
 
         //To observe current user data from live data
-        observeCurrentUserDataFromLiveData();
+        //observeCurrentUserDataFromLiveData();
 
 
         return view;
@@ -63,7 +66,7 @@ public class TaggedImagesFragment extends Fragment {
 
     /**
      * To initialize views
-     * */
+     */
     private void initViews() {
         recyclerView = view.findViewById(R.id.recyclerView_photos);
     }
@@ -75,8 +78,12 @@ public class TaggedImagesFragment extends Fragment {
     private void observeImagesFromLiveData() {
 
         viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), photos -> {
-            setupRecyclerView(photos);
-            adapter.notifyDataSetChanged();
+            if (photos != null) {
+                adapter.setPostModelList(photos);
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+
         });
     }
 
@@ -85,23 +92,21 @@ public class TaggedImagesFragment extends Fragment {
      */
     private void observeCurrentUserDataFromLiveData() {
         viewModel.getCurrentUserData().observe(getViewLifecycleOwner(), user -> {
-            adapter.setCurrentUser(user);
-            adapter.notifyDataSetChanged();
+            if (user != null) {
+                adapter.setCurrentUser(user);
+                adapter.notifyDataSetChanged();
+            }
         });
     }
 
     /**
      * To setup recyclerView and fill the adapter with the images
      */
-    private void setupRecyclerView(List<Photos> photos) {
+    private void setupRecyclerView() {
+        adapter = new PostsAdapter(getActivity(), PostsAdapter.POST_VIEW);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new PostsAdapter(getActivity(),photos, PostsAdapter.POST_VIEW);
-        recyclerView.setAdapter(adapter);
 
     }
-
-
-
 
 
     //*** On child of adapter clicked*/

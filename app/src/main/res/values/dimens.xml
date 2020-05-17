@@ -8,4 +8,8 @@
     <dimen name="txt_padding">3dp</dimen>
     <dimen name="follower_size_txt">15sp</dimen>
     <dimen name="follower_size_num">17sp</dimen>
+    <dimen name="txt_chat_size">16sp</dimen>
+    <dimen name="padding_start_end_chat">10dp</dimen>
+    <dimen name="padding_top_bottom_chat">5dp</dimen>
+    <dimen name="corner_radius_chat">50dp</dimen>
 </resources>

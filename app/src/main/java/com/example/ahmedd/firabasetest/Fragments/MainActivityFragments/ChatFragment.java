@@ -87,9 +87,9 @@ public class ChatFragment extends Fragment {
      * */
     private void onViewsClicked() {
         img_arrow_back.setOnClickListener(view -> {
-            if (!isOnBackListenerNull()) {
+         /*   if (!isOnBackListenerNull()) {
                 viewModel.onBackListener_chatFragment.onBackPressed_ChatFragment();
-            }
+            }*/
         });
     }
 
@@ -118,6 +118,9 @@ public class ChatFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         onUserClickedToChatWith(adapter);
+        //SvwLz9q8ZfcJjzr8rzAvAKMwmIA3
+                //l12SZctOPpTUSXRzuZco6G2xaFm2
+
 
     }
 
@@ -162,6 +165,9 @@ public class ChatFragment extends Fragment {
             txt_startChat.setVisibility(View.GONE);
         }
     }
+
+
+
 
 
 

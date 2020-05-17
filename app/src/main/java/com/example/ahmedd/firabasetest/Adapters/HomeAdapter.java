@@ -1,8 +1,10 @@
 package com.example.ahmedd.firabasetest.Adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.PostModel;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
 import com.example.ahmedd.firabasetest.R;
@@ -26,41 +30,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
 
     private Context context;
-    private List<Photos> photosList;
-    private MyOnClickListener onAsProfileImgClickListener;
-    private MyOnClickListener onDescriptionClickListener;
-    private MyOnClickListener onDeleteClickListener;
-    private MyOnClickListener onMenueClickListener;
+    private List<Photos> postModels;
 
-    public HomeAdapter(Context context, List<Photos> photosList) {
-        this.photosList = photosList;
+
+    public HomeAdapter(Context context, List<Photos> postModels) {
+        this.postModels = postModels;
         this.context = context;
 
     }
 
-
-    public void setOnMenueClickListener(MyOnClickListener onMenueClickListener) {
-        this.onMenueClickListener = onMenueClickListener;
-    }
-
-    public void setOnDeleteClickListener(MyOnClickListener onDeleteClickListener) {
-        this.onDeleteClickListener = onDeleteClickListener;
-    }
-
-    public void setOnAsProfileImgClickListener(MyOnClickListener onSetAsProfileImgClickListener) {
-        this.onAsProfileImgClickListener = onSetAsProfileImgClickListener;
-    }
-
-    public void setOnDescriptionClickListener(MyOnClickListener onDescriptionClickListener) {
-        this.onDescriptionClickListener = onDescriptionClickListener;
-    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cardview_image_homefragment, parent, false);
+                .inflate(R.layout.cardview_post, parent, false);
         return new ViewHolder(view);
 
 
@@ -69,126 +54,77 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        Photos postModel = postModels.get(position);
+        String imgUrl = postModel.getUrl();
+        String date = postModel.getDate();
+        String emoji = postModel.getName();
+        String userName = postModel.getUserName();
+        String userImg = postModel.getUserImage();
 
-        final Photos photosItem = photosList.get(position);
-
-
-        holder.txt_name.setText(photosItem.getName());
-
-
-        if(photosItem.getDescription().equals("")){
-            holder.img_description.setText("");
-        }else {
-
-            holder.img_description.setText(photosItem.getDescription());
+        if (isImage(imgUrl)){
+            Glide.with(context).load(imgUrl).into(holder.post_img);
+        }
+        if (isImage(userImg)){
+            Glide.with(context).load(userImg).into(holder.user_image);
         }
 
-
-        holder.img_date.setText(photosItem.getDate());
-
-        holder.user_name_cardView_img.setText(photosItem.getUserName());
-
-
-        if (photosItem.getUrl().equals("default")){
-            holder.img_.setImageResource(R.mipmap.ic_launcher);
-        }else {
-            Picasso.get().load(photosItem.getUrl()).into(holder.img_);
-        }
-
-        //set Image profile for every post
-        MyFireBase.getReferenceOnAllUsers().child(photosItem.getUserID()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                User user = dataSnapshot.getValue(User.class);
-                if (user.getImageURL().equals("default")) {
-                    holder.user_profileImg_cardView_img.setImageResource(R.mipmap.ic_launcher);
-                } else {
-                    Picasso.get().load(user.getImageURL()).into(holder.user_profileImg_cardView_img);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-
-
-        if (onAsProfileImgClickListener!=null){
-            holder.txt_setAsProfileImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onAsProfileImgClickListener.myOnClickListener(position,photosItem);
-
-                }
-            });
-        }
-
-
-        if (onDescriptionClickListener!=null){
-            holder.img_description.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    holder.img_description.setVisibility(View.GONE);
-                    onDescriptionClickListener.myOnClickListener(position,photosItem);
-                    holder.write_description.setVisibility(View.VISIBLE);
-
-                }
-            });
-        }
-
-
-
+        holder.txt_date.setText(date);
+        holder.txt_emoji.setText(emoji);
+        holder.user_name.setText(userName);
+        holder.commenter_name.setText(userName);
 
     }
+
+
+    /**
+     * return true if the image has a url to load from
+     * To check if the image exists or no
+     * if imageUrl ==> default then there is on image
+     * */
+    private boolean isImage(String imgUrl){
+        return !imgUrl.equals("default");
+    }
+
 
 
     @Override
     public int getItemCount() {
-        return photosList.size();
+        return postModels.size();
 
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        //Post data view
+        TextView txt_emoji,commenter_name,txt_date,txt_menu_option;
+        ImageView post_img;
 
-        TextView user_name_cardView_img;
-        TextView txt_name;
-        TextView txt_setAsProfileImg;
-        TextView img_description;
-        TextView img_date;
-        TextView txt_empty_cardView;
+        //User data views
+        TextView user_name;
+        ImageView user_image;
 
-        EditText write_description;
-        ImageView img_;
-        ImageView user_profileImg_cardView_img;
-       // ImageView profileImage_updated;
-
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
-            user_name_cardView_img = itemView.findViewById(R.id.user_name_cardView_img_homefrgament);
-            txt_setAsProfileImg = itemView.findViewById(R.id.txt_setAsProfileImg_homefrgament);
-            txt_name = itemView.findViewById(R.id.txt_name_cardView_photoActivity_homefrgament);
-            txt_empty_cardView = itemView.findViewById(R.id.txt_empty_cardView);
+            //Post data view
+            post_img = itemView.findViewById(R.id.post_img);
+            commenter_name = itemView.findViewById(R.id.commentor_name);
+            txt_emoji = itemView.findViewById(R.id.txt_post_emoji);
+            txt_menu_option = itemView.findViewById(R.id.txt_menu_option);
+            txt_date = itemView.findViewById(R.id.txt_date);
 
-            //write_description = itemView.findViewById(R.id.write_description_homefrgament);
-            img_description = itemView.findViewById(R.id.img_description_homefrgament);
-            img_date = itemView.findViewById(R.id.img_date_homefrgament);
-            img_ = itemView.findViewById(R.id.img_cardView_photoActivity_homefrgament);
-            user_profileImg_cardView_img = itemView.findViewById(R.id.user_profileImg_cardView_img_homefrgament);
-            //profileImage_updated = itemView.findViewById(R.id.profileImage_updated_homefrgament);
+            //User data views
+            user_name = itemView.findViewById(R.id.user_name_cardView_img);
+            user_image = itemView.findViewById(R.id.user_image);
+
         }
     }
 
-    public interface MyOnClickListener{
-        void myOnClickListener(int position,Photos photosItem);
+
+
+
+    public interface MyOnClickListener {
+        void myOnClickListener(int position, Photos photosItem);
     }
 
 }

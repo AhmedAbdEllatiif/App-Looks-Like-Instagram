@@ -20,10 +20,14 @@ import android.widget.TextView;
 
 import com.example.ahmedd.firabasetest.Activities.MainActivity;
 import com.example.ahmedd.firabasetest.Adapters.HomeAdapter;
+import com.example.ahmedd.firabasetest.Model.Following;
 import com.example.ahmedd.firabasetest.Model.Photos;
+import com.example.ahmedd.firabasetest.Model.PostModel;
 import com.example.ahmedd.firabasetest.R;
 import com.example.ahmedd.firabasetest.ViewModel.MainActivityViewModel;
+import com.google.firebase.database.DataSnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -69,9 +73,14 @@ public class HomeFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
 
+
         initViews();
 
         observeImagesFromLiveData();
+
+        observerFollowingsUsers();
+
+
 
         onViewsClicked();
 
@@ -94,23 +103,46 @@ public class HomeFragment extends Fragment {
     /**
      * To observe the liveData
      */
+    List<Photos> photosList;
     private void observeImagesFromLiveData() {
+        photosList = new ArrayList<>();
         viewModel.getHomeFragmentImages().observe(getViewLifecycleOwner(), new Observer<List<Photos>>() {
             @Override
             public void onChanged(List<Photos> photos) {
-                setupRecyclerView(photos);
+                if (photos != null){
+                    Log.e(TAG, "onChanged: photosSize ==> " + photos.size() );
+                    setupRecyclerView(photos);
+                }else {
+                    Log.e(TAG, "onChanged: photos is null");
+                }
+
+
             }
         });
 
+
+
     }
+
+
+    private void observerFollowingsUsers(){
+        viewModel.getFollowingsUsers().observe(getViewLifecycleOwner(), new Observer<List<Following>>() {
+            @Override
+            public void onChanged(List<Following> followings) {
+                //To request the the user followings images
+                viewModel.requestFollowingUsersImagesFromServer(followings);
+            }
+        });
+    }
+
 
 
     /**
      * To setup recyclerView and fill the adapter with the images
      */
-    private void setupRecyclerView(List<Photos> photos) {
+    private void setupRecyclerView(List<Photos> postModels) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new HomeAdapter(getContext(), photos);
+        adapter = new HomeAdapter(getContext(), postModels);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

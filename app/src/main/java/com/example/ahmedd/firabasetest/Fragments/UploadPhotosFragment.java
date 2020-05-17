@@ -240,7 +240,8 @@ public class UploadPhotosFragment extends Fragment {
                         hashMap.put("description",description);
                         hashMap.put("date",date);
 
-                        MyFireBase.getReferenceOnDataBase().child("PostModel").child(MyFireBase.getCurrentUser().getUid()).push().setValue(hashMap);
+                        MyFireBase.getReferenceOnDataBase().child("Photos").child(MyFireBase.getCurrentUser().getUid())
+                                .child("Myphotos").push().setValue(hashMap);
 
                         txt_uploading.setText("Upload Complete");
                         txt_uploading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_done_, 0);

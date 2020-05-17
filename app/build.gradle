@@ -103,7 +103,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
 
     //Navigation
-    def nav_version = "2.1.0"
+    def nav_version = "2.2.2"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
     //implementation "android.arch.navigation:navigation-ui:1.0.0"
@@ -112,6 +112,11 @@ dependencies {
     //ViewModel and LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
+
+
+    //FireStore
+    implementation 'com.google.firebase:firebase-firestore:21.4.3'
+    implementation 'com.google.guava:guava:27.0.1-android'
 
     //Camera
     // CameraX core library

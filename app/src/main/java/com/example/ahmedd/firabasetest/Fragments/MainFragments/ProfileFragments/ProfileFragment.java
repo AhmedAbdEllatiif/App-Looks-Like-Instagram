@@ -147,8 +147,8 @@ public class ProfileFragment extends Fragment {
     private void observeImagesFromLiveData() {
 
         viewModel.getMyPhotosFragmentImages().observe(getViewLifecycleOwner(), photos ->{
-            Log.e(TAG, "observeImagesFromLiveData: photos size ==> " + photos.size() );
-            Log.e(TAG, "observeImagesFromLiveData: isPhotosEmpty ==> " + photos.isEmpty() );
+            /*Log.e(TAG, "observeImagesFromLiveData: photos size ==> " + photos.size() );
+            Log.e(TAG, "observeImagesFromLiveData: isPhotosEmpty ==> " + photos.isEmpty() );*/
             ShowTextPickImage(photos.isEmpty());
         });
     }
@@ -177,7 +177,7 @@ public class ProfileFragment extends Fragment {
             profile_img.setImageResource(R.mipmap.ic_launcher);
         } else {
 
-            Glide.with(Objects.requireNonNull(getActivity()))
+            Glide.with(requireActivity())
                     .load(img)
                     .into(profile_img);
         }
