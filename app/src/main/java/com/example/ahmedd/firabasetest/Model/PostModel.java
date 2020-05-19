@@ -22,7 +22,7 @@ public class PostModel {
     }
 
     public String getPostEmoji() {
-        return photos.getName();
+        return photos.getEmoji();
     }
 
     public String getPostDate() {

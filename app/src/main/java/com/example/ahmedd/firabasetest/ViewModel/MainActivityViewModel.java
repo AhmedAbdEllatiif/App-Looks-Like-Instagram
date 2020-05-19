@@ -5,6 +5,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +22,7 @@ import com.example.ahmedd.firabasetest.Model.Photos;
 import com.example.ahmedd.firabasetest.Model.PostModel;
 import com.example.ahmedd.firabasetest.Model.User;
 import com.example.ahmedd.firabasetest.MyFireBase.MyFireBase;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +38,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     //LiveData
     private MutableLiveData<List<Photos>> homeFragmentImages;
     private MutableLiveData<List<Photos>> myPhotosFragmentImages;
+    private MutableLiveData<List<Photos>> allImages;
     private MutableLiveData<List<User>> userList_chatWith_liveData;
     private MutableLiveData<User> currentUserData_liveData;
     private MutableLiveData<List<PostModel>> postModel_liveData;
@@ -68,7 +71,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         currentUserData_liveData = new MutableLiveData<>();
         postModel_liveData = new MutableLiveData<>();
         followingsUsers = new MutableLiveData<>();
-
+        allImages = new MutableLiveData<>();
     }
 
 
@@ -112,8 +115,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private void requestPhotosOfFollowing_accordingToPhotosID(List<DataSnapshot> photosOfFollowings) {
         DatabaseReference referenceOnPhotos = MyFireBase.getReferenceOnPhotos();
         for (DataSnapshot image : photosOfFollowings){
-            referenceOnPhotos.child(image.getKey())
-                    .child("Myphotos").addValueEventListener(new ValueEventListener() {
+            referenceOnPhotos.child(image.getKey()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     List<Photos> myList  = new ArrayList<>();
@@ -124,7 +126,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                     }
                     //createPostsModelList(myList);
                     Log.e(TAG, "onDataChange44: photosSize ==> " + myList.size());
-                    homeFragmentImages.setValue(myList);
+                    homeFragmentImages.postValue(myList);
                 }
 
                 @Override
@@ -144,7 +146,6 @@ public class MainActivityViewModel extends AndroidViewModel {
     public void requestCurrentUserImageFromServer() {
         List<Photos> photosList = new ArrayList<>();
         MyFireBase.getReferenceOnPhotos().child(MyFireBase.getCurrentUser().getUid())
-                .child("Myphotos")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -268,43 +269,36 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
 
-    public void createPostsModelList(List<Photos> photos) {
-        Log.e(TAG, "createPostsModelList: photosSize ==> " + photos.size());
-        List<User> users = new ArrayList<>();
-        List<PostModel> postModels = new ArrayList<>();
-        List<String> usersIDs = new ArrayList<>();
+    /**
+     * To get all images from firebase
+     * */
+    public void requestAllImagesFromServer(){
+        MyFireBase.getReferenceOnPhotos().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-
-        for (Photos photo : photos) {
-            usersIDs.add(photo.getUserID());
-
-        }
-        for (String id : usersIDs) {
-            MyFireBase.getReferenceOnAllUsers().child(id).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    users.add(user);
-                    Log.e(TAG, "onDataChange: userName ==> " + user.getUserName());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-
-
-        Log.e(TAG, "createPostsModelList: usersSize ==> " + users.size());
-        if (usersIDs.size() == users.size()) {
-            for (int i = 0; i < photos.size(); i++) {
-                postModels.add(new PostModel(photos.get(i)));
             }
-            postModel_liveData.setValue(postModels);
-        }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -345,7 +339,12 @@ public class MainActivityViewModel extends AndroidViewModel {
         return followingsUsers;
     }
 
-
+    /**
+     * Getter for all images
+     * */
+    public LiveData<List<Photos>> getAllImages(){
+        return allImages;
+    }
 
 
     /*//////////////////////////////////Setters For ToolBar icons listeners///////////////////////////////////////////////*/

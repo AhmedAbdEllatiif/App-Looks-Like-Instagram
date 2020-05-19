@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/margin_between_images_gallery"
+    >
+
+
+
+
+    <ImageView
+        android:id="@+id/img_large_in_left_cardview_gallery_0"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/hight_large_img_gallery"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/margin_between_images_gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/line_cardlarge_gallery"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+
+    <ImageView
+        android:id="@+id/img_in_left_cardview_gallery_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toTopOf="@+id/img_large_in_left_cardview_gallery_0"
+        app:layout_constraintBottom_toTopOf="@+id/img_in_left_cardview_gallery_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/line_cardlarge_gallery"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/line_cardlarge_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".33333333333333333333333333333"
+        />
+
+
+
+    <ImageView
+        android:id="@+id/img_in_left_cardview_gallery_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_between_images_gallery"
+        app:layout_constraintStart_toStartOf="@+id/img_in_left_cardview_gallery_1"
+        app:layout_constraintTop_toBottomOf="@+id/img_in_left_cardview_gallery_1"
+        app:layout_constraintBottom_toBottomOf="@+id/img_large_in_left_cardview_gallery_0"
+        app:layout_constraintEnd_toEndOf="@+id/img_in_left_cardview_gallery_1"
+        tools:ignore="ContentDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

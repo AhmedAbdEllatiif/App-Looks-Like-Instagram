@@ -20,7 +20,6 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,7 +98,7 @@
     <include
         layout="@layout/camera_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 

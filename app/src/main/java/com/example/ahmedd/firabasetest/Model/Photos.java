@@ -2,7 +2,7 @@ package com.example.ahmedd.firabasetest.Model;
 
 public class Photos {
 
-    private String name;
+    private String emoji;
     private String url;
     private String description;
     private String date;
@@ -11,15 +11,15 @@ public class Photos {
     private String userImage;
     private String userID;
 
-    public Photos(String name, String url, String description, String date) {
-        this.name = name;
+    public Photos(String emoji, String url, String description, String date) {
+        this.emoji = emoji;
         this.url = url;
         this.description = description;
         this.date = date;
     }
 
-    public Photos(String name, String url) {
-        this.name = name;
+    public Photos(String emoji, String url) {
+        this.emoji = emoji;
         this.url = url;
     }
 
@@ -34,12 +34,12 @@ public class Photos {
     }
 
 
-    public String getName() {
-        return name;
+    public String getEmoji() {
+        return emoji;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmoji(String emoji) {
+        this.emoji = emoji;
     }
 
     public String getUrl() {

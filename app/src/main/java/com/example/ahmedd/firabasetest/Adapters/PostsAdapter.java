@@ -99,7 +99,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             Glide.with(context).load(userImg).into(holder.user_image);
         }
 
-        holder.txt_emoji.setText(postModelItem.getName());
+        holder.txt_emoji.setText(postModelItem.getEmoji());
         holder.txt_date.setText(postModelItem.getDate());
         holder.user_name.setText(userName);
         holder.commenter_name.setText(userName.trim());

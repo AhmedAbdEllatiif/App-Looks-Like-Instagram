@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.ahmedd.firabasetest.Adapters.SearchAdapter;
 import com.example.ahmedd.firabasetest.Adapters.UsersAdapter;
 import com.example.ahmedd.firabasetest.Activities.MessageActivity;
 import com.example.ahmedd.firabasetest.Model.Following;
@@ -51,9 +52,8 @@ public class UsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (view == null){
         view = inflater.inflate(R.layout.fragment_users, container, false);
-        }
+
 
         editText_searchUsers = view.findViewById(R.id.editText_searchUsers);
         searchByCapitalLetter();
@@ -61,7 +61,7 @@ public class UsersFragment extends Fragment {
         currentUserID =  MyFireBase.getCurrentUser().getUid();
 
         setupRecyclerView();
-        readAllUsers();
+       // readAllUsers();
         return view;
     }
 
@@ -115,8 +115,8 @@ public class UsersFragment extends Fragment {
                         userList.add(userItem);
                     }
                 }
-                adapter =  new UsersAdapter(getContext(),userList,null,false);
-                recyclerView.setAdapter(adapter);
+                //adapter =  new UsersAdapter(getContext(),userList,null,false);
+                //recyclerView.setAdapter(adapter);
             }
 
             @Override
@@ -128,8 +128,10 @@ public class UsersFragment extends Fragment {
 
     private void setupRecyclerView() {
         recyclerView = view.findViewById(R.id.recyclerView_users);
+        SearchAdapter searchAdapter = new SearchAdapter(null,null);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(searchAdapter);
+
 
         userList = new ArrayList<>();
         followings = new ArrayList<>();
@@ -188,7 +190,9 @@ public class UsersFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if(readAllUsersListener != null){
         MyFireBase.getReferenceOnAllUsers().removeEventListener(readAllUsersListener);
+        }
     }
 
     private void myAdapterClickListeners(UsersAdapter usersAdapter) {

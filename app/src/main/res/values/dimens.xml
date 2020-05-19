@@ -12,4 +12,12 @@
     <dimen name="padding_start_end_chat">10dp</dimen>
     <dimen name="padding_top_bottom_chat">5dp</dimen>
     <dimen name="corner_radius_chat">50dp</dimen>
+
+
+    <!--Gallery Fragment-->
+    <dimen name="height_tablayout_gallery_fragment">35dp</dimen>
+    <dimen name="tabLayout_Text">15dp</dimen>
+    <dimen name="hight_large_img_gallery">200dp</dimen>
+    <dimen name="hieght_small_img_gallery">103dp</dimen>
+    <dimen name="margin_between_images_gallery">1dp</dimen>
 </resources>

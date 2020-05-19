@@ -118,9 +118,8 @@ public class ProfileFragment extends Fragment {
         int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
         viewpager_profile.setAdapter(adapter);
         viewpager_profile.setOffscreenPageLimit(limit);
-
-
     }
+
 
     /**
      * To setup tabLayout
